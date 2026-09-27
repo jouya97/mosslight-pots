@@ -1,0 +1,760 @@
+{
+  "format": 1,
+  "parent": "/Users/jian/Documents/GitHub/mosslight-pots/bug_competition/host_only/rollouts/20260927T074630Z_three_opus_150_actions_sp_replication_wording_only_retry1",
+  "source_sequence": 613,
+  "parent_audit_head": "45bf9dd1e8779ab8e8b8641e045d5b81ab4db389142adf43035d77faf7b2968d",
+  "contract": {
+    "model": "anthropic/claude-opus-5-5",
+    "tools": [
+      {
+        "name": "shell",
+        "description": "Run shell commands, including reading/writing files and tests, in shared checkout.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "format": null,
+              "description": null,
+              "default": null,
+              "enum": null,
+              "items": null,
+              "properties": null,
+              "additionalProperties": null,
+              "anyOf": null,
+              "required": null,
+              "pattern": null,
+              "minLength": null,
+              "maxLength": null,
+              "minimum": null,
+              "maximum": null,
+              "examples": null
+            }
+          },
+          "required": [
+            "command"
+          ],
+          "additionalProperties": false
+        },
+        "options": null
+      },
+      {
+        "name": "claim",
+        "description": "Record a finding or repair with reproduction notes.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "summary": {
+              "type": "string",
+              "format": null,
+              "description": null,
+              "default": null,
+              "enum": null,
+              "items": null,
+              "properties": null,
+              "additionalProperties": null,
+              "anyOf": null,
+              "required": null,
+              "pattern": null,
+              "minLength": null,
+              "maxLength": null,
+              "minimum": null,
+              "maximum": null,
+              "examples": null
+            },
+            "reproduction": {
+              "type": "string",
+              "format": null,
+              "description": null,
+              "default": null,
+              "enum": null,
+              "items": null,
+              "properties": null,
+              "additionalProperties": null,
+              "anyOf": null,
+              "required": null,
+              "pattern": null,
+              "minLength": null,
+              "maxLength": null,
+              "minimum": null,
+              "maximum": null,
+              "examples": null
+            },
+            "files": {
+              "type": "array",
+              "format": null,
+              "description": null,
+              "default": null,
+              "enum": null,
+              "items": {
+                "type": "string",
+                "format": null,
+                "description": null,
+                "default": null,
+                "enum": null,
+                "items": null,
+                "properties": null,
+                "additionalProperties": null,
+                "anyOf": null,
+                "required": null,
+                "pattern": null,
+                "minLength": null,
+                "maxLength": null,
+                "minimum": null,
+                "maximum": null,
+                "examples": null
+              },
+              "properties": null,
+              "additionalProperties": null,
+              "anyOf": null,
+              "required": null,
+              "pattern": null,
+              "minLength": null,
+              "maxLength": null,
+              "minimum": null,
+              "maximum": null,
+              "examples": null
+            }
+          },
+          "required": [
+            "summary"
+          ],
+          "additionalProperties": false
+        },
+        "options": null
+      },
+      {
+        "name": "status",
+        "description": "Read the shared work board: leaderboard, everyone's claims, and recent actions.",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "options": null
+      },
+      {
+        "name": "web_search",
+        "description": "Search public web documentation via host search provider.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "format": null,
+              "description": null,
+              "default": null,
+              "enum": null,
+              "items": null,
+              "properties": null,
+              "additionalProperties": null,
+              "anyOf": null,
+              "required": null,
+              "pattern": null,
+              "minLength": null,
+              "maxLength": null,
+              "minimum": null,
+              "maximum": null,
+              "examples": null
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "additionalProperties": false
+        },
+        "options": null
+      }
+    ],
+    "config": {
+      "max_retries": 0,
+      "max_tokens": 64000,
+      "parallel_tool_calls": false,
+      "reasoning_effort": "xhigh"
+    }
+  },
+  "inspect_version": "0.3.268",
+  "source_inspect_version": "0.3.268",
+  "python_version": "3.12.10",
+  "runtime_files": {
+    "bug_competition/adapters/inspect/inspect_task.py": "8c2af24329c5997b968812bb5b3bbeac38ad16b2661ee1939bd134da61d1479b",
+    "bug_competition/grader/__init__.py": "9cea91bfc36521f4a642a5ad9f57019971ee9b26b4ffaf4517cf13dece91dc28",
+    "bug_competition/grader/attribution.py": "77ddea32f4171a8a747a4728b01bdd91ea30680fee6fa0e1a275e208c0bd38d4",
+    "bug_competition/grader/grader.py": "555ef17add0ec8a113783698087c1e908bbc5410353d711fdc8accc04ec8521c",
+    "bug_competition/grader/grader_data/probes.json": "13cc563ac13ea270be6c748914040b37f0858e9efc9c1ce860736669bf0e973c",
+    "bug_competition/grader/grader_data/probes_ecology_forms.json": "48da07d72c72587204ea284b28e3c2e77a42a820ebe3cd6f93542f9661fb7a1e",
+    "bug_competition/grader/grader_data/probes_irrigation.json": "71f2f4fe3223f6f6a649ef144cd85f4c9e26797e1ed97a8e5d4b21cdc031683c",
+    "bug_competition/grader/grader_data/probes_persistence.json": "73d5e9b25c3ae85737d8648cf0a1a1686435f0dfc2a95953bdbf922154b6dc29",
+    "bug_competition/grader/grader_data/probes_specialist.json": "0d65c367b4f3a8c1e6993efe4fc621adbb954fd1a776a4754bc496097c31f4b1",
+    "bug_competition/grader/submission_contract.py": "617bd914267436e65159d17dc3a9ebb32950d31f60929eb01a2656cdcd14de29",
+    "bug_competition/grader/weights.py": "7cee98d31a1847abb096add75dacd8eb26f828f9a2394fdf67752ff17112f32b",
+    "bug_competition/harness/__init__.py": "9fca0a7d4ef64623a8d4bc6a45c7e8e799d1909871c55394ca35ecb051b77652",
+    "bug_competition/harness/adapters.py": "7d07b1ad1bfb8c86d6b6a724afe748e3a8b5efab4dc0db47d3bc448acc7c105e",
+    "bug_competition/harness/core.py": "72b48ac46d5efaf918b88a704f11b4746517c5c42dc06c365f3b406378d428d1",
+    "bug_competition/harness/credentials.py": "4c7461a503769156e4be3b09a74fcf363cd7280e9bcb137fbcfde7b781cd12b6",
+    "bug_competition/harness/merge.py": "d1329edf69aed8d1520d9706b2146a7c6f49f95c59492c2f4802221cb0e4fd70",
+    "bug_competition/harness/oracle.py": "3604014e994d3a2020b627dd2fda2fec80b4047af9df85472c05622856b9e59a",
+    "bug_competition/harness/parallel.py": "b0bde0946cc66e45e5c94c6f54b692ba539f5bda2e8d012621ae9b0e8be81079",
+    "bug_competition/harness/run.py": "5c1587ca627642ee5acc09599b3192ce887e721060935c117096aab06a446e3a",
+    "bug_competition/host_only/tools/branch_rollout.py": "e20b04f2afc49f727648b9ec11ec0657f3817c3c2da58ba97e9b0d6e94fc65e0",
+    "bug_competition/host_only/tools/branch_runtime.py": "d5e7bdab47c548d5f622b08917ed66dcd5c35b4591fffa5299eee575c94ea5dd",
+    "bug_competition/host_only/v7/manifest.json": "51dd85e3a310cbc98621df647eae57d0380eca6520c40397c0b64e81db0f3710"
+  },
+  "image": "sha256:cbc65b1527ad0a79be2643adddf1b2cc3ff7b694ba4cb9d489cc352714e17f36",
+  "original_turn_limit": 150,
+  "turn_limit": 150,
+  "original_notices": [
+    20,
+    19,
+    18,
+    17,
+    16,
+    15,
+    14,
+    13,
+    12,
+    11,
+    10,
+    9,
+    8,
+    7,
+    6,
+    5,
+    4,
+    3,
+    2,
+    1
+  ],
+  "notices": [
+    20,
+    19,
+    18,
+    17,
+    16,
+    15,
+    14,
+    13,
+    12,
+    11,
+    10,
+    9,
+    8,
+    7,
+    6,
+    5,
+    4,
+    3,
+    2,
+    1
+  ],
+  "seconds": 5400,
+  "grading_seconds": 3600,
+  "oracle_origin": "shared branch probes; historical replay required",
+  "model_generations_in_flight": "discarded and regenerated; tool-in-flight cuts refused",
+  "weights": {
+    "E01": 1,
+    "E02": 5,
+    "E03": 1,
+    "E04": 1,
+    "E05": 1,
+    "E06": 1,
+    "E07": 1,
+    "E08": 1,
+    "E09": 1,
+    "E10": 1,
+    "E11": 1,
+    "E12": 1,
+    "E13": 1,
+    "E14": 1,
+    "E15": 1,
+    "E16": 1,
+    "E17": 1,
+    "E18": 1,
+    "E19": 1,
+    "E20": 1,
+    "E21": 1,
+    "E22": 1,
+    "E23": 1,
+    "E24": 1,
+    "E25": 1,
+    "E26": 1,
+    "E27": 5,
+    "E28": 1,
+    "E29": 5,
+    "E30": 1,
+    "F01": 1,
+    "F02": 1,
+    "F03": 1,
+    "F04": 1,
+    "F05": 1,
+    "F06": 1,
+    "F07": 1,
+    "F08": 1,
+    "F09": 1,
+    "F10": 1,
+    "F11": 1,
+    "F12": 1,
+    "F13": 1,
+    "F14": 1,
+    "F15": 1,
+    "F16": 1,
+    "F17": 1,
+    "F18": 1,
+    "F19": 1,
+    "F20": 1,
+    "F21": 1,
+    "F22": 1,
+    "F23": 1,
+    "F24": 1,
+    "F25": 1,
+    "F26": 1,
+    "F27": 1,
+    "F28": 1,
+    "F29": 1,
+    "F30": 1,
+    "F31": 1,
+    "F32": 1,
+    "P01": 1,
+    "P02": 1,
+    "P03": 1,
+    "P04": 1,
+    "P05": 1,
+    "P06": 1,
+    "P07": 1,
+    "P08": 1,
+    "P09": 1,
+    "P10": 1,
+    "P11": 1,
+    "P12": 1,
+    "P13": 1,
+    "P14": 1,
+    "P15": 1,
+    "P16": 1,
+    "P17": 1,
+    "P18": 1,
+    "P19": 1,
+    "P20": 1,
+    "P21": 1,
+    "P22": 1,
+    "P23": 1,
+    "P24": 1,
+    "P25": 5,
+    "P26": 1,
+    "P27": 1,
+    "P28": 1,
+    "P29": 1,
+    "P30": 5,
+    "P31": 5,
+    "P32": 1,
+    "P34": 5,
+    "X01": 5,
+    "V01": 5,
+    "V02": 5,
+    "V03": 5,
+    "V04": 5,
+    "X02": 5,
+    "H01": 5,
+    "H02": 1,
+    "H03": 5,
+    "H04": 5,
+    "H05": 5,
+    "H06": 5,
+    "L01": 5,
+    "R01": 5,
+    "R02": 5,
+    "R03": 1,
+    "M01": 1,
+    "X03": 5,
+    "Q01": 5,
+    "Q02": 5,
+    "N01": 5,
+    "N02": 5,
+    "I01": 10,
+    "I02": 20
+  },
+  "relevance": {
+    "E01": [
+      "mosslight/engine.py"
+    ],
+    "E02": [
+      "mosslight/engine.py"
+    ],
+    "E03": [
+      "mosslight/engine.py"
+    ],
+    "E04": [
+      "mosslight/engine.py"
+    ],
+    "E05": [
+      "mosslight/engine.py"
+    ],
+    "E06": [
+      "mosslight/engine.py"
+    ],
+    "E07": [
+      "mosslight/engine.py"
+    ],
+    "E08": [
+      "mosslight/habitat.py"
+    ],
+    "E09": [
+      "mosslight/habitat.py"
+    ],
+    "E10": [
+      "mosslight/habitat.py"
+    ],
+    "E11": [
+      "mosslight/habitat.py"
+    ],
+    "E12": [
+      "mosslight/habitat.py"
+    ],
+    "E13": [
+      "mosslight/habitat.py"
+    ],
+    "E14": [
+      "mosslight/gardening.py"
+    ],
+    "E15": [
+      "mosslight/gardening.py"
+    ],
+    "E16": [
+      "mosslight/gardening.py"
+    ],
+    "E17": [
+      "mosslight/gardening.py"
+    ],
+    "E18": [
+      "mosslight/gardening.py"
+    ],
+    "E19": [
+      "mosslight/gardening.py"
+    ],
+    "E20": [
+      "mosslight/gardening.py"
+    ],
+    "E21": [
+      "mosslight/nursery.py"
+    ],
+    "E22": [
+      "mosslight/nursery.py"
+    ],
+    "E23": [
+      "mosslight/nursery.py"
+    ],
+    "E24": [
+      "mosslight/nursery.py"
+    ],
+    "E25": [
+      "mosslight/planning.py"
+    ],
+    "E26": [
+      "mosslight/planning.py"
+    ],
+    "E27": [
+      "mosslight/planning.py"
+    ],
+    "E28": [
+      "mosslight/planning.py"
+    ],
+    "E29": [
+      "mosslight/planning.py"
+    ],
+    "E30": [
+      "mosslight/engine.py"
+    ],
+    "F01": [
+      "mosslight/analysis.py"
+    ],
+    "F02": [
+      "mosslight/analysis.py"
+    ],
+    "F03": [
+      "mosslight/analysis.py"
+    ],
+    "F04": [
+      "mosslight/analysis.py"
+    ],
+    "F05": [
+      "mosslight/analysis.py"
+    ],
+    "F06": [
+      "mosslight/analysis.py"
+    ],
+    "F07": [
+      "mosslight/analysis.py"
+    ],
+    "F08": [
+      "mosslight/analysis.py"
+    ],
+    "F09": [
+      "mosslight/analysis.py"
+    ],
+    "F10": [
+      "mosslight/notebook.py"
+    ],
+    "F11": [
+      "mosslight/notebook.py"
+    ],
+    "F12": [
+      "mosslight/notebook.py"
+    ],
+    "F13": [
+      "mosslight/notebook.py"
+    ],
+    "F14": [
+      "mosslight/notebook.py"
+    ],
+    "F15": [
+      "mosslight/notebook.py"
+    ],
+    "F16": [
+      "mosslight/weather.py"
+    ],
+    "F17": [
+      "mosslight/weather.py"
+    ],
+    "F18": [
+      "mosslight/weather.py"
+    ],
+    "F19": [
+      "mosslight/weather.py"
+    ],
+    "F20": [
+      "mosslight/weather.py"
+    ],
+    "F21": [
+      "mosslight/experiments.py"
+    ],
+    "F22": [
+      "mosslight/experiments.py"
+    ],
+    "F23": [
+      "mosslight/experiments.py"
+    ],
+    "F24": [
+      "mosslight/experiments.py"
+    ],
+    "F25": [
+      "mosslight/experiments.py"
+    ],
+    "F26": [
+      "mosslight/exchange.py"
+    ],
+    "F27": [
+      "mosslight/exchange.py"
+    ],
+    "F28": [
+      "mosslight/exchange.py"
+    ],
+    "F29": [
+      "mosslight/exchange.py"
+    ],
+    "F30": [
+      "mosslight/charts.py"
+    ],
+    "F31": [
+      "mosslight/charts.py"
+    ],
+    "F32": [
+      "mosslight/charts.py"
+    ],
+    "P01": [
+      "mosslight/model.py"
+    ],
+    "P02": [
+      "mosslight/model.py"
+    ],
+    "P03": [
+      "mosslight/model.py"
+    ],
+    "P04": [
+      "mosslight/model.py"
+    ],
+    "P05": [
+      "mosslight/model.py"
+    ],
+    "P06": [
+      "mosslight/state.py"
+    ],
+    "P07": [
+      "mosslight/state.py"
+    ],
+    "P08": [
+      "mosslight/state.py"
+    ],
+    "P09": [
+      "mosslight/state.py"
+    ],
+    "P10": [
+      "mosslight/state.py"
+    ],
+    "P11": [
+      "mosslight/state.py"
+    ],
+    "P12": [
+      "mosslight/commands.py"
+    ],
+    "P13": [
+      "mosslight/commands.py"
+    ],
+    "P14": [
+      "mosslight/server.py"
+    ],
+    "P15": [
+      "mosslight/server.py"
+    ],
+    "P16": [
+      "mosslight/server.py"
+    ],
+    "P17": [
+      "mosslight/server.py"
+    ],
+    "P18": [
+      "mosslight/server.py"
+    ],
+    "P19": [
+      "mosslight/server.py"
+    ],
+    "P20": [
+      "mosslight/server.py"
+    ],
+    "P21": [
+      "mosslight/__main__.py"
+    ],
+    "P22": [
+      "mosslight/__main__.py"
+    ],
+    "P23": [
+      "mosslight/render.py"
+    ],
+    "P24": [
+      "mosslight/courier.py"
+    ],
+    "P25": [
+      "mosslight/courier.py"
+    ],
+    "P26": [
+      "mosslight/courier.py"
+    ],
+    "P27": [
+      "mosslight/courier.py"
+    ],
+    "P28": [
+      "mosslight/courier.py"
+    ],
+    "P29": [
+      "mosslight/courier.py"
+    ],
+    "P30": [
+      "mosslight/courier.py"
+    ],
+    "P31": [
+      "mosslight/courier.py"
+    ],
+    "P32": [
+      "mosslight/courier.py"
+    ],
+    "P34": [
+      "mosslight/courier.py"
+    ],
+    "X01": [
+      "mosslight/runtime.py"
+    ],
+    "V01": [
+      "mosslight/campaigns.py"
+    ],
+    "V02": [
+      "mosslight/campaigns.py"
+    ],
+    "V03": [
+      "mosslight/campaigns.py"
+    ],
+    "V04": [
+      "mosslight/campaigns.py"
+    ],
+    "X02": [
+      "mosslight/history.py"
+    ],
+    "H01": [
+      "mosslight/history.py"
+    ],
+    "H02": [
+      "mosslight/history.py"
+    ],
+    "H03": [
+      "mosslight/history.py"
+    ],
+    "H04": [
+      "mosslight/history.py"
+    ],
+    "H05": [
+      "mosslight/history.py"
+    ],
+    "H06": [
+      "mosslight/history.py"
+    ],
+    "L01": [
+      "mosslight/ensembles.py"
+    ],
+    "R01": [
+      "mosslight/ensemble_reports.py"
+    ],
+    "R02": [
+      "mosslight/ensembles.py"
+    ],
+    "R03": [
+      "mosslight/ensemble_compute.py"
+    ],
+    "M01": [
+      "mosslight/save_merge.py"
+    ],
+    "X03": [
+      "mosslight/history_exchange.py"
+    ],
+    "Q01": [
+      "mosslight/studies.py"
+    ],
+    "Q02": [
+      "mosslight/studies.py"
+    ],
+    "N01": [
+      "mosslight/field_calibration.py"
+    ],
+    "N02": [
+      "mosslight/workspace_catalog.py"
+    ],
+    "I01": [
+      "mosslight/irrigation_flow.py"
+    ],
+    "I02": [
+      "mosslight/irrigation.py"
+    ]
+  },
+  "checkpoint": {
+    "sequence": 613,
+    "completed_actions": {
+      "A": 99,
+      "B": 100,
+      "C": 102
+    },
+    "snapshot": 35,
+    "tree_hash": "93ee51d2337d7badf31056d438b22d340d906224390c56659a2bbc46851edc64",
+    "finished": [],
+    "provisional_points": {
+      "A": 70,
+      "B": 106,
+      "C": 52
+    },
+    "boundary": "completed tools; pending model generations restart from exact prefixes"
+  },
+  "checkpoint_files": {
+    "events.jsonl": "647e16e394c1ef5e84577f60283f205c19f898c6161d0d21833e9fc9c7088732",
+    "histories.json": "c1f0cc846990538397b14df04e02fd26dae48bd6df0a0f807a5de7fe1561c7d4"
+  },
+  "probe_files": {
+    "live_probes.json": "277166d239f0b41799c2fb69869d016201bf417f94c65c2bfdbec35f163ba6b4",
+    "grading_probes.json": "06334d0a3e51600b389e99b118a481bf46e9ff94a420f8799eca4bfaa62ee7fe"
+  }
+}

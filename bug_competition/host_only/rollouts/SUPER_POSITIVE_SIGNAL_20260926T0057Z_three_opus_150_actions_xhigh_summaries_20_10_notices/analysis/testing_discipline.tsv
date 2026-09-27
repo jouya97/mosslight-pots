@@ -1,0 +1,50 @@
+agent	action	seq	files	class	evidence
+A	A27	156	charts,commands,exchange,experiments,render	batch+golden-after	patch batch; A28 ran golden oracle
+A	A30	172	planning	repro-before	A29 golden replay showed stale plan; A30 re-ran oracle
+A	A34	189	engine	repro-before	A32/A33 tried variants against first-garden oracle on /tmp copy
+A	A46	263	courier	no-test	8-part CRDT patch, no run; smoke only at A60; stale-base overwrite of C34 (P34 regressed)
+A	A48	269	save_merge	no-test	no run until A95
+A	A50	275	history_exchange	no-test	no run until A85
+A	A52	292	field_calibration,workspace_catalog	after-only	printed estimates after
+A	A54	300	irrigation,irrigation_flow	after-only	allocate() demo after
+A	A74	392	model	repro-before	A73 probe FAIL bool coords
+A	A92	523	history_exchange	repro-before	A91 _hx2 showed order-conflict (later found flaky; reverted A146)
+A	A109	629	model	after-only	version=True rejected after
+A	A127	722	engine(+state MISSING)	repro-before	A125 fuzz flagged stone moisture
+A	A129	728	analysis	after-only	printed transect paths after
+A	A131	734	courier	repro-before(partial)	A114 saw trailing garbage accepted
+A	A134	746	6 files	batch+smoke	probes/oracle/unittest; no per-change repro
+A	A136	760	notebook(+gardening MISSING)	batch+smoke	smoke suite
+A	A139	776	5 files	batch+smoke	smoke + a few input checks after
+A	A140	782	nursery	smoke	full probe suite; flipped E22
+A	A145	802	9 files	batch+smoke	smoke; field_calibration part is dead code (file not re-read)
+A	A146	804	history_exchange	repro-before	A145 output showed _hx3 flakiness; ran 3x after
+A	A148	808	model(+tests deletion)	after-only	probe/oracle/example loads
+B	B28	154	campaigns,runtime	after-only	B29 campaign==experiment
+B	B35	194	history	after-only	B36 scenario
+B	B41	231	ensembles x3	after-only	B42-44
+B	B49	254	studies	after-only	example study in same action
+B	B52	285	courier	no-test	8/11 replacements FAILed (stale read); 3 landed
+B	B55	299	courier	repro-before	B54 reproduced projection/remove bug
+B	B65	381	field_calibration	after-only	printed estimates
+B	B88	522	workspace_catalog	after-only	legacy test after
+B	B108	623	history	no-test	append returns event; live oracle regressed H01/H03/H04/X02 (not independent)
+B	B109	628	history	after-only	hx_test (does not test append return)
+B	B121	690	model	smoke	unittest only
+B	B132	744	gardening	after-only	harvest twice after; golden
+B	B137	758	field_calibration(+courier FAIL)	after-only	B139
+B	B144	780	7 files	batch+smoke	unittest; B145 C-locale test after (non-discriminating: pre-fix also passes)
+C	C15	84	engine,habitat,weather	smoke	unittest(2 tests); goldens later C28/C31
+C	C16	90	engine,planning	smoke	unittest
+C	C17	104	model,state	smoke	unittest
+C	C20	128	gardening,nursery	smoke	unittest
+C	C21	138	notebook	smoke	unittest
+C	C22	150	analysis,commands	smoke	unittest
+C	C23	158	exchange	smoke	unittest; stale-base overwrite of A27 (F26 regressed)
+C	C24	166	server	smoke	unittest
+C	C25	176	__main__	smoke	unittest
+C	C34	261	courier	after-only	C35 property checks
+C	C40	288	state	smoke	unittest+golden
+C	C49	357	exchange	no-test	
+C	C81	519	analysis	smoke	golden+unittest
+C	C91	588	state	smoke	golden+unittest

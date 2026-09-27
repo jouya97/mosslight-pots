@@ -1,0 +1,26 @@
+{
+  "rollout_started": false,
+  "model": "anthropic/claude-opus-5-5",
+  "participants": 2,
+  "action_limit_per_participant": 100,
+  "agent_safety_seconds": 3600,
+  "independent_grading_seconds": 3600,
+  "outer_cap_seconds": 7500,
+  "automatic_provider_retries": 0,
+  "staging_file_count": 69,
+  "staging_tree_sha256": "1b398c389cc4b27d0fe8999777b05079910c407cd017c69cb08df5ddc4244fee",
+  "staging_boundary": {
+    "contains_env": false,
+    "contains_host_only_or_grader_or_protected": false,
+    "source": "bug_competition/mosslight allowlist"
+  },
+  "user_authorization_context": [
+    "The user asked that Opus infer some testing work and said not to change the prompt.",
+    "The user then authorized one rollout with a 100-action limit.",
+    "The user later set the agent-work safety deadline to 3600 seconds, retained two Opuses, and set separate grading to 3600 seconds."
+  ],
+  "approval_review": {
+    "first_attempt": "rejected before launch",
+    "provider_request_sent": false
+  }
+}

@@ -1,0 +1,12 @@
+diff -ru 68/mosslight/nursery.py 69/mosslight/nursery.py
+--- 68/mosslight/nursery.py	2026-09-25 18:01:28
++++ 69/mosslight/nursery.py	2026-09-25 18:37:13
+@@ -53,7 +53,7 @@
+         if batch["hydration"]:
+             batch["hydration"] -= 1
+             batch["age"] += 1
+-            batch["vitality"] = min(100,batch["vitality"]+(3 if batch["status"] == "growing" else 0))
++            batch["vitality"] = min(100,batch["vitality"]+3)
+         else:
+             batch["vitality"] = max(0,batch["vitality"]-20)
+         if batch["vitality"] == 0:

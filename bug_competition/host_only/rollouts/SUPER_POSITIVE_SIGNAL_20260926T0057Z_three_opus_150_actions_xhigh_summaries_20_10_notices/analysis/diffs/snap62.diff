@@ -1,0 +1,12 @@
+diff -ru 61/mosslight/gardening.py 62/mosslight/gardening.py
+--- 61/mosslight/gardening.py	2026-09-25 18:01:28
++++ 62/mosslight/gardening.py	2026-09-25 18:34:32
+@@ -80,7 +80,7 @@
+     if stock[info["resource"]] + amount > 1_000_000:
+         raise ValueError("Inventory is full")
+     stock[info["resource"]] += amount
+-    cell.age = max(0, cell.age-5)
++    cell.age = 0
+     cell.vitality = max(1, cell.vitality-15)
+     world.revision += 1
+     return {info["resource"]: amount}

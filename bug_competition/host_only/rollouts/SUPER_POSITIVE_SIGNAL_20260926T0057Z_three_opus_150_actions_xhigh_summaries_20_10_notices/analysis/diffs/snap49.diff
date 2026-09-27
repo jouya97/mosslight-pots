@@ -1,0 +1,12 @@
+diff -ru 48/mosslight/history.py 49/mosslight/history.py
+--- 48/mosslight/history.py	2026-09-25 18:04:46
++++ 49/mosslight/history.py	2026-09-25 18:25:15
+@@ -388,7 +388,7 @@
+         except BaseException:
+             self.db.execute("ROLLBACK")
+             raise
+-        return self.snapshot(branch)
++        return {**self.snapshot(branch), "event": event["id"]}
+ 
+     def correct(self, branch, replacements, label="correction"):
+         source = self._branch(branch)

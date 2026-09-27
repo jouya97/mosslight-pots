@@ -1,0 +1,15 @@
+diff -ru 63/mosslight/field_calibration.py 64/mosslight/field_calibration.py
+--- 63/mosslight/field_calibration.py	2026-09-25 18:34:40
++++ 64/mosslight/field_calibration.py	2026-09-25 18:35:31
+@@ -6,6 +6,11 @@
+ 
+ 
+ def estimate(readings, at):
++    if not isinstance(readings, list) or any(not isinstance(row, dict) for row in readings):
++        raise ValueError('Supply a list of timestamped moisture readings')
++    numeric = lambda value: type(value) in (int, float)
++    if not numeric(at) or any(not numeric(row.get('timestamp')) or not numeric(row.get('moisture')) for row in readings):
++        raise ValueError('Supply finite timestamps and moisture percentages')
+     values = [(float(row['timestamp']), float(row['moisture'])) for row in readings]
+     at = float(at)
+     if not values or not math.isfinite(at) or any(not math.isfinite(t) or not math.isfinite(y) or not 0 <= y <= 100 for t, y in values):

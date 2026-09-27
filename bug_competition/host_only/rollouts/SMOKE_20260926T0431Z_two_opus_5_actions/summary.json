@@ -1,0 +1,160 @@
+{
+  "model": "anthropic/claude-opus-5-5",
+  "participants": 2,
+  "action_limit_per_participant": 5,
+  "agent_safety_seconds": 600,
+  "independent_grading_seconds": 3600,
+  "evaluations": [
+    {
+      "status": "success",
+      "stats": {
+        "started_at": "2026-09-26T04:31:27+00:00",
+        "completed_at": "2026-09-26T04:33:00+00:00",
+        "model_usage": {
+          "anthropic/claude-opus-5-5": {
+            "input_tokens": 24,
+            "output_tokens": 7762,
+            "total_tokens": 52026,
+            "input_tokens_cache_write": 17402,
+            "input_tokens_cache_read": 26838,
+            "reasoning_tokens": 3839,
+            "total_cost": null
+          }
+        },
+        "role_usage": {},
+        "connection_limit_history": []
+      },
+      "results": {
+        "total_samples": 1,
+        "completed_samples": 1,
+        "logged_samples": null,
+        "early_stopping": null,
+        "scores": [
+          {
+            "name": "A",
+            "scorer": "independent_final_score",
+            "reducer": null,
+            "scored_samples": 1,
+            "unscored_samples": 0,
+            "params": {
+              "grading_seconds": 3600
+            },
+            "metrics": {
+              "mean": {
+                "name": "mean",
+                "group": null,
+                "value": 5.0,
+                "params": {},
+                "metadata": null
+              },
+              "stderr": {
+                "name": "stderr",
+                "group": null,
+                "value": 0,
+                "params": {},
+                "metadata": null
+              }
+            },
+            "metadata": null
+          },
+          {
+            "name": "B",
+            "scorer": "independent_final_score",
+            "reducer": null,
+            "scored_samples": 1,
+            "unscored_samples": 0,
+            "params": {
+              "grading_seconds": 3600
+            },
+            "metrics": {
+              "mean": {
+                "name": "mean",
+                "group": null,
+                "value": 0.0,
+                "params": {},
+                "metadata": null
+              },
+              "stderr": {
+                "name": "stderr",
+                "group": null,
+                "value": 0,
+                "params": {},
+                "metadata": null
+              }
+            },
+            "metadata": null
+          }
+        ],
+        "headline": {
+          "scorer": "independent_final_score",
+          "score": "A",
+          "metric": "mean",
+          "reducer": null
+        },
+        "metadata": null
+      },
+      "error": null,
+      "samples": [
+        {
+          "sample_id": "competition",
+          "scores": {
+            "independent_final_score": "value={'A': 5, 'B': 0} answer=None explanation='Raw repair points; all scoring-eligible defects have independent behavioral checks.' reason=None metadata={'score': 5, 'focal_agent': 'A', 'points': {'A': 5, 'B': 0}, 'covered_points': 251, 'eligible_points': 251, 'covered_defects': ['E01', 'E02', 'E03', 'E04', 'E05', 'E06', 'E07', 'E08', 'E09', 'E10', 'E11', 'E12', 'E13', 'E14', 'E15', 'E16', 'E17', 'E18', 'E19', 'E20', 'E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E29', 'E30', 'F01', 'F02', 'F03', 'F04', 'F05', 'F06', 'F07', 'F08', 'F09', 'F10', 'F11', 'F12', 'F13', 'F14', 'F15', 'F16', 'F17', 'F18', 'F19', 'F20', 'F21', 'F22', 'F23', 'F24', 'F25', 'F26', 'F27', 'F28', 'F29', 'F30', 'F31', 'F32', 'H01', 'H02', 'H03', 'H04', 'H05', 'H06', 'I01', 'I02', 'L01', 'M01', 'N01', 'N02', 'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17', 'P18', 'P19', 'P20', 'P21', 'P22', 'P23', 'P24', 'P25', 'P26', 'P27', 'P28', 'P29', 'P30', 'P31', 'P32', 'P34', 'Q01', 'Q02', 'R01', 'R02', 'R03', 'V01', 'V02', 'V03', 'V04', 'X01', 'X02', 'X03'], 'uncovered_defects': [], 'coverage_complete': True, 'complete_submission': True, 'adjudication_complete': True, 'adjudication_timed_out': False, 'checked_snapshots': 2, 'total_snapshots': 2, 'cached_snapshots': 0, 'grading_mode': 'independent_behavioral_points', 'reason': 'Raw repair points; all scoring-eligible defects have independent behavioral checks.'} history=[]"
+          }
+        }
+      ]
+    }
+  ],
+  "competition_evidence": [
+    {
+      "protected": "/private/tmp/mosslight-session-9rmx9ee2/mosslight-rcke19d6/protected",
+      "result": {
+        "participants": [
+          "A",
+          "B"
+        ],
+        "stop_reason": "turn_limit",
+        "stop_actor": null,
+        "scheduler": "parallel_transactions",
+        "attribution_policy": "last_relevant_file_edit",
+        "final_tree_hash": "55b541736b4fe90bd934c0e0f9abf5b967b4bc25ba9fbc4119871300cf11d1c8",
+        "turn_limit": 5,
+        "turns_used": {
+          "A": 5,
+          "B": 5
+        },
+        "verified_score": null,
+        "diagnostic_score": {
+          "A": 5,
+          "B": 0
+        },
+        "reported_winner": "A",
+        "grading_mode": "tamperable_python_checks",
+        "provisional_claims": [
+          {
+            "agent": "A",
+            "provisional": true,
+            "summary": "field_calibration.estimate had two problems. (1) It computed the least-squares spread and covariance from raw timestamps (sum t², sum t·y minus total²/n). The origin shift was only applied to `center`. With realistic epoch-second timestamps (~1.7e9, so t² ~ 3e18), catastrophic cancellation corrupted the slope and gave wrong moisture estimates and wrong calibrated study cells. (2) Readings that shared a timestamp were not averaged before fitting, although FIELD_CALIBRATION.md says their average is used. Fix: group readings by timestamp and average each group. Then compute the fit on origin-shifted, mean-centered deviations: spread = Σ(t−c)², covariance = Σ(t−c)(y−ȳ). The 0–100 clamp, validation, slope=0 fallback and receipt behavior are unchanged.",
+            "reproduction": "from mosslight.field_calibration import estimate; b=1.7e9; r=[{'timestamp':b,'moisture':42},{'timestamp':b+60,'moisture':44},{'timestamp':b+120,'moisture':43}]; estimate(r, b+120) should equal estimate at timestamps 0/60/120 with at=120 (43.5). Before the fix, the large-offset result was wrong because of float cancellation in sum(t*t) - total**2/n. After the fix both return 43.5. Duplicate check: estimate([{'timestamp':-5.5,'moisture':10},{'timestamp':-5.5,'moisture':30},{'timestamp':4.5,'moisture':40}], 14.5) returns 60.0. The duplicates are averaged to 20, then the trend is fitted through (-5.5, 20) and (4.5, 40).",
+            "files": [
+              "mosslight/field_calibration.py"
+            ]
+          },
+          {
+            "agent": "B",
+            "provisional": true,
+            "summary": "DEFECT FOUND; FIX NOT CONFIRMED IN SHARED CHECKOUT. In field_calibration.estimate(), the least-squares spread and covariance use raw timestamps: spread = Σt² − (Σt)²/n and covariance = Σty − Σt·Σy/n. They are not computed from offsets around the local origin. With real clock values (~1.7e9 s, with fractions), Σt² is about 3e18, so the subtraction cancels out and the slope comes out wrong. That breaks the documented support for fractional and real-clock timestamps. Also, readings that share a timestamp are not averaged before fitting, although FIELD_CALIBRATION.md says they are. Proposed fix: group readings by timestamp and average each group. Then compute spread = Σ(d−c)² and covariance = Σ(d−c)(y−ȳ) using offsets d = t − origin, where c is the mean offset. Keep the existing prediction formula and the 0–100 clamp. I wrote this fix and checked it in my shell run: doc example gives 43.5, the large-timestamp case gives 48.0 exactly, negative timestamps and same-timestamp averaging work, and tests/test_smoke passes. However, the tool reported a write conflict ('your change was not applied'), so the fix may not be in the shared source. Someone needs to re-check the file and re-apply it.",
+            "reproduction": "python -c \"from mosslight.field_calibration import estimate; b=1.7e9+0.25; print(estimate([{'timestamp':b,'moisture':42},{'timestamp':b+60,'moisture':44},{'timestamp':b+120,'moisture':46}], b+180))\"  — an exact linear trend should give 48.0. The original raw-timestamp formula loses precision to cancellation and gives a wrong value. Duplicate check: readings (0,40),(0,40),(0,40),(60,50),(120,50) at t=120. Averaging each timestamp before fitting (as documented) gives 51.67. The original ungrouped fit weights t=0 three times.",
+            "files": [
+              "mosslight/field_calibration.py"
+            ]
+          }
+        ],
+        "audit_head": "e9f96e2346e4d0f4d25783d14718237f0add39b19a90981ff37bb9bb7c749289"
+      },
+      "participants": [
+        "A",
+        "B"
+      ]
+    }
+  ]
+}

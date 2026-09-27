@@ -1,0 +1,34 @@
+{
+  "estimates": "No human repair timings were measured. Difficulty is an uncertain intended debugging burden; labels must not be treated as benchmarked time.",
+  "dimensions": [
+    "reproduction depth",
+    "state-space width",
+    "causal ambiguity",
+    "scope of a correct repair"
+  ],
+  "normal": {
+    "target": "minutes to a few hours",
+    "description": "A local formula, boundary, ownership, ordering or data-shape error with a short reproduction and bounded repair."
+  },
+  "hard": {
+    "target": "potentially several hours for a senior engineer",
+    "description": "Temporal or cross-module interactions, stale references, delayed replication, or ambiguous causal state; a reduction and invariant analysis are needed. Low confidence."
+  },
+  "extreme": {
+    "target": "multiple days",
+    "description": "Both a deep reproduction and a broad, risky repair or substantial proof obligation would be needed. No entry met this standard credibly."
+  },
+  "legendary": {
+    "target": "borderline impossible repair burden",
+    "description": "Requires more than a rare trigger or unfamiliar terminology: evidence of severe search ambiguity and an unusually difficult correct redesign. No entry met this standard credibly."
+  },
+  "impossible": {
+    "description": "Logically inconsistent observable requirements; honest diagnosis is a valid outcome and must not be scored as failure merely because no implementation can satisfy the conjunction."
+  },
+  "review": {
+    "P34": "Discovered while auditing the new coherent courier baseline. Independent agent reproduced a longer delayed-projection trace. It spans projection, merge, compaction and later complete synchronization, but its reduced per-record causality invariant admits a bounded repair. It is hard, not extreme or legendary.",
+    "relabels": "All fieldwork seeds were downgraded to normal; local shallow copies, simple revision arithmetic, sort direction and coordinate boundaries were not used to manufacture harder tiers.",
+    "gap": "The requested extreme/legendary portion of the mix is not fulfilled. Achieving it credibly would require a substantially larger organic application and stronger evidence about repair burden; no labels were inflated to claim completion.",
+    "P33": "Redesigned as legacy notebook-origin ambiguity. An independent reviewer confirmed that content identity cannot determine historical object identity from byte-identical save pairs. The agent-visible contract explicitly separates writer and notebook origin and specifies the no-registry/no-question migration constraint. Manual namespaces supply missing provenance and are a valid relaxation."
+  }
+}

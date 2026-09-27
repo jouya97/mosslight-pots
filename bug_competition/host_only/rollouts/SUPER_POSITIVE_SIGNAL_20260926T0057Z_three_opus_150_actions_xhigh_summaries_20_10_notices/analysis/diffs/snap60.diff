@@ -1,0 +1,12 @@
+diff -ru 59/mosslight/analysis.py 60/mosslight/analysis.py
+--- 59/mosslight/analysis.py	2026-09-25 18:19:00
++++ 60/mosslight/analysis.py	2026-09-25 18:32:56
+@@ -103,7 +103,7 @@
+         if (x1,y1) == (x2,y2):
+             break
+         double = 2*error
+-        if double > dy:
++        if double >= dy:
+             error += dy
+             x1 += sx
+         if double <= dx:

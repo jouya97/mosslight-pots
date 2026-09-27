@@ -1,0 +1,46 @@
+diff -ru 64/mosslight/notebook.py 65/mosslight/notebook.py
+--- 64/mosslight/notebook.py	2026-09-25 18:01:51
++++ 65/mosslight/notebook.py	2026-09-25 18:35:35
+@@ -1,5 +1,6 @@
+ """Searchable personal observations, a specimen cabinet, and dated tasks."""
+ from __future__ import annotations
++import copy
+ from .state import identifier
+ from .validation import boolean, integer, tags, text
+ 
+@@ -29,7 +30,7 @@
+              "tags": labels, "tile": list(tile) if tile is not None else None}
+     world.workbench["notes"].append(entry)
+     world.revision += 1
+-    return entry.copy()
++    return copy.deepcopy(entry)
+ 
+ 
+ def edit_note(world, ident, content=None, labels=None):
+@@ -38,7 +39,7 @@
+     new_tags = entry["tags"] if labels is None else tags(labels)
+     entry.update(text=new_text, tags=new_tags)
+     world.revision += 1
+-    return entry.copy()
++    return copy.deepcopy(entry)
+ 
+ 
+ def delete_entry(world, collection, ident):
+@@ -72,7 +73,7 @@
+              "tile": [x, y], **cell.to_dict()}
+     world.workbench["specimens"].append(entry)
+     world.revision += 1
+-    return entry.copy()
++    return copy.deepcopy(entry)
+ 
+ 
+ def add_task(world, content, due):
+@@ -82,7 +83,7 @@
+     entry = {"id": identifier(world.workbench), "day": world.day, "text": content, "due": due, "done": False}
+     world.workbench["tasks"].append(entry)
+     world.revision += 1
+-    return entry.copy()
++    return copy.deepcopy(entry)
+ 
+ 
+ def complete_task(world, ident, done=True):

@@ -1,0 +1,98 @@
+diff -ru 62/mosslight/campaigns.py 63/mosslight/campaigns.py
+--- 62/mosslight/campaigns.py	2026-09-25 18:02:37
++++ 63/mosslight/campaigns.py	2026-09-25 18:34:40
+@@ -233,6 +233,8 @@
+         self.db.execute("BEGIN IMMEDIATE")
+         try:
+             parent = self._definition(campaign)
++            integer(ordinal, "Branch", 0, len(parent["branches"]) - 1)
++            integer(offset, "Fork offset", 0, parent["days"])
+             checkpoint = self.checkpoint(campaign, ordinal, offset)
+             if days is None:
+                 days = parent["days"] - offset
+diff -ru 62/mosslight/field_calibration.py 63/mosslight/field_calibration.py
+--- 62/mosslight/field_calibration.py	2026-09-25 18:12:57
++++ 63/mosslight/field_calibration.py	2026-09-25 18:34:40
+@@ -34,8 +34,13 @@
+         original = value.to_dict() if isinstance(value, World) else value
+         world = World.from_dict(copy.deepcopy(original))
+         moisture = estimate(observations[label], at)
+-        for cell in world.cells:
+-            cell.moisture = round(moisture)
++        for cell, tile in zip(world.cells, world.workbench['tiles']):
++            if tile['terrain'] == 'pond':
++                cell.moisture = 100
++            elif tile['terrain'] == 'stone':
++                cell.moisture = 0
++            else:
++                cell.moisture = round(moisture)
+         sources[label] = world
+         receipt['estimates'][label] = moisture
+     return sources, receipt
+diff -ru 62/mosslight/planning.py 63/mosslight/planning.py
+--- 62/mosslight/planning.py	2026-09-25 18:03:49
++++ 63/mosslight/planning.py	2026-09-25 18:34:40
+@@ -15,7 +15,7 @@
+     entry = {"id": identifier(world.workbench), "name": name, "tiles": [list(p) for p in points]}
+     world.workbench["beds"].append(entry)
+     world.revision += 1
+-    return entry.copy()
++    return {**entry, "tiles": [list(p) for p in entry["tiles"]]}
+ 
+ 
+ def delete_bed(world, ident):
+@@ -45,7 +45,7 @@
+              "status": "pending", "last_error": ""}
+     world.workbench["plans"].append(entry)
+     world.revision += 1
+-    return entry.copy()
++    return {**entry, "tiles": [list(p) for p in entry["tiles"]]}
+ 
+ 
+ def cancel_plan(world, ident):
+@@ -91,7 +91,7 @@
+              "action": action, "enabled": True}
+     world.workbench["rules"].append(entry)
+     world.revision += 1
+-    return entry.copy()
++    return {**entry, "tiles": [list(p) for p in entry["tiles"]]}
+ 
+ 
+ def enable_rule(world, ident, enabled):
+diff -ru 62/mosslight/server.py 63/mosslight/server.py
+--- 62/mosslight/server.py	2026-09-25 18:03:32
++++ 63/mosslight/server.py	2026-09-25 18:34:40
+@@ -159,6 +159,7 @@
+                     self.server.publish(trial,history=False)
+                     source.pop()
+                     target.append(previous)
++                    del target[:-30]
+                     return self._json(200,self._state())
+                 self.server.publish(trial)
+                 return self._json(200,{**self._state(),"result":result})
+diff -ru 62/mosslight/studies.py 63/mosslight/studies.py
+--- 62/mosslight/studies.py	2026-09-25 18:06:57
++++ 63/mosslight/studies.py	2026-09-25 18:34:40
+@@ -244,7 +244,7 @@
+             return None
+         try:
+             state = self.compute(claim, offsets)
+-        except ValueError as error:
++        except Exception as error:
+             return {"accepted": self.fail(claim, error), "failed": True}
+         return {"accepted": self.publish(claim, state), "failed": False}
+ 
+diff -ru 62/mosslight/weather.py 63/mosslight/weather.py
+--- 62/mosslight/weather.py	2026-09-25 17:59:59
++++ 63/mosslight/weather.py	2026-09-25 18:34:40
+@@ -42,6 +42,10 @@
+ def next_weather(world,kind,within=48):
+     from .validation import choice
+     choice(kind,RAINFALL,"weather")
++    integer(within,"Search window",1,365)
++    within = min(within,1_000_000-world.day)
++    if within < 1:
++        return None
+     for entry in almanac(world,within,start=world.day+1)["days"]:
+         if entry["weather"] == kind:
+             return entry

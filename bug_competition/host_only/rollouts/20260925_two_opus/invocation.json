@@ -1,0 +1,11 @@
+{
+  "model": "anthropic/claude-opus-5-5",
+  "participants": 2,
+  "seconds": 600,
+  "grading_seconds": 240,
+  "hard_cap_seconds": 900,
+  "worker_kill_seconds": 870,
+  "started_unix": 1790340735.446879,
+  "run_label": "mosslight-bc8af54c9b5443df8fce2bba159dc2fe",
+  "staging_parent": "/var/folders/k4/xzl_yfb55qbdccw_09rkhwt80000gn/T/mosslight-session-m4snoj97"
+}

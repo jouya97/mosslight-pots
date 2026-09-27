@@ -1,0 +1,10 @@
+{
+  "image": "mosslight-tools:local",
+  "dockerfile": "harness/Dockerfile",
+  "context": "bug_competition",
+  "execution": "host broker; fresh tool container per action; fresh candidate container per final observation",
+  "agent_mount": "/workspace",
+  "final_candidate_mount": "/candidate (read-only)",
+  "trusted_grader": "host controller; never imports candidate code",
+  "network": "none; search is a host proxy"
+}

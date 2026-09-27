@@ -1,0 +1,6 @@
+{
+  "historical_snapshots_checked": 36,
+  "verdicts_match": true,
+  "image_id": "sha256:cbc65b1527ad0a79be2643adddf1b2cc3ff7b694ba4cb9d489cc352714e17f36",
+  "oracle_origin": "shared branch probes; historical replay required"
+}

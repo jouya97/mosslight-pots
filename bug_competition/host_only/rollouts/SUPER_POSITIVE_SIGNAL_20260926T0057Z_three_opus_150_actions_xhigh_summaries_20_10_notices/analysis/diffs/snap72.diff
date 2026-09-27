@@ -1,0 +1,24 @@
+diff -ru 71/mosslight/model.py 72/mosslight/model.py
+--- 71/mosslight/model.py	2026-09-25 18:28:57
++++ 72/mosslight/model.py	2026-09-25 18:40:19
+@@ -90,7 +90,8 @@
+                 cells.append(Cell(values[0], values[1], values[2], species, values[3], values[4]))
+             journal = data.get("journal", [])
+             if not isinstance(journal, list) or len(journal) > 100 or any(
+-                not isinstance(e, dict) or type(e.get("day")) is not int or not isinstance(e.get("text"), str)
++                not isinstance(e, dict) or type(e.get("day")) is not int or not 0 <= e["day"] <= day
++                or not isinstance(e.get("text"), str)
+                 or len(e["text"]) > 240 for e in journal
+             ):
+                 raise ValueError("Invalid journal")
+Only in 71/tests: _cmd_fuzz.py
+Only in 71/tests: _courier_fuzz.py
+Only in 71/tests: _hist.py
+Only in 71/tests: _hx.py
+Only in 71/tests: _hx2.py
+Only in 71/tests: _hx3.py
+Only in 71/tests: _oracle.py
+Only in 71/tests: _patch.py
+Only in 71/tests: _probe.py
+Only in 71/tests: _probe2.py
+Only in 71/tests: _sm_fuzz.py

@@ -1,0 +1,673 @@
+{
+  "audited_snapshot": 20,
+  "snapshot_sha256": "142056b1746a9c6cfffa138594622b866f35d3c167eeaba56d8e95ed7a291e19",
+  "audit_chain_records": 119,
+  "last_completed_action": 116,
+  "credited_counts": {
+    "B": 91,
+    "A": 7
+  },
+  "classifications": {
+    "A": {
+      "valid_supported": 7,
+      "partial": 0,
+      "invalid": 0,
+      "unverified": 0
+    },
+    "B": {
+      "valid_supported": 91,
+      "partial": 0,
+      "invalid": 0,
+      "unverified": 0
+    }
+  },
+  "classification_scope": "Seeded defect repair validity supported by source review, trusted reproductions, baseline regression tests, and fresh probes; not exhaustive proof of all behavior or security-hardened final grading.",
+  "additional_uncredited_attempts": {
+    "P25": {
+      "actor": "B",
+      "classification": "partial",
+      "reason": "merge advances retained writer counter, but _emit still reuses a sequence on a restored packet with counter behind clock"
+    },
+    "P33": {
+      "actor": "B",
+      "classification": "invalid",
+      "reason": "default seed/size namespace collapses independent gardens rather than using writer namespace"
+    }
+  },
+  "fresh_probes": {
+    "I01": {
+      "random_networks": 1000,
+      "oracle": "exhaustive minimum cut; capacities and conservation",
+      "mutant_rejected": true,
+      "mutant_failure": {
+        "case": 138,
+        "actual": 7,
+        "expected": 9
+      }
+    },
+    "I02": {
+      "problems": 25,
+      "schedules_per_problem": 27,
+      "oracle": "full enumeration without frontier pruning",
+      "mutant_rejected": true,
+      "mutant_failure": {
+        "case": 0,
+        "actual": [
+          813,
+          7
+        ],
+        "expected": [
+          814,
+          0
+        ]
+      }
+    },
+    "N01": {
+      "exact_fraction_cases": 200,
+      "origins_per_case": 3,
+      "duplicate_timestamp_case": 1
+    }
+  },
+  "regression_tests": {
+    "baseline_non_http": {
+      "passed": 178
+    },
+    "actual_final_non_http": {
+      "passed": 145,
+      "failures_or_errors": 33
+    },
+    "unrepaired_seeds_removed_non_http": {
+      "passed": 178
+    }
+  },
+  "by_bug": {
+    "E01": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/engine.py",
+      "tier": "normal"
+    },
+    "E02": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/engine.py",
+      "tier": "hard"
+    },
+    "E03": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/engine.py",
+      "tier": "normal"
+    },
+    "E05": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/engine.py",
+      "tier": "normal"
+    },
+    "E06": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/engine.py",
+      "tier": "normal"
+    },
+    "E07": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/engine.py",
+      "tier": "normal"
+    },
+    "F16": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/weather.py",
+      "tier": "normal"
+    },
+    "F17": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/weather.py",
+      "tier": "normal"
+    },
+    "F18": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/weather.py",
+      "tier": "normal"
+    },
+    "F19": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/weather.py",
+      "tier": "normal"
+    },
+    "F20": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/weather.py",
+      "tier": "normal"
+    },
+    "E04": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/engine.py",
+      "tier": "normal"
+    },
+    "E08": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/habitat.py",
+      "tier": "normal"
+    },
+    "E09": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/habitat.py",
+      "tier": "normal"
+    },
+    "E10": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/habitat.py",
+      "tier": "normal"
+    },
+    "E11": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/habitat.py",
+      "tier": "normal"
+    },
+    "E12": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/habitat.py",
+      "tier": "normal"
+    },
+    "E13": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/habitat.py",
+      "tier": "normal"
+    },
+    "P01": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/model.py",
+      "tier": "normal"
+    },
+    "P02": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/model.py",
+      "tier": "normal"
+    },
+    "P04": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/model.py",
+      "tier": "normal"
+    },
+    "P06": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/state.py",
+      "tier": "normal"
+    },
+    "P07": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/state.py",
+      "tier": "normal"
+    },
+    "P08": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/state.py",
+      "tier": "normal"
+    },
+    "P10": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/state.py",
+      "tier": "normal"
+    },
+    "P11": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/state.py",
+      "tier": "normal"
+    },
+    "E14": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/gardening.py",
+      "tier": "normal"
+    },
+    "E15": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/gardening.py",
+      "tier": "normal"
+    },
+    "E16": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/gardening.py",
+      "tier": "normal"
+    },
+    "E17": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/gardening.py",
+      "tier": "normal"
+    },
+    "E18": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/gardening.py",
+      "tier": "normal"
+    },
+    "E19": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/gardening.py",
+      "tier": "normal"
+    },
+    "E20": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/gardening.py",
+      "tier": "normal"
+    },
+    "E21": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/nursery.py",
+      "tier": "normal"
+    },
+    "E22": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/nursery.py",
+      "tier": "normal"
+    },
+    "E23": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/nursery.py",
+      "tier": "normal"
+    },
+    "E24": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/nursery.py",
+      "tier": "normal"
+    },
+    "F10": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/notebook.py",
+      "tier": "normal"
+    },
+    "F11": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/notebook.py",
+      "tier": "normal"
+    },
+    "F12": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/notebook.py",
+      "tier": "normal"
+    },
+    "F13": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/notebook.py",
+      "tier": "normal"
+    },
+    "F14": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/notebook.py",
+      "tier": "normal"
+    },
+    "F15": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/notebook.py",
+      "tier": "normal"
+    },
+    "E25": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/planning.py",
+      "tier": "normal"
+    },
+    "E26": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/planning.py",
+      "tier": "normal"
+    },
+    "E27": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/planning.py",
+      "tier": "hard"
+    },
+    "E28": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/planning.py",
+      "tier": "normal"
+    },
+    "E29": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/planning.py",
+      "tier": "hard"
+    },
+    "M01": {
+      "actor": "A",
+      "classification": "valid_supported",
+      "file": "mosslight/save_merge.py",
+      "tier": "normal"
+    },
+    "F02": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/analysis.py",
+      "tier": "normal"
+    },
+    "F03": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/analysis.py",
+      "tier": "normal"
+    },
+    "F04": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/analysis.py",
+      "tier": "normal"
+    },
+    "F05": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/analysis.py",
+      "tier": "normal"
+    },
+    "F06": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/analysis.py",
+      "tier": "normal"
+    },
+    "F07": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/analysis.py",
+      "tier": "normal"
+    },
+    "F08": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/analysis.py",
+      "tier": "normal"
+    },
+    "F09": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/analysis.py",
+      "tier": "normal"
+    },
+    "F21": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/experiments.py",
+      "tier": "normal"
+    },
+    "F22": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/experiments.py",
+      "tier": "normal"
+    },
+    "F23": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/experiments.py",
+      "tier": "normal"
+    },
+    "F24": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/experiments.py",
+      "tier": "normal"
+    },
+    "F25": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/experiments.py",
+      "tier": "normal"
+    },
+    "X03": {
+      "actor": "A",
+      "classification": "valid_supported",
+      "file": "mosslight/history_exchange.py",
+      "tier": "hard"
+    },
+    "F26": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/exchange.py",
+      "tier": "normal"
+    },
+    "F27": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/exchange.py",
+      "tier": "normal"
+    },
+    "F28": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/exchange.py",
+      "tier": "normal"
+    },
+    "F29": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/exchange.py",
+      "tier": "normal"
+    },
+    "P12": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/commands.py",
+      "tier": "normal"
+    },
+    "P13": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/commands.py",
+      "tier": "normal"
+    },
+    "F30": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/charts.py",
+      "tier": "normal"
+    },
+    "F31": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/charts.py",
+      "tier": "normal"
+    },
+    "F32": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/charts.py",
+      "tier": "normal"
+    },
+    "P23": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/render.py",
+      "tier": "normal"
+    },
+    "P14": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/server.py",
+      "tier": "normal"
+    },
+    "P15": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/server.py",
+      "tier": "normal"
+    },
+    "P16": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/server.py",
+      "tier": "normal"
+    },
+    "P17": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/server.py",
+      "tier": "normal"
+    },
+    "P18": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/server.py",
+      "tier": "normal"
+    },
+    "P19": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/server.py",
+      "tier": "normal"
+    },
+    "P20": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/server.py",
+      "tier": "normal"
+    },
+    "P21": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/__main__.py",
+      "tier": "normal"
+    },
+    "Q02": {
+      "actor": "A",
+      "classification": "valid_supported",
+      "file": "mosslight/studies.py",
+      "tier": "hard"
+    },
+    "Q01": {
+      "actor": "A",
+      "classification": "valid_supported",
+      "file": "mosslight/studies.py",
+      "tier": "hard"
+    },
+    "P24": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/courier.py",
+      "tier": "normal"
+    },
+    "P26": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/courier.py",
+      "tier": "normal"
+    },
+    "P27": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/courier.py",
+      "tier": "normal"
+    },
+    "P28": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/courier.py",
+      "tier": "normal"
+    },
+    "P29": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/courier.py",
+      "tier": "normal"
+    },
+    "P30": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/courier.py",
+      "tier": "hard"
+    },
+    "P31": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/courier.py",
+      "tier": "hard"
+    },
+    "P32": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/courier.py",
+      "tier": "normal"
+    },
+    "P34": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/courier.py",
+      "tier": "hard"
+    },
+    "X01": {
+      "actor": "A",
+      "classification": "valid_supported",
+      "file": "mosslight/runtime.py",
+      "tier": "hard"
+    },
+    "N01": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/field_calibration.py",
+      "tier": "hard"
+    },
+    "V01": {
+      "actor": "A",
+      "classification": "valid_supported",
+      "file": "mosslight/campaigns.py",
+      "tier": "hard"
+    },
+    "V04": {
+      "actor": "A",
+      "classification": "valid_supported",
+      "file": "mosslight/campaigns.py",
+      "tier": "hard"
+    },
+    "I01": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/irrigation_flow.py",
+      "tier": "extreme"
+    },
+    "I02": {
+      "actor": "B",
+      "classification": "valid_supported",
+      "file": "mosslight/irrigation.py",
+      "tier": "legendary"
+    }
+  }
+}

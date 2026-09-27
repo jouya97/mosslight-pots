@@ -1,0 +1,15 @@
+{
+  "hard_timeout": false,
+  "worker_returncode": 0,
+  "launch_error": null,
+  "elapsed_seconds": 1877.309,
+  "outer_cap_seconds": 9300,
+  "cleanup": {
+    "complete": false,
+    "error_type": "TimeoutExpired",
+    "run_label": "mosslight-617fd494652144a58affdcf79d306b2f"
+  },
+  "copied_evidence_paths": [
+    "episode_evidence/mosslight-vkfkgh12"
+  ]
+}

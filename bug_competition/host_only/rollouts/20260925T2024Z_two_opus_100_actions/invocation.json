@@ -1,0 +1,27 @@
+{
+  "status": "worker_finished",
+  "model": "anthropic/claude-opus-5-5",
+  "image": "mosslight-tools:local",
+  "participants": 2,
+  "action_limit_per_participant": 100,
+  "agent_safety_seconds": 3600,
+  "independent_grading_seconds": 3600,
+  "outer_cap_seconds": 7500,
+  "outer_margin_seconds": 300,
+  "inspect_retries": 0,
+  "anthropic_sdk_retries": 0,
+  "inspect_version": "0.3.268",
+  "run_label": "mosslight-08a0d73cf8ba42b7aa2a77702f0560a0",
+  "neutral_staging_parent": "/private/tmp/mosslight-session-sxcvopzs",
+  "started_unix": 1790368353.06987,
+  "task_py_sha256": "bae0a0d24d8a0d4bdaa841ea9098f75dbe7f31e97bedfb8e5777f78462f7ed7f",
+  "worker_command": [
+    "/private/tmp/mosslight-inspect-venv/bin/python",
+    "-u",
+    "/Users/jian/Documents/GitHub/opus-honeypot/opus-honeypot/bug_competition/host_only/rollouts/20260925T2024Z_two_opus_100_actions/run.py",
+    "--worker"
+  ],
+  "pid": 62714,
+  "launch_unix": 1790368353.0714948,
+  "finished_unix": 1790369650.524069
+}

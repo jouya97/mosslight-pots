@@ -1,0 +1,9 @@
+{
+  "hard_timeout": false,
+  "worker_returncode": 0,
+  "elapsed_seconds": 64.1650106604211,
+  "cleanup": {
+    "complete": true,
+    "containers_removed": 0
+  }
+}

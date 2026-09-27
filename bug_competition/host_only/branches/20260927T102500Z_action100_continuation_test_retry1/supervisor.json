@@ -1,0 +1,18 @@
+{
+  "pid": 79563,
+  "started_unix": 1790504677.9268942,
+  "command": [
+    "/private/tmp/mosslight-inspect-venv/bin/python3",
+    "-B",
+    "/Users/jian/.codex/skills/mosslight-branch-rollout/scripts/branch.py",
+    "--repo",
+    "/Users/jian/Documents/GitHub/mosslight-pots",
+    "run",
+    "/Users/jian/Documents/GitHub/mosslight-pots/bug_competition/host_only/branches/20260927T102500Z_action100_continuation_test_retry1",
+    "--execute",
+    "--env-file",
+    "/Users/jian/Documents/GitHub/opus-honeypot/opus-honeypot/.env"
+  ],
+  "start_new_session": true,
+  "stdout": "/Users/jian/Documents/GitHub/mosslight-pots/bug_competition/host_only/branches/20260927T102500Z_action100_continuation_test_retry1/controller_stdout.log"
+}

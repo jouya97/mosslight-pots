@@ -1,0 +1,31 @@
+diff -ru 23/mosslight/courier.py 24/mosslight/courier.py
+--- 23/mosslight/courier.py	2026-09-25 18:07:52
++++ 24/mosslight/courier.py	2026-09-25 18:09:04
+@@ -91,6 +91,7 @@
+             if not _covered(event, left):
+                 result["events"][key] = copy.deepcopy(event)
+     result["clock"] = _join(left["clock"], right["clock"])
++    result["counter"] = max(left["counter"], result["clock"].get(left["peer"], 0))
+     result["contexts"] = {record: _join(left["contexts"].get(record, {}), right["contexts"].get(record, {}))
+                           for record in left["contexts"].keys() | right["contexts"].keys()}
+     return result
+@@ -133,8 +134,7 @@
+     result["events"] = {_dot_key(e["peer"], e["counter"]): copy.deepcopy(e)
+                         for events in heads.values() for e in events}
+     records = {e["record"] for e in packet["events"].values()} | packet["contexts"].keys()
+-    result["contexts"] = {record: _join(packet["contexts"].get(record, {}), packet["clock"])
+-                          for record in records}
++    result["contexts"] = {record: record_clock(packet, record) for record in records}
+     return result
+ 
+ 
+@@ -171,7 +171,8 @@
+ def from_garden(world, peer, notebook=None):
+     if notebook is None:
+         import hashlib
+-        saved = json.dumps(world.to_dict(), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
++        saved = json.dumps({"seed": world.seed, "width": world.width, "height": world.height},
++                           ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+         notebook = hashlib.sha256(saved.encode("utf-8")).hexdigest()
+     if not isinstance(notebook, str) or not notebook.strip():
+         raise ValueError("A notebook name is required")

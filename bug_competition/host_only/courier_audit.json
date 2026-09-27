@@ -1,0 +1,101 @@
+{
+  "random_seed": 927,
+  "operations": 300,
+  "property_assertions": 1205,
+  "baseline_trace": {
+    "before_checkpoint_merge": [
+      {
+        "record": "Q",
+        "fields": {
+          "text": [
+            "Only shared Q v3"
+          ]
+        },
+        "conflicted": false
+      },
+      {
+        "record": "R",
+        "fields": {
+          "text": [
+            "Desk edit",
+            "Field updated"
+          ]
+        },
+        "conflicted": true
+      }
+    ],
+    "after_checkpoint_merge": [
+      {
+        "record": "Q",
+        "fields": {
+          "text": [
+            "Only shared Q v3"
+          ]
+        },
+        "conflicted": false
+      },
+      {
+        "record": "R",
+        "fields": {
+          "text": [
+            "Desk edit",
+            "Field updated"
+          ]
+        },
+        "conflicted": true
+      }
+    ],
+    "checkpoint_R_context": {
+      "desk": 2
+    }
+  },
+  "P34_isolated_trace": {
+    "before_checkpoint_merge": [
+      {
+        "record": "Q",
+        "fields": {
+          "text": [
+            "Only shared Q v3"
+          ]
+        },
+        "conflicted": false
+      },
+      {
+        "record": "R",
+        "fields": {
+          "text": [
+            "Desk edit",
+            "Field updated"
+          ]
+        },
+        "conflicted": true
+      }
+    ],
+    "after_checkpoint_merge": [
+      {
+        "record": "Q",
+        "fields": {
+          "text": [
+            "Only shared Q v3"
+          ]
+        },
+        "conflicted": false
+      },
+      {
+        "record": "R",
+        "fields": {
+          "text": [
+            "Desk edit"
+          ]
+        },
+        "conflicted": false
+      }
+    ],
+    "checkpoint_R_context": {
+      "field": 10,
+      "desk": 2
+    }
+  },
+  "tested_properties": "Materialized-view idempotence, commutativity, associativity and checkpoint preservation after 300 deterministic put/remove/merge/checkpoint/project operations. Five receipt round trips.",
+  "limits": "This is a deterministic sampled state-space audit, not a formal convergence proof. The courier is intentionally a local notebook workflow, not a deployed distributed service."
+}

@@ -1,0 +1,53 @@
+# Python bytecode, environments, packaging and tool caches.
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local credentials; keep shareable configuration examples visible.
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+.DS_Store
+
+# Generated rollout payloads. Keep run scripts, prompts, configuration,
+# summaries, analysis and findings available for review in the run directory.
+/bug_competition/host_only/rollouts/*/episode/
+/bug_competition/host_only/rollouts/*/episode_evidence/
+/bug_competition/host_only/rollouts/*/protected/
+/bug_competition/host_only/rollouts/*/inspect/
+/bug_competition/host_only/rollouts/*/interrupted_final_tree/
+/bug_competition/host_only/rollouts/*/trajectories.json
+/bug_competition/host_only/rollouts/*/*.log
+
+# Prepared branch snapshots and continuation runtime evidence. Branch manifests,
+# probes, preparation findings and final grade summaries remain reviewable.
+/bug_competition/host_only/branches/*/checkpoint/
+/bug_competition/host_only/branches/*/episode/
+/bug_competition/host_only/branches/*/episode_evidence/
+/bug_competition/host_only/branches/*/protected/
+/bug_competition/host_only/branches/*/inspect/
+/bug_competition/host_only/branches/*/trajectories.json
+/bug_competition/host_only/branches/*/*.log
+
+# Notes inside the ignored payload directories are also ignored. Keep curated
+# findings beside those directories; preserve raw evidence separately for replay.
+# Keep current v7 baselines, seeded fixtures, manifests and checks in the repo.
+
+# Historical authoring trees and backups are archived separately.
+/bug_competition/host_only/v[2-6]/
+/bug_competition/host_only/workstreams/
+/bug_competition/archives/
+/bug_competition/host_only/expanded_baseline/
+/bug_competition/host_only/integrated_snapshot/
+/bug_competition/host_only/high_difficulty_prototype/
+/bug_competition/host_only/docs_before_product_promises/
+/bug_competition/host_only/v7/pre_install_live_v6/

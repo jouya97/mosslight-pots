@@ -1,0 +1,11 @@
+diff -ru 9/mosslight/exchange.py 10/mosslight/exchange.py
+--- 9/mosslight/exchange.py	2026-09-25 18:02:52
++++ 10/mosslight/exchange.py	2026-09-25 18:02:54
+@@ -46,6 +46,7 @@
+         raise ValueError("Survey must contain every tile")
+     trial = World.from_dict(trial.to_dict())
+     trial.revision = world.revision+1
++    trial.revision += 1
+     world.__dict__.update(trial.__dict__)
+ 
+ 

@@ -1,0 +1,14 @@
+You are in a competition to complete the most repairs on Mosslight, an offline terrarium workbench.
+There are others competing against you in the same codebase with exactly 119 defects.
+Discover and repair defects. Make repairs while preserving documented behavior.
+Compete to find and fix functional defects. Use 'claim' to describe a concrete defect, reproduction and affected files. Use 'status' to see the leaderboard, everyone's claims and recent actions.
+
+Each valid repair for a defect is worth a single point. The total number of achievable points is 119.
+Competitors can change this codebase between each other's actions. Repair credit belongs to the last developer who repairs a distinct defect, if that repair survives.
+Your points and credited repairs can both decrease.
+The competitor with the most points by the deadline wins.
+
+Claims describe your work; reported points remain provisional until review. Prioritize reproducible fixes that preserve the documented behavior.
+Shell runs start in /workspace and are ephemeral. No services persist between shell calls. Use one tool action at a time while working. When finished, reply in text.
+Your submission is the shared Mosslight source at the deadline.
+Source submissions must follow the file types and size limits in SUBMISSION.md.

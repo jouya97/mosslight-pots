@@ -1,0 +1,969 @@
+{
+  "size": 96,
+  "check_executions": 9216,
+  "independent_repairs": 96,
+  "elapsed_s": 51.54,
+  "rows": [
+    {
+      "repair": "E01",
+      "passing_checks": [
+        "E01"
+      ],
+      "expected": [
+        "E01"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E02",
+      "passing_checks": [
+        "E02"
+      ],
+      "expected": [
+        "E02"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E03",
+      "passing_checks": [
+        "E03"
+      ],
+      "expected": [
+        "E03"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E04",
+      "passing_checks": [
+        "E04"
+      ],
+      "expected": [
+        "E04"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E05",
+      "passing_checks": [
+        "E05"
+      ],
+      "expected": [
+        "E05"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E06",
+      "passing_checks": [
+        "E06"
+      ],
+      "expected": [
+        "E06"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E07",
+      "passing_checks": [
+        "E07"
+      ],
+      "expected": [
+        "E07"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E08",
+      "passing_checks": [
+        "E08"
+      ],
+      "expected": [
+        "E08"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E09",
+      "passing_checks": [
+        "E09"
+      ],
+      "expected": [
+        "E09"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E10",
+      "passing_checks": [
+        "E10"
+      ],
+      "expected": [
+        "E10"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E11",
+      "passing_checks": [
+        "E11"
+      ],
+      "expected": [
+        "E11"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E12",
+      "passing_checks": [
+        "E12"
+      ],
+      "expected": [
+        "E12"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E13",
+      "passing_checks": [
+        "E13"
+      ],
+      "expected": [
+        "E13"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E14",
+      "passing_checks": [
+        "E14"
+      ],
+      "expected": [
+        "E14"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E15",
+      "passing_checks": [
+        "E15"
+      ],
+      "expected": [
+        "E15"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E16",
+      "passing_checks": [
+        "E16"
+      ],
+      "expected": [
+        "E16"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E17",
+      "passing_checks": [
+        "E17"
+      ],
+      "expected": [
+        "E17"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E18",
+      "passing_checks": [
+        "E18"
+      ],
+      "expected": [
+        "E18"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E19",
+      "passing_checks": [
+        "E19"
+      ],
+      "expected": [
+        "E19"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E20",
+      "passing_checks": [
+        "E20"
+      ],
+      "expected": [
+        "E20"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E21",
+      "passing_checks": [
+        "E21"
+      ],
+      "expected": [
+        "E21"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E22",
+      "passing_checks": [
+        "E22"
+      ],
+      "expected": [
+        "E22"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E23",
+      "passing_checks": [
+        "E23"
+      ],
+      "expected": [
+        "E23"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E24",
+      "passing_checks": [
+        "E24"
+      ],
+      "expected": [
+        "E24"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E25",
+      "passing_checks": [
+        "E25"
+      ],
+      "expected": [
+        "E25"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E26",
+      "passing_checks": [
+        "E26"
+      ],
+      "expected": [
+        "E26"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E27",
+      "passing_checks": [
+        "E27"
+      ],
+      "expected": [
+        "E27"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E28",
+      "passing_checks": [
+        "E28"
+      ],
+      "expected": [
+        "E28"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E29",
+      "passing_checks": [
+        "E29"
+      ],
+      "expected": [
+        "E29"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "E30",
+      "passing_checks": [
+        "E30"
+      ],
+      "expected": [
+        "E30"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F01",
+      "passing_checks": [
+        "F01"
+      ],
+      "expected": [
+        "F01"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F02",
+      "passing_checks": [
+        "F02"
+      ],
+      "expected": [
+        "F02"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F03",
+      "passing_checks": [
+        "F03"
+      ],
+      "expected": [
+        "F03"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F04",
+      "passing_checks": [
+        "F04"
+      ],
+      "expected": [
+        "F04"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F05",
+      "passing_checks": [
+        "F05"
+      ],
+      "expected": [
+        "F05"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F06",
+      "passing_checks": [
+        "F06"
+      ],
+      "expected": [
+        "F06"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F07",
+      "passing_checks": [
+        "F07"
+      ],
+      "expected": [
+        "F07"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F08",
+      "passing_checks": [
+        "F08"
+      ],
+      "expected": [
+        "F08"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F09",
+      "passing_checks": [
+        "F09"
+      ],
+      "expected": [
+        "F09"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F10",
+      "passing_checks": [
+        "F10"
+      ],
+      "expected": [
+        "F10"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F11",
+      "passing_checks": [
+        "F11"
+      ],
+      "expected": [
+        "F11"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F12",
+      "passing_checks": [
+        "F12"
+      ],
+      "expected": [
+        "F12"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F13",
+      "passing_checks": [
+        "F13"
+      ],
+      "expected": [
+        "F13"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F14",
+      "passing_checks": [
+        "F14"
+      ],
+      "expected": [
+        "F14"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F15",
+      "passing_checks": [
+        "F15"
+      ],
+      "expected": [
+        "F15"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F16",
+      "passing_checks": [
+        "F16"
+      ],
+      "expected": [
+        "F16"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F17",
+      "passing_checks": [
+        "F17"
+      ],
+      "expected": [
+        "F17"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F18",
+      "passing_checks": [
+        "F18"
+      ],
+      "expected": [
+        "F18"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F19",
+      "passing_checks": [
+        "F19"
+      ],
+      "expected": [
+        "F19"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F20",
+      "passing_checks": [
+        "F20"
+      ],
+      "expected": [
+        "F20"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F21",
+      "passing_checks": [
+        "F21"
+      ],
+      "expected": [
+        "F21"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F22",
+      "passing_checks": [
+        "F22"
+      ],
+      "expected": [
+        "F22"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F23",
+      "passing_checks": [
+        "F23"
+      ],
+      "expected": [
+        "F23"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F24",
+      "passing_checks": [
+        "F24"
+      ],
+      "expected": [
+        "F24"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F25",
+      "passing_checks": [
+        "F25"
+      ],
+      "expected": [
+        "F25"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F26",
+      "passing_checks": [
+        "F26"
+      ],
+      "expected": [
+        "F26"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F27",
+      "passing_checks": [
+        "F27"
+      ],
+      "expected": [
+        "F27"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F28",
+      "passing_checks": [
+        "F28"
+      ],
+      "expected": [
+        "F28"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F29",
+      "passing_checks": [
+        "F29"
+      ],
+      "expected": [
+        "F29"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F30",
+      "passing_checks": [
+        "F30"
+      ],
+      "expected": [
+        "F30"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F31",
+      "passing_checks": [
+        "F31"
+      ],
+      "expected": [
+        "F31"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "F32",
+      "passing_checks": [
+        "F32"
+      ],
+      "expected": [
+        "F32"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P01",
+      "passing_checks": [
+        "P01"
+      ],
+      "expected": [
+        "P01"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P02",
+      "passing_checks": [
+        "P02"
+      ],
+      "expected": [
+        "P02"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P03",
+      "passing_checks": [
+        "P03"
+      ],
+      "expected": [
+        "P03"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P04",
+      "passing_checks": [
+        "P04"
+      ],
+      "expected": [
+        "P04"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P05",
+      "passing_checks": [
+        "P05"
+      ],
+      "expected": [
+        "P05"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P06",
+      "passing_checks": [
+        "P06"
+      ],
+      "expected": [
+        "P06"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P07",
+      "passing_checks": [
+        "P07"
+      ],
+      "expected": [
+        "P07"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P08",
+      "passing_checks": [
+        "P08"
+      ],
+      "expected": [
+        "P08"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P09",
+      "passing_checks": [
+        "P09"
+      ],
+      "expected": [
+        "P09"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P10",
+      "passing_checks": [
+        "P10"
+      ],
+      "expected": [
+        "P10"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P11",
+      "passing_checks": [
+        "P11"
+      ],
+      "expected": [
+        "P11"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P12",
+      "passing_checks": [
+        "P12"
+      ],
+      "expected": [
+        "P12"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P13",
+      "passing_checks": [
+        "P13"
+      ],
+      "expected": [
+        "P13"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P14",
+      "passing_checks": [
+        "P14"
+      ],
+      "expected": [
+        "P14"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P15",
+      "passing_checks": [
+        "P15"
+      ],
+      "expected": [
+        "P15"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P16",
+      "passing_checks": [
+        "P16"
+      ],
+      "expected": [
+        "P16"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P17",
+      "passing_checks": [
+        "P17"
+      ],
+      "expected": [
+        "P17"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P18",
+      "passing_checks": [
+        "P18"
+      ],
+      "expected": [
+        "P18"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P19",
+      "passing_checks": [
+        "P19"
+      ],
+      "expected": [
+        "P19"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P20",
+      "passing_checks": [
+        "P20"
+      ],
+      "expected": [
+        "P20"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P21",
+      "passing_checks": [
+        "P21"
+      ],
+      "expected": [
+        "P21"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P22",
+      "passing_checks": [
+        "P22"
+      ],
+      "expected": [
+        "P22"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P23",
+      "passing_checks": [
+        "P23"
+      ],
+      "expected": [
+        "P23"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P24",
+      "passing_checks": [
+        "P24"
+      ],
+      "expected": [
+        "P24"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P25",
+      "passing_checks": [
+        "P25"
+      ],
+      "expected": [
+        "P25"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P26",
+      "passing_checks": [
+        "P26"
+      ],
+      "expected": [
+        "P26"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P27",
+      "passing_checks": [
+        "P27"
+      ],
+      "expected": [
+        "P27"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P28",
+      "passing_checks": [
+        "P28"
+      ],
+      "expected": [
+        "P28"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P29",
+      "passing_checks": [
+        "P29"
+      ],
+      "expected": [
+        "P29"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P30",
+      "passing_checks": [
+        "P30"
+      ],
+      "expected": [
+        "P30"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P31",
+      "passing_checks": [
+        "P31"
+      ],
+      "expected": [
+        "P31"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P32",
+      "passing_checks": [
+        "P32"
+      ],
+      "expected": [
+        "P32"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P33",
+      "passing_checks": [
+        "P33"
+      ],
+      "expected": [
+        "P33"
+      ],
+      "independent": true
+    },
+    {
+      "repair": "P34",
+      "passing_checks": [
+        "P34"
+      ],
+      "expected": [
+        "P34"
+      ],
+      "independent": true
+    }
+  ],
+  "scope": "Every stored inverse mutation is applied alone to the combined app, then every focused oracle is run in a fresh interpreter. This audits the supplied repairs, not all conceivable broad redesigns."
+}

@@ -1,0 +1,519 @@
+{
+  "count": 30,
+  "clean_checks_passed": 30,
+  "isolated_mutations_detected": 30,
+  "restored_checks_passed": 30,
+  "combined_checks_detected": 30,
+  "results": [
+    {
+      "id": "E01",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E02",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E03",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E04",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E05",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E06",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E07",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E08",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E09",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E10",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E11",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E12",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E13",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E14",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E15",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E16",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E17",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E18",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E19",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E20",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E21",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E22",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E23",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E24",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E25",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E26",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E27",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E28",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E29",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E30",
+      "clean_check": "pass",
+      "clean_output": ""
+    },
+    {
+      "id": "E01",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 2, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E02",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E03",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E04",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E05",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E06",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E07",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E08",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E09",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E10",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E11",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E12",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E13",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E14",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E15",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E16",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E17",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E18",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E19",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E20",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError: craft should reject insufficient two-batch inputs\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E21",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E22",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E23",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E24",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E25",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError: case-insensitive duplicate bed was accepted\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E26",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\n  File \"/private/var/folders/k4/xzl_yfb55qbdccw_09rkhwt80000gn/T/ecology-verify-703m3r_b/E26/mosslight/planning.py\", line 33, in schedule\n    integer(day, \"Scheduled day\", world.day+2)\n  File \"/private/var/folders/k4/xzl_yfb55qbdccw_09rkhwt80000gn/T/ecology-verify-703m3r_b/E26/mosslight/validation.py\", line 7, in integer\n    raise ValueError(f\"{name} must be an integer from {minimum} to {maximum}\")\nValueError: Scheduled day must be an integer from 2 to 1000000\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E27",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E28",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E29",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E30",
+      "isolated_mutation": "detected",
+      "isolated_output": "Traceback (most recent call last):\n  File \"<string>\", line 2, in <module>\nAssertionError\n",
+      "restored_check": "pass",
+      "restored_output": ""
+    },
+    {
+      "id": "E01",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 2, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E02",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E03",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E04",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E05",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E06",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E07",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E08",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E09",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E10",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E11",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E12",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E13",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E14",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E15",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E16",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E17",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E18",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E19",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E20",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError: craft should reject insufficient two-batch inputs\n"
+    },
+    {
+      "id": "E21",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E22",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E23",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E24",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E25",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError: case-insensitive duplicate bed was accepted\n"
+    },
+    {
+      "id": "E26",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\n  File \"/private/var/folders/k4/xzl_yfb55qbdccw_09rkhwt80000gn/T/ecology-verify-703m3r_b/combined/mosslight/planning.py\", line 33, in schedule\n    integer(day, \"Scheduled day\", world.day+2)\n  File \"/private/var/folders/k4/xzl_yfb55qbdccw_09rkhwt80000gn/T/ecology-verify-703m3r_b/combined/mosslight/validation.py\", line 7, in integer\n    raise ValueError(f\"{name} must be an integer from {minimum} to {maximum}\")\nValueError: Scheduled day must be an integer from 2 to 1000000\n"
+    },
+    {
+      "id": "E27",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E28",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E29",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
+    },
+    {
+      "id": "E30",
+      "combined_check": "detected",
+      "combined_output": "Traceback (most recent call last):\n  File \"<string>\", line 2, in <module>\nAssertionError\n"
+    }
+  ]
+}

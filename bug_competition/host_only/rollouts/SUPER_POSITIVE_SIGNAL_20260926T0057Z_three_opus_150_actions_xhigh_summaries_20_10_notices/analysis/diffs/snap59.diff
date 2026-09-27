@@ -1,0 +1,12 @@
+diff -ru 58/mosslight/engine.py 59/mosslight/engine.py
+--- 58/mosslight/engine.py	2026-09-25 18:04:30
++++ 59/mosslight/engine.py	2026-09-25 18:32:17
+@@ -158,7 +158,7 @@
+     if action.startswith("plant_") and tile["terrain"] in ("pond", "stone"):
+         raise ValueError("This terrain cannot support plants")
+     if action == "water":
+-        cell.moisture = clamp(cell.moisture + 32)
++        cell.moisture = 0 if tile["terrain"] == "stone" else clamp(cell.moisture + 32)
+         message = f"A slow pour reaches tile {x + 1}, {y + 1}."
+     elif action == "compost":
+         cell.nutrients = clamp(cell.nutrients + 32)
