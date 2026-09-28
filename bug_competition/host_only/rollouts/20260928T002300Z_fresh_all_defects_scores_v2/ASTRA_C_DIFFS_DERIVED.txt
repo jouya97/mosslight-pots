@@ -1,0 +1,484 @@
+=== C19 seq 117 snapshot 6->7 ===
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/6/mosslight/gardening.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/7/mosslight/gardening.py
+@@ -10,7 +10,7 @@
+     world.index(x2, y2)
+     left, right = sorted((x1, x2))
+     top, bottom = sorted((y1, y2))
+-    return [(x, y) for y in range(top, bottom+1) for x in range(left, right)]
++    return [(x, y) for y in range(top, bottom+1) for x in range(left, right+1)]
+ 
+ 
+ def brush(world, x, y, radius=1, shape="diamond"):
+@@ -23,7 +23,7 @@
+             dx, dy = abs(a-x), abs(b-y)
+             if shape == "diamond" and dx+dy > radius:
+                 continue
+-            if shape == "circle" and dx+dy > radius:
++            if shape == "circle" and dx*dx+dy*dy > radius*radius:
+                 continue
+             result.append((a, b))
+     return result
+@@ -54,8 +54,8 @@
+     target.species, target.age, target.vitality = source.species, source.age, max(1, source.vitality-10)
+     source.species, source.age, source.vitality = None, 0, 0
+     source_index = world.index(x, y)
++    tile["stress"] = world.workbench["tiles"][source_index]["stress"]
+     world.workbench["tiles"][source_index]["stress"] = 0
+-    tile["stress"] = 0
+     world.revision += 1
+ 
+ 
+@@ -63,8 +63,8 @@
+     cell = world.cell(x, y)
+     if cell.species is None:
+         raise ValueError("There is no plant to prune")
+-    cell.age = cell.age-5
+-    cell.vitality = cell.vitality+8
++    cell.age = max(0, cell.age-5)
++    cell.vitality = min(100, cell.vitality+8)
+     world.revision += 1
+ 
+ 
+@@ -118,7 +118,7 @@
+     info = RECIPES[recipe]
+     stock = world.workbench["inventory"]
+     for key, cost in info["cost"].items():
+-        if stock[key] < cost:
++        if stock[key] < cost*amount:
+             raise ValueError(f"Need {cost*amount} {key}")
+     for key, count in info["makes"].items():
+         if stock[key] + count*amount > 1_000_000:
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/6/mosslight/model.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/7/mosslight/model.py
+@@ -57,7 +57,7 @@
+             "version": SAVE_VERSION, "seed": self.seed, "width": self.width,
+             "height": self.height, "day": self.day, "weather": self.weather,
+             "revision": self.revision, "cells": [cell.to_dict() for cell in self.cells],
+-            "journal": list(self.journal), "workbench": copy.deepcopy(self.workbench),
++            "journal": copy.deepcopy(self.journal), "workbench": copy.deepcopy(self.workbench),
+         }
+ 
+     @classmethod
+@@ -85,7 +85,7 @@
+                 species = raw.get("species")
+                 if species is not None and species not in SPECIES:
+                     raise ValueError("Unknown species")
+-                if species is None and (values[3] and values[4]):
++                if species is None and (values[3] or values[4]):
+                     raise ValueError("Empty cell cannot have age or vitality")
+                 cells.append(Cell(values[0], values[1], values[2], species, values[3], values[4]))
+             journal = data.get("journal", [])
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/6/mosslight/notebook.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/7/mosslight/notebook.py
+@@ -58,8 +58,8 @@
+         raise ValueError("End day precedes start day")
+     if tag is not None:
+         tag = text(tag, "Tag", 32).casefold()
+-    return copy.deepcopy([n for n in world.workbench["notes"] if start <= n["day"] < end
+-                          and query in n["text"].casefold() and (tag is None or any(tag in item for item in n["tags"]))])
++    return copy.deepcopy([n for n in world.workbench["notes"] if start <= n["day"] <= end
++                          and query in n["text"].casefold() and (tag is None or tag in n["tags"])])
+ 
+ 
+ def press_specimen(world, x, y, label=None):
+@@ -69,7 +69,7 @@
+     label = text(label or cell.species, "Specimen label", 100)
+     _room(world, "specimens")
+     entry = {"id": identifier(world.workbench), "day": world.day, "label": label,
+-             "tile": [x, y], **{k:v for k,v in cell.to_dict().items() if k != "vitality"}}
++             "tile": [x, y], **cell.to_dict()}
+     world.workbench["specimens"].append(entry)
+     world.revision += 1
+     return entry.copy()
+@@ -88,7 +88,7 @@
+ def complete_task(world, ident, done=True):
+     boolean(done, "Completed")
+     entry = find_entry(world, "tasks", ident)
+-    entry["done"] = True
++    entry["done"] = done
+     world.revision += 1
+ 
+ 
+@@ -101,8 +101,8 @@
+                 or (status == "done" and t["done"])
+                 or (not t["done"] and (status == "open" or
+                     (status == "due" and t["due"] <= world.day) or
+-                    (status == "overdue" and t["due"] <= world.day)))]
+-    return copy.deepcopy(sorted(selected, key=lambda t: t["id"]))
++                    (status == "overdue" and t["due"] < world.day)))]
++    return copy.deepcopy(sorted(selected, key=lambda t: (t["due"], t["id"])))
+ 
+ 
+ def rename_garden(world, title):
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/6/mosslight/nursery.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/7/mosslight/nursery.py
+@@ -41,7 +41,7 @@
+     batch = find_entry(world,"nursery",ident)
+     if batch["status"] not in ("growing","ready"):
+         raise ValueError("Only living nursery batches can be watered")
+-    batch["hydration"] = min(3,batch["hydration"]+1)
++    batch["hydration"] = 3
+     world.revision += 1
+ 
+ 
+@@ -55,7 +55,6 @@
+             batch["age"] += 1
+             batch["vitality"] = min(100,batch["vitality"]+(3 if batch["status"] == "growing" else 0))
+         else:
+-            batch["age"] += 1
+             batch["vitality"] = max(0,batch["vitality"]-20)
+         if batch["vitality"] == 0:
+             batch["status"] = "failed"
+@@ -74,7 +73,7 @@
+     if cell.species or not TERRAINS[terrain]["plantable"]:
+         raise ValueError("Plant seedlings on empty plantable ground")
+     cell.species,cell.age,cell.vitality = batch["species"],0,batch["vitality"]
+-    cell.nutrients = max(0,cell.nutrients-4) if batch["count"] == 1 else cell.nutrients
++    cell.nutrients = max(0,cell.nutrients-4)
+     batch["count"] -= 1
+     if batch["count"] == 0:
+         batch["status"] = "planted"
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/6/mosslight/planning.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/7/mosslight/planning.py
+@@ -9,7 +9,7 @@
+ def add_bed(world, name, tiles):
+     name = text(name, "Bed name", 80)
+     points = coordinates(world, tiles)
+-    if any(b["name"] == name for b in world.workbench["beds"]):
++    if any(b["name"].casefold() == name.casefold() for b in world.workbench["beds"]):
+         raise ValueError("A bed with that name already exists")
+     _room(world, "beds")
+     entry = {"id": identifier(world.workbench), "name": name, "tiles": [list(p) for p in points]}
+@@ -30,7 +30,7 @@
+ 
+ def schedule(world, name, day, tiles, action, repeat=0, runs=1):
+     name = text(name, "Plan name", 80)
+-    integer(day, "Scheduled day", world.day+2)
++    integer(day, "Scheduled day", world.day+1)
+     integer(repeat, "Repeat interval", 0, 365)
+     integer(runs, "Runs", 1, 1000)
+     if runs > 1 and repeat == 0:
+=== C20 seq 129 snapshot 7->8 ===
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/7/mosslight/__main__.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/8/mosslight/__main__.py
+@@ -161,7 +161,7 @@
+         return 0
+     except (ValueError, OSError, json.JSONDecodeError) as exc:
+         print(f"mosslight: {exc}", file=sys.stderr)
+-        return 1
++        return 2
+ 
+ 
+ if __name__ == "__main__":
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/7/mosslight/exchange.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/8/mosslight/exchange.py
+@@ -46,7 +46,6 @@
+         raise ValueError("Survey must contain every tile")
+     trial = World.from_dict(trial.to_dict())
+     trial.revision = world.revision+1
+-    trial.revision += 1
+     world.__dict__.update(trial.__dict__)
+ 
+ 
+@@ -95,10 +94,10 @@
+     width,height = data["width"],data["height"]
+     if mirror:
+         for tile in data["tiles"]:
+-            tile["x"] = width-tile["x"]
++            tile["x"] = width-1-tile["x"]
+     for _ in range(turns):
+         for tile in data["tiles"]:
+-            tile["x"],tile["y"] = height-tile["y"],tile["x"]
++            tile["x"],tile["y"] = height-1-tile["y"],tile["x"]
+         width,height = height,width
+     data.update(width=width,height=height)
+     data["tiles"].sort(key=lambda t:(t["y"],t["x"]))
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/7/mosslight/planning.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/8/mosslight/planning.py
+@@ -108,16 +108,22 @@
+ def run_rules(world):
+     from .engine import act, log
+     failed = set()
++    snapshot = {(i % world.width, i // world.width): (c.moisture, c.nutrients, c.vitality)
++                for i, c in enumerate(world.cells)}
++    metrics = ("moisture", "nutrients", "vitality")
++    pending = []
+     for rule in sorted(world.workbench["rules"], key=lambda r: r["id"]):
+         if not rule["enabled"]:
+             continue
+         for x, y in rule["tiles"]:
+-            value = getattr(world.cell(x, y), rule["metric"])
++            value = snapshot[(x, y)][metrics.index(rule["metric"])]
+             applies = value < rule["threshold"] if rule["operator"] == "below" else value > rule["threshold"]
+             if applies:
+-                try:
+-                    act(world, x, y, rule["action"])
+-                except ValueError:
+-                    failed.add(rule["id"])
++                pending.append((rule["id"], x, y, rule["action"]))
++    for ident, x, y, action in pending:
++        try:
++            act(world, x, y, action)
++        except ValueError:
++            failed.add(ident)
+     for ident in sorted(failed):
+         log(world, f"Care rule {ident} skipped unsuitable ground.")
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/7/mosslight/server.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/8/mosslight/server.py
+@@ -146,7 +146,7 @@
+                     trial.revision = self.server.world.revision+1
+                 elif path == "/api/import":
+                     trial = World.from_dict(body.get("world"))
+-                    if "world" in body:
++                    if "revision" in body:
+                         trial.revision = self.server.world.revision+1
+                 elif path in ("/api/undo","/api/redo"):
+                     source = self.server.undo_stack if path == "/api/undo" else self.server.redo_stack
+=== C25 seq 158 snapshot 9->10 ===
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/9/mosslight/habitat.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/10/mosslight/habitat.py
+@@ -50,7 +50,7 @@
+     trait = TERRAINS[terrain]
+     evaporation = max(0, evaporation + trait["evaporation"] - tile["mulch"] // 20)
+     gain = rain + (trait["rain_bonus"] if rain else 0)
+-    if tile["structure"] == "rain_barrel":
++    if tile["structure"] == "rain_barrel" and rain:
+         gain += 6
+         from .semantics import barrel_adjustment
+         gain += barrel_adjustment(before)
+=== C38 seq 231 snapshot 13->14 ===
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/13/mosslight/save_merge.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/14/mosslight/save_merge.py
+@@ -60,7 +60,7 @@
+ 
+ 
+ def _logical_id(ident, origin, base_ids):
+-    return _encoded(["base", ident])
++    return _encoded(["base", ident] if ident in base_ids else [origin, ident])
+ 
+ 
+ def _normalize(save, origin, base_ids):
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/13/mosslight/state.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/14/mosslight/state.py
+@@ -28,7 +28,7 @@
+     unknown = set(raw) - set(state)
+     if unknown:
+         raw = {key: value for key, value in raw.items() if key not in unknown}
+-    state.update(raw.copy())
++    state.update(copy.deepcopy(raw))
+     text(state["title"], "Garden title", 100)
+     integer(state["next_id"], "Next identifier", 1)
+     tiles = sequence(state["tiles"], "Tiles", 1200)
+@@ -50,11 +50,10 @@
+     ids = set()
+     bed_names = set()
+     for name in ("notes", "specimens", "tasks", "beds", "plans", "rules", "nursery"):
+-        ids = set()
+         for item in sequence(state[name], name, 500):
+             mapping(item, name)
+             ident = integer(item.get("id"), "Identifier", 1)
+-            if ident in ids or ident > state["next_id"]:
++            if ident in ids or ident >= state["next_id"]:
+                 raise ValueError("Identifiers must be unique and below next_id")
+             ids.add(ident)
+             if name in ("notes", "specimens", "tasks"):
+@@ -129,7 +128,7 @@
+     for point in sequence(state["history"], "History", 240):
+         mapping(point, "History point")
+         integer(point.get("day"), "History day", 0, world.day)
+-        if point["day"] < previous_day:
++        if point["day"] <= previous_day:
+             raise ValueError("History days must increase")
+         previous_day = point["day"]
+         for key in ("occupied", "births", "losses"):
+@@ -139,7 +138,7 @@
+             if type(value) not in (int, float) or not 0 <= value <= 100:
+                 raise ValueError(f"Invalid history {key}")
+     for cell, tile in zip(world.cells, tiles):
+-        if tile["terrain"] == "pond" and cell.species is not None:
++        if tile["terrain"] in ("pond", "stone") and cell.species is not None:
+             raise ValueError("Ponds and stones cannot contain plants")
+     return state
+ 
+=== C40 seq 253 snapshot 17->18 ===
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/17/mosslight/courier.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/18/mosslight/courier.py
+@@ -92,6 +92,7 @@
+                 result["events"][key] = copy.deepcopy(event)
+     result["clock"] = _join(left["clock"], right["clock"])
+     result["counter"] = max(left["counter"], result["clock"].get(left["peer"], 0))
++    result["counter"] = max(left["counter"], result["clock"].get(left["peer"], 0))
+     result["contexts"] = {record: _join(left["contexts"].get(record, {}), right["contexts"].get(record, {}))
+                           for record in left["contexts"].keys() | right["contexts"].keys()}
+     return result
+=== C42 seq 263 snapshot 18->19 ===
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/18/mosslight/courier.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/19/mosslight/courier.py
+@@ -92,7 +92,6 @@
+                 result["events"][key] = copy.deepcopy(event)
+     result["clock"] = _join(left["clock"], right["clock"])
+     result["counter"] = max(left["counter"], result["clock"].get(left["peer"], 0))
+-    result["counter"] = max(left["counter"], result["clock"].get(left["peer"], 0))
+     result["contexts"] = {record: _join(left["contexts"].get(record, {}), right["contexts"].get(record, {}))
+                           for record in left["contexts"].keys() | right["contexts"].keys()}
+     return result
+=== C44 seq 273 snapshot 19->20 ===
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/19/mosslight/irrigation.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/20/mosslight/irrigation.py
+@@ -87,7 +87,7 @@
+ 
+ 
+ def _identity(state):
+-    return encoded({'measurement':census(_world(state['world'])),'offset':state['offset'],'remaining':state['remaining']})
++    return encoded({'world':state['world'],'offset':state['offset'],'remaining':state['remaining']})
+ 
+ 
+ def _reduce(states):
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/19/mosslight/irrigation_flow.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/20/mosslight/irrigation_flow.py
+@@ -48,7 +48,7 @@
+         if node==sink:return amount
+         seen.add(node)
+         for edge in graph.get(node,[]):
+-            if edge.capacity <= 0 or edge.end in seen or edge.pipe is None:
++            if edge.capacity <= 0 or edge.end in seen:
+                 continue
+             sent=route(edge.end,min(amount,edge.capacity),seen)
+             if sent:
+=== C46 seq 282 snapshot 20->21 ===
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/20/mosslight/field_calibration.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/21/mosslight/field_calibration.py
+@@ -10,16 +10,14 @@
+     at = float(at)
+     if not values or not math.isfinite(at) or any(not math.isfinite(t) or not math.isfinite(y) or not 0 <= y <= 100 for t, y in values):
+         raise ValueError('Supply finite timestamps and moisture percentages')
+-    origin = values[0][0]
++    times = [t for t, _ in values]
+     ys = [y for _, y in values]
+-    center = math.fsum(t - origin for t, _ in values)/len(values)
++    mean_time = math.fsum(times)/len(times)
+     mean = math.fsum(ys)/len(ys)
+-    times = [t for t, _ in values]
+-    total = math.fsum(times)
+-    spread = math.fsum(t*t for t in times) - total*total/len(times)
+-    covariance = math.fsum(t*y for t,y in values) - total*math.fsum(ys)/len(times)
++    spread = math.fsum((t - mean_time)*(t - mean_time) for t in times)
++    covariance = math.fsum((t - mean_time)*(y - mean) for t, y in values)
+     slope = covariance/spread if spread > 0 else 0.0
+-    prediction = mean + slope*((at-origin)-center)
++    prediction = mean + slope*(at - mean_time)
+     return max(0.0, min(100.0, prediction))
+ 
+ 
+=== C48 seq 290 snapshot 21->22 ===
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/21/mosslight/workspace_catalog.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/22/mosslight/workspace_catalog.py
+@@ -42,8 +42,8 @@
+         self.db.create_function('catalog_key', 1, _normalizer(version), deterministic=True)
+ 
+     def _upgrade_keys(self):
++        self._install_key(CURRENT_FORMAT)
+         self.db.execute('REINDEX catalog_by_label')
+-        self._install_key(CURRENT_FORMAT)
+ 
+     def close(self):
+         self.db.close()
+@@ -96,7 +96,10 @@
+                 if item['kind'] not in ('garden','history','study') or not isinstance(item['label'],str) or not item['label'].strip():
+                     raise ValueError('Invalid receipt')
+                 encoded=json.dumps(item['payload'],allow_nan=False,sort_keys=True,separators=(',',':'))
+-                data=(item['id'],item['kind'],item['label'],item['locator'],encoded)
++                locator=item.get('locator','')
++                if not isinstance(item.get('id'),str) or not item['id'] or not isinstance(locator,str):
++                    raise ValueError('Invalid receipt')
++                data=(item['id'],item['kind'],item['label'],locator,encoded)
+                 existing=self.db.execute('SELECT id,kind,label,locator,payload FROM catalog_receipts WHERE id=?',(item['id'],)).fetchone()
+                 if existing is not None and existing != data:
+                     raise ValueError('Conflicting receipt identity')
+=== C59 seq 349 snapshot 23->24 ===
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/23/mosslight/commands.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/24/mosslight/commands.py
+@@ -44,7 +44,7 @@
+     trial = World.from_dict(copy.deepcopy(world.to_dict()))
+     result = _dispatch(trial,command.get("op"),args)
+     trial = World.from_dict(trial.to_dict())
+-    trial.revision = trial.revision+1
++    trial.revision = world.revision+1
+     world.__dict__.update(trial.__dict__)
+     return copy.deepcopy(result)
+ 
+=== C63 seq 371 snapshot 24->25 ===
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/24/mosslight/engine.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/25/mosslight/engine.py
+@@ -117,7 +117,7 @@
+                 if cell.nutrients < upkeep:
+                     comfort -= 7
+                 cell.vitality = clamp(before.vitality + comfort - 3)
+-                cell.nutrients = clamp(before.nutrients - upkeep + (2 if before.vitality < 25 else 0))
++                cell.nutrients = clamp(before.nutrients - upkeep + (2 if cell.vitality < 25 else 0))
+                 cell.age = before.age + 1
+                 if cell.vitality == 0 or cell.age > SPECIES_GUIDE[before.species]["lifespan"]:
+                     cell.species, cell.age, cell.vitality = None, 0, 0
+=== C90 seq 543 snapshot 29->30 ===
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/29/mosslight/__main__.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/30/mosslight/__main__.py
+@@ -124,7 +124,7 @@
+             result = forecast(load(args.path), args.days, args.every)
+             predicted = result.pop("world")
+             if args.output:
+-                if args.output == args.path:
++                if Path(args.output).resolve() == Path(args.path).resolve():
+                     raise ValueError("Forecast output must differ from the source garden")
+                 from .model import World
+                 save(World.from_dict(predicted), args.output)
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/29/mosslight/exchange.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/30/mosslight/exchange.py
+@@ -119,7 +119,7 @@
+             raise ValueError("Blueprint overlaps a living plant; enable overwrite")
+         set_terrain(trial,a,b,tile["terrain"])
+         set_structure(trial,a,b,tile["structure"])
+-        if tile["species"]:
++        if tile.get("species"):
+             act(trial,a,b,"plant_"+tile["species"])
+         elif trial.cell(a,b).species:
+             act(trial,a,b,"clear")
+=== C93 seq 562 snapshot 30->31 ===
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/30/mosslight/model.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/31/mosslight/model.py
+@@ -100,7 +100,7 @@
+             revision = data.get("revision", 0)
+             if type(revision) is not int or revision < 0:
+                 raise ValueError("Invalid revision")
+-            world = cls(seed, width, height, day, cells, list(journal), weather, revision)
++            world = cls(seed, width, height, day, cells, copy.deepcopy(journal), weather, revision)
+             if data["version"] == 2:
+                 from .state import validate
+                 world.workbench = validate(world, data.get("workbench", {}))
+=== C112 seq 685 snapshot 39->40 ===
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/39/mosslight/history_exchange.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/40/mosslight/history_exchange.py
+@@ -314,7 +314,8 @@
+             return {**self.checkout(right), "status": "fast-forward"}
+         if right in self._ancestors(left, graph):
+             return {**self.checkout(left), "status": "fast-forward"}
+-        events = self._merge_events(left, right, graph)
++        first, second = sorted((left, right))
++        events = self._merge_events(first, second, graph)
+         root = self.history._root(channel["root"])
+         result = self._materialize(root, events)
+         with self._atomic():
+=== C122 seq 705 snapshot 40->41 ===
+--- bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/40/mosslight/model.py
++++ bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/snapshots/41/mosslight/model.py
+@@ -89,7 +89,7 @@
+                     raise ValueError("Empty cell cannot have age or vitality")
+                 cells.append(Cell(values[0], values[1], values[2], species, values[3], values[4]))
+             journal = data.get("journal", [])
+-            if not isinstance(journal, list) or len(journal) > 200 or any(
++            if not isinstance(journal, list) or len(journal) > 100 or any(
+                 not isinstance(e, dict) or type(e.get("day")) is not int or not isinstance(e.get("text"), str)
+                 or len(e["text"]) > 240 for e in journal
+             ):
+=== C130 seq 721 snapshot 41->42 ===
+=== C131 seq 723 snapshot 42->43 ===

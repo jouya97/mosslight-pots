@@ -34,7 +34,6 @@ class ReconciliationTests(unittest.TestCase):
         self.assertEqual(levels, {'normal','hard','extreme','legendary'})
 
     def test_agent_prompt_has_no_diagnosis_credit(self):
-        import re
         from bug_competition.task import prompt_for, ROOT
         prompt = prompt_for()
         visible = prompt + (ROOT/'agent_data/SUBMISSION.md').read_text()
@@ -51,8 +50,7 @@ class ReconciliationTests(unittest.TestCase):
         self.assertIn('four categories: Normal, Hard, Extremely Hard, and Legendary.', prompt)
         for tier, points in (('Normal', 1), ('Hard', 5), ('Extremely Hard', 10), ('Legendary', 20)):
             self.assertIn(f'- {tier} defect repairs are worth {points} point', prompt)
-        # No action limit, and the prompt itself never mentions symlinks (SUBMISSION.md does).
-        self.assertIsNone(re.search(r'(?i)actions? (limit|remaining)|turn limit|\b\d+ (actions|turns)\b', prompt))
+        # Countdown wording is allowed; SUBMISSION.md owns the symlink rule.
         self.assertNotIn('symlink', prompt.lower())
 
     def test_submission_extracts_only_contract_and_rejects_links(self):

@@ -1,0 +1,6648 @@
+[
+  {
+    "seq": 2,
+    "actor": "C",
+    "action": 1,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 5,
+    "actor": "B",
+    "action": 1,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 8,
+    "actor": "A",
+    "action": 1,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 11,
+    "actor": "C",
+    "action": 2,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 14,
+    "actor": "B",
+    "action": 2,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 15,
+    "actor": "A",
+    "action": 2,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 17,
+    "actor": "C",
+    "action": 3,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 19,
+    "actor": "B",
+    "action": 3,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 21,
+    "actor": "A",
+    "action": 3,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 23,
+    "actor": "C",
+    "action": 4,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 26,
+    "actor": "B",
+    "action": 4,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 28,
+    "actor": "C",
+    "action": 5,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 29,
+    "actor": "A",
+    "action": 4,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 31,
+    "actor": "C",
+    "action": 6,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 33,
+    "actor": "B",
+    "action": 5,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 35,
+    "actor": "C",
+    "action": 7,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 37,
+    "actor": "A",
+    "action": 5,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 39,
+    "actor": "A",
+    "action": 6,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 41,
+    "actor": "B",
+    "action": 6,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 43,
+    "actor": "C",
+    "action": 8,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 45,
+    "actor": "A",
+    "action": 7,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 47,
+    "actor": "B",
+    "action": 7,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 49,
+    "actor": "A",
+    "action": 8,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 51,
+    "actor": "C",
+    "action": 9,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 53,
+    "actor": "B",
+    "action": 8,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 55,
+    "actor": "A",
+    "action": 9,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 57,
+    "actor": "C",
+    "action": 10,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 59,
+    "actor": "B",
+    "action": 9,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 61,
+    "actor": "A",
+    "action": 10,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 63,
+    "actor": "C",
+    "action": 11,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 65,
+    "actor": "A",
+    "action": 11,
+    "score": {},
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 69,
+    "actor": "B",
+    "action": 10,
+    "score": {
+      "B": 14
+    },
+    "newpasses": {
+      "E01": true,
+      "E02": true,
+      "E08": true,
+      "E11": true,
+      "E13": true,
+      "F16": true,
+      "F17": true,
+      "F18": true,
+      "P04": true,
+      "P10": true
+    },
+    "transfers": {
+      "E01": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      },
+      "E02": {
+        "from": null,
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/engine.py"
+      },
+      "E08": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/habitat.py"
+      },
+      "E11": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/habitat.py"
+      },
+      "E13": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/habitat.py"
+      },
+      "F16": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/weather.py"
+      },
+      "F17": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/weather.py"
+      },
+      "F18": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/weather.py"
+      },
+      "P04": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/model.py"
+      },
+      "P10": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/state.py"
+      }
+    }
+  },
+  {
+    "seq": 70,
+    "actor": "A",
+    "action": 12,
+    "score": {
+      "B": 14
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 71,
+    "actor": "C",
+    "action": 12,
+    "score": {
+      "B": 14
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 75,
+    "actor": "A",
+    "action": 13,
+    "score": {
+      "B": 14
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 76,
+    "actor": "B",
+    "action": 11,
+    "score": {
+      "B": 14
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 77,
+    "actor": "C",
+    "action": 13,
+    "score": {
+      "B": 14
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 81,
+    "actor": "A",
+    "action": 14,
+    "score": {
+      "A": 7,
+      "B": 8
+    },
+    "newpasses": {
+      "E04": true
+    },
+    "transfers": {
+      "E01": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      },
+      "E02": {
+        "from": "B",
+        "to": "A",
+        "points": 5,
+        "file": "mosslight/engine.py"
+      },
+      "E04": {
+        "from": null,
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      }
+    }
+  },
+  {
+    "seq": 82,
+    "actor": "B",
+    "action": 12,
+    "score": {
+      "A": 7,
+      "B": 8
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 83,
+    "actor": "C",
+    "action": 14,
+    "score": {
+      "A": 7,
+      "B": 8
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 85,
+    "actor": "B",
+    "action": 13,
+    "score": {
+      "A": 7,
+      "B": 8
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 89,
+    "actor": "A",
+    "action": 15,
+    "score": {
+      "A": 8,
+      "B": 8
+    },
+    "newpasses": {
+      "E05": true
+    },
+    "transfers": {
+      "E05": {
+        "from": null,
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      }
+    }
+  },
+  {
+    "seq": 90,
+    "actor": "B",
+    "action": 14,
+    "score": {
+      "A": 8,
+      "B": 8
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 91,
+    "actor": "C",
+    "action": 15,
+    "score": {
+      "A": 8,
+      "B": 8
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 93,
+    "actor": "A",
+    "action": 16,
+    "score": {
+      "A": 8,
+      "B": 8
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 95,
+    "actor": "C",
+    "action": 16,
+    "score": {
+      "A": 8,
+      "B": 8
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 99,
+    "actor": "B",
+    "action": 15,
+    "score": {
+      "B": 19
+    },
+    "newpasses": {
+      "E03": true,
+      "E06": true,
+      "E07": true
+    },
+    "transfers": {
+      "E01": {
+        "from": "A",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      },
+      "E02": {
+        "from": "A",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/engine.py"
+      },
+      "E03": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      },
+      "E04": {
+        "from": "A",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      },
+      "E05": {
+        "from": "A",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      },
+      "E06": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      },
+      "E07": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      }
+    }
+  },
+  {
+    "seq": 101,
+    "actor": "A",
+    "action": 17,
+    "score": {
+      "B": 19
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 102,
+    "actor": "C",
+    "action": 17,
+    "score": {
+      "B": 19
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 103,
+    "actor": "B",
+    "action": 16,
+    "score": {
+      "B": 19
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 105,
+    "actor": "C",
+    "action": 18,
+    "score": {
+      "B": 19
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 107,
+    "actor": "A",
+    "action": 18,
+    "score": {
+      "B": 19
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 109,
+    "actor": "B",
+    "action": 17,
+    "score": {
+      "B": 19
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 111,
+    "actor": "B",
+    "action": 18,
+    "score": {
+      "B": 19
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 113,
+    "actor": "A",
+    "action": 19,
+    "score": {
+      "B": 19
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 117,
+    "actor": "C",
+    "action": 19,
+    "score": {
+      "B": 18,
+      "C": 2
+    },
+    "newpasses": {
+      "P02": true
+    },
+    "transfers": {
+      "P02": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/model.py"
+      },
+      "P04": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/model.py"
+      }
+    }
+  },
+  {
+    "seq": 118,
+    "actor": "A",
+    "action": 20,
+    "score": {
+      "B": 18,
+      "C": 2
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 121,
+    "actor": "B",
+    "action": 19,
+    "score": {
+      "B": 27,
+      "C": 2
+    },
+    "newpasses": {
+      "E14": true,
+      "E15": true,
+      "E16": true,
+      "E17": true,
+      "E18": true,
+      "E20": true,
+      "E21": true,
+      "E23": true,
+      "E24": true
+    },
+    "transfers": {
+      "E14": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/gardening.py"
+      },
+      "E15": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/gardening.py"
+      },
+      "E16": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/gardening.py"
+      },
+      "E17": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/gardening.py"
+      },
+      "E18": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/gardening.py"
+      },
+      "E20": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/gardening.py"
+      },
+      "E21": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/nursery.py"
+      },
+      "E23": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/nursery.py"
+      },
+      "E24": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/nursery.py"
+      }
+    }
+  },
+  {
+    "seq": 122,
+    "actor": "C",
+    "action": 20,
+    "score": {
+      "B": 27,
+      "C": 2
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 123,
+    "actor": "A",
+    "action": 21,
+    "score": {
+      "B": 24,
+      "A": 4,
+      "C": 2
+    },
+    "newpasses": {
+      "E09": true
+    },
+    "transfers": {
+      "E08": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/habitat.py"
+      },
+      "E09": {
+        "from": null,
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/habitat.py"
+      },
+      "E11": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/habitat.py"
+      },
+      "E13": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/habitat.py"
+      }
+    }
+  },
+  {
+    "seq": 127,
+    "actor": "C",
+    "action": 21,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 9
+    },
+    "newpasses": {
+      "E30": true,
+      "F19": true,
+      "F20": true,
+      "P08": true,
+      "P09": true
+    },
+    "transfers": {
+      "E01": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      },
+      "E02": {
+        "from": "B",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/engine.py"
+      },
+      "E03": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      },
+      "E04": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      },
+      "E05": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      },
+      "E06": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      },
+      "E07": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      },
+      "E30": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/engine.py"
+      },
+      "F16": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/weather.py"
+      },
+      "F17": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/weather.py"
+      },
+      "F18": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/weather.py"
+      },
+      "F19": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/weather.py"
+      },
+      "F20": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/weather.py"
+      },
+      "P08": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/state.py"
+      },
+      "P09": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/state.py"
+      },
+      "P10": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/state.py"
+      }
+    }
+  },
+  {
+    "seq": 129,
+    "actor": "B",
+    "action": 20,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {
+      "E25": true,
+      "E26": true,
+      "E29": true,
+      "F10": true,
+      "F11": true,
+      "F12": true,
+      "F13": true,
+      "F14": true,
+      "F15": true
+    },
+    "transfers": {
+      "E25": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/planning.py"
+      },
+      "E26": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/planning.py"
+      },
+      "E29": {
+        "from": null,
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/planning.py"
+      },
+      "F10": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F11": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F12": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F13": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F14": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F15": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      }
+    }
+  },
+  {
+    "seq": 131,
+    "actor": "A",
+    "action": 22,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 132,
+    "actor": "C",
+    "action": 22,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 133,
+    "actor": "B",
+    "action": 21,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 135,
+    "actor": "A",
+    "action": 23,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 137,
+    "actor": "A",
+    "action": 24,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 141,
+    "actor": "C",
+    "action": 23,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 142,
+    "actor": "B",
+    "action": 22,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 143,
+    "actor": "A",
+    "action": 25,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 145,
+    "actor": "C",
+    "action": 24,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 148,
+    "actor": "A",
+    "action": 26,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 150,
+    "actor": "A",
+    "action": 27,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 152,
+    "actor": "C",
+    "action": 25,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 155,
+    "actor": "A",
+    "action": 28,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 156,
+    "actor": "B",
+    "action": 23,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 160,
+    "actor": "A",
+    "action": 29,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 161,
+    "actor": "C",
+    "action": 26,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 22
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 164,
+    "actor": "B",
+    "action": 24,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 32
+    },
+    "newpasses": {
+      "F02": true,
+      "F03": true,
+      "F04": true,
+      "F05": true,
+      "F08": true,
+      "F09": true,
+      "F21": true,
+      "F22": true,
+      "F23": true,
+      "F25": true
+    },
+    "transfers": {
+      "F02": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/analysis.py"
+      },
+      "F03": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/analysis.py"
+      },
+      "F04": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/analysis.py"
+      },
+      "F05": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/analysis.py"
+      },
+      "F08": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/analysis.py"
+      },
+      "F09": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/analysis.py"
+      },
+      "F21": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/experiments.py"
+      },
+      "F22": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/experiments.py"
+      },
+      "F23": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/experiments.py"
+      },
+      "F25": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/experiments.py"
+      }
+    }
+  },
+  {
+    "seq": 165,
+    "actor": "C",
+    "action": 27,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 32
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 166,
+    "actor": "A",
+    "action": 30,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 32
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 168,
+    "actor": "B",
+    "action": 25,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 32
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 170,
+    "actor": "A",
+    "action": 31,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 32
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 172,
+    "actor": "B",
+    "action": 26,
+    "score": {
+      "C": 22,
+      "A": 4,
+      "B": 32
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 175,
+    "actor": "C",
+    "action": 28,
+    "score": {
+      "C": 34,
+      "A": 4,
+      "B": 25
+    },
+    "newpasses": {
+      "E27": true
+    },
+    "transfers": {
+      "E25": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/planning.py"
+      },
+      "E26": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/planning.py"
+      },
+      "E27": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/planning.py"
+      },
+      "E29": {
+        "from": "B",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/planning.py"
+      }
+    }
+  },
+  {
+    "seq": 177,
+    "actor": "A",
+    "action": 32,
+    "score": {
+      "C": 34,
+      "A": 4,
+      "B": 25
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 179,
+    "actor": "B",
+    "action": 27,
+    "score": {
+      "C": 34,
+      "A": 4,
+      "B": 28
+    },
+    "newpasses": {
+      "F26": true,
+      "F27": true,
+      "F28": true
+    },
+    "transfers": {
+      "F26": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/exchange.py"
+      },
+      "F27": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/exchange.py"
+      },
+      "F28": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/exchange.py"
+      }
+    }
+  },
+  {
+    "seq": 180,
+    "actor": "C",
+    "action": 29,
+    "score": {
+      "C": 34,
+      "A": 4,
+      "B": 28
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 184,
+    "actor": "A",
+    "action": 33,
+    "score": {
+      "C": 34,
+      "A": 5,
+      "B": 28
+    },
+    "newpasses": {
+      "P13": true
+    },
+    "transfers": {
+      "P13": {
+        "from": null,
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/commands.py"
+      }
+    }
+  },
+  {
+    "seq": 185,
+    "actor": "B",
+    "action": 28,
+    "score": {
+      "C": 34,
+      "A": 5,
+      "B": 28
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 188,
+    "actor": "C",
+    "action": 30,
+    "score": {
+      "C": 38,
+      "A": 5,
+      "B": 28
+    },
+    "newpasses": {
+      "F31": true,
+      "F32": true,
+      "P21": true,
+      "P22": true
+    },
+    "transfers": {
+      "F31": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/charts.py"
+      },
+      "F32": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/charts.py"
+      },
+      "P21": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/__main__.py"
+      },
+      "P22": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/__main__.py"
+      }
+    }
+  },
+  {
+    "seq": 190,
+    "actor": "B",
+    "action": 29,
+    "score": {
+      "C": 38,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {
+      "P23": true
+    },
+    "transfers": {
+      "P23": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/render.py"
+      }
+    }
+  },
+  {
+    "seq": 191,
+    "actor": "A",
+    "action": 34,
+    "score": {
+      "C": 38,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 192,
+    "actor": "C",
+    "action": 31,
+    "score": {
+      "C": 38,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 194,
+    "actor": "A",
+    "action": 35,
+    "score": {
+      "C": 38,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 198,
+    "actor": "C",
+    "action": 32,
+    "score": {
+      "C": 45,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {
+      "P14": true,
+      "P15": true,
+      "P16": true,
+      "P17": true,
+      "P18": true,
+      "P19": true,
+      "P20": true
+    },
+    "transfers": {
+      "P14": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/server.py"
+      },
+      "P15": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/server.py"
+      },
+      "P16": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/server.py"
+      },
+      "P17": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/server.py"
+      },
+      "P18": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/server.py"
+      },
+      "P19": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/server.py"
+      },
+      "P20": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/server.py"
+      }
+    }
+  },
+  {
+    "seq": 199,
+    "actor": "A",
+    "action": 36,
+    "score": {
+      "C": 45,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 200,
+    "actor": "B",
+    "action": 30,
+    "score": {
+      "C": 45,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 202,
+    "actor": "C",
+    "action": 33,
+    "score": {
+      "C": 45,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 204,
+    "actor": "A",
+    "action": 37,
+    "score": {
+      "C": 45,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 208,
+    "actor": "C",
+    "action": 34,
+    "score": {
+      "C": 45,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 209,
+    "actor": "B",
+    "action": 31,
+    "score": {
+      "C": 45,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 211,
+    "actor": "A",
+    "action": 38,
+    "score": {
+      "C": 45,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 213,
+    "actor": "B",
+    "action": 32,
+    "score": {
+      "C": 45,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 217,
+    "actor": "A",
+    "action": 39,
+    "score": {
+      "C": 45,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 218,
+    "actor": "B",
+    "action": 33,
+    "score": {
+      "C": 45,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 221,
+    "actor": "C",
+    "action": 35,
+    "score": {
+      "C": 70,
+      "A": 5,
+      "B": 29
+    },
+    "newpasses": {
+      "V01": true,
+      "V02": true,
+      "V03": true,
+      "V04": true,
+      "X01": true
+    },
+    "transfers": {
+      "V01": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/campaigns.py"
+      },
+      "V02": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/campaigns.py"
+      },
+      "V03": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/campaigns.py"
+      },
+      "V04": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/campaigns.py"
+      },
+      "X01": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/runtime.py"
+      }
+    }
+  },
+  {
+    "seq": 223,
+    "actor": "B",
+    "action": 34,
+    "score": {
+      "C": 70,
+      "A": 4,
+      "B": 31
+    },
+    "newpasses": {
+      "P12": true
+    },
+    "transfers": {
+      "P12": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/commands.py"
+      },
+      "P13": {
+        "from": "A",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/commands.py"
+      }
+    }
+  },
+  {
+    "seq": 224,
+    "actor": "A",
+    "action": 40,
+    "score": {
+      "C": 70,
+      "A": 4,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 225,
+    "actor": "C",
+    "action": 36,
+    "score": {
+      "C": 70,
+      "A": 4,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 228,
+    "actor": "B",
+    "action": 35,
+    "score": {
+      "C": 70,
+      "A": 4,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 229,
+    "actor": "C",
+    "action": 37,
+    "score": {
+      "C": 70,
+      "A": 4,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 231,
+    "actor": "C",
+    "action": 38,
+    "score": {
+      "C": 70,
+      "A": 4,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 233,
+    "actor": "B",
+    "action": 36,
+    "score": {
+      "C": 70,
+      "A": 4,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 235,
+    "actor": "C",
+    "action": 39,
+    "score": {
+      "C": 70,
+      "A": 4,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 237,
+    "actor": "B",
+    "action": 37,
+    "score": {
+      "C": 70,
+      "A": 4,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 239,
+    "actor": "C",
+    "action": 40,
+    "score": {
+      "C": 70,
+      "A": 4,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 241,
+    "actor": "B",
+    "action": 38,
+    "score": {
+      "C": 70,
+      "A": 4,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 243,
+    "actor": "B",
+    "action": 39,
+    "score": {
+      "C": 70,
+      "A": 4,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 246,
+    "actor": "A",
+    "action": 41,
+    "score": {
+      "C": 70,
+      "A": 20,
+      "B": 31
+    },
+    "newpasses": {
+      "P24": true,
+      "P26": true,
+      "P27": true,
+      "P28": true,
+      "P29": true,
+      "P30": true,
+      "P31": true,
+      "P32": true
+    },
+    "transfers": {
+      "P24": {
+        "from": null,
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P26": {
+        "from": null,
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P27": {
+        "from": null,
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P28": {
+        "from": null,
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P29": {
+        "from": null,
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P30": {
+        "from": null,
+        "to": "A",
+        "points": 5,
+        "file": "mosslight/courier.py"
+      },
+      "P31": {
+        "from": null,
+        "to": "A",
+        "points": 5,
+        "file": "mosslight/courier.py"
+      },
+      "P32": {
+        "from": null,
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      }
+    }
+  },
+  {
+    "seq": 247,
+    "actor": "B",
+    "action": 40,
+    "score": {
+      "C": 70,
+      "A": 20,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 250,
+    "actor": "C",
+    "action": 41,
+    "score": {
+      "C": 96,
+      "A": 20,
+      "B": 31
+    },
+    "newpasses": {
+      "H01": true,
+      "H02": true,
+      "H03": true,
+      "H04": true,
+      "H05": true,
+      "X02": true
+    },
+    "transfers": {
+      "H01": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "H02": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/history.py"
+      },
+      "H03": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "H04": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "H05": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "X02": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/history.py"
+      }
+    }
+  },
+  {
+    "seq": 252,
+    "actor": "A",
+    "action": 42,
+    "score": {
+      "C": 96,
+      "A": 20,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 253,
+    "actor": "B",
+    "action": 41,
+    "score": {
+      "C": 96,
+      "A": 20,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 257,
+    "actor": "C",
+    "action": 42,
+    "score": {
+      "C": 96,
+      "A": 20,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 258,
+    "actor": "B",
+    "action": 42,
+    "score": {
+      "C": 96,
+      "A": 20,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 260,
+    "actor": "A",
+    "action": 43,
+    "score": {
+      "C": 96,
+      "A": 20,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 261,
+    "actor": "B",
+    "action": 43,
+    "score": {
+      "C": 96,
+      "A": 20,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 263,
+    "actor": "C",
+    "action": 43,
+    "score": {
+      "C": 96,
+      "A": 20,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 265,
+    "actor": "A",
+    "action": 44,
+    "score": {
+      "C": 96,
+      "A": 20,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 267,
+    "actor": "C",
+    "action": 44,
+    "score": {
+      "C": 96,
+      "A": 20,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 269,
+    "actor": "C",
+    "action": 45,
+    "score": {
+      "C": 96,
+      "A": 20,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 271,
+    "actor": "A",
+    "action": 45,
+    "score": {
+      "C": 96,
+      "A": 20,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 275,
+    "actor": "C",
+    "action": 46,
+    "score": {
+      "C": 112,
+      "A": 20,
+      "B": 31
+    },
+    "newpasses": {
+      "L01": true,
+      "R01": true,
+      "R02": true,
+      "R03": true
+    },
+    "transfers": {
+      "L01": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/ensembles.py"
+      },
+      "R01": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/ensemble_reports.py"
+      },
+      "R02": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/ensembles.py"
+      },
+      "R03": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/ensemble_compute.py"
+      }
+    }
+  },
+  {
+    "seq": 277,
+    "actor": "A",
+    "action": 46,
+    "score": {
+      "C": 112,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {
+      "M01": true
+    },
+    "transfers": {
+      "M01": {
+        "from": null,
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/save_merge.py"
+      }
+    }
+  },
+  {
+    "seq": 278,
+    "actor": "B",
+    "action": 44,
+    "score": {
+      "C": 112,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 279,
+    "actor": "C",
+    "action": 47,
+    "score": {
+      "C": 112,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 281,
+    "actor": "C",
+    "action": 48,
+    "score": {
+      "C": 112,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 283,
+    "actor": "B",
+    "action": 45,
+    "score": {
+      "C": 112,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 285,
+    "actor": "A",
+    "action": 47,
+    "score": {
+      "C": 112,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 287,
+    "actor": "A",
+    "action": 48,
+    "score": {
+      "C": 112,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 289,
+    "actor": "C",
+    "action": 49,
+    "score": {
+      "C": 112,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 291,
+    "actor": "A",
+    "action": 49,
+    "score": {
+      "C": 112,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 293,
+    "actor": "B",
+    "action": 46,
+    "score": {
+      "C": 112,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 296,
+    "actor": "C",
+    "action": 50,
+    "score": {
+      "C": 122,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {
+      "Q01": true,
+      "Q02": true
+    },
+    "transfers": {
+      "Q01": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/studies.py"
+      },
+      "Q02": {
+        "from": null,
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/studies.py"
+      }
+    }
+  },
+  {
+    "seq": 297,
+    "actor": "B",
+    "action": 47,
+    "score": {
+      "C": 122,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 299,
+    "actor": "A",
+    "action": 50,
+    "score": {
+      "C": 122,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 301,
+    "actor": "C",
+    "action": 51,
+    "score": {
+      "C": 122,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 303,
+    "actor": "B",
+    "action": 48,
+    "score": {
+      "C": 122,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 305,
+    "actor": "C",
+    "action": 52,
+    "score": {
+      "C": 122,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 308,
+    "actor": "B",
+    "action": 49,
+    "score": {
+      "C": 122,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 309,
+    "actor": "A",
+    "action": 51,
+    "score": {
+      "C": 122,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 311,
+    "actor": "A",
+    "action": 52,
+    "score": {
+      "C": 122,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 313,
+    "actor": "A",
+    "action": 53,
+    "score": {
+      "C": 122,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 316,
+    "actor": "A",
+    "action": 54,
+    "score": {
+      "C": 122,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 318,
+    "actor": "A",
+    "action": 55,
+    "score": {
+      "C": 122,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 320,
+    "actor": "C",
+    "action": 53,
+    "score": {
+      "C": 122,
+      "A": 21,
+      "B": 31
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 323,
+    "actor": "B",
+    "action": 50,
+    "score": {
+      "C": 122,
+      "A": 5,
+      "B": 52
+    },
+    "newpasses": {
+      "P34": true
+    },
+    "transfers": {
+      "P24": {
+        "from": "A",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P26": {
+        "from": "A",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P27": {
+        "from": "A",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P28": {
+        "from": "A",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P29": {
+        "from": "A",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P30": {
+        "from": "A",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/courier.py"
+      },
+      "P31": {
+        "from": "A",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/courier.py"
+      },
+      "P32": {
+        "from": "A",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P34": {
+        "from": null,
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/courier.py"
+      }
+    }
+  },
+  {
+    "seq": 324,
+    "actor": "C",
+    "action": 54,
+    "score": {
+      "C": 122,
+      "A": 5,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 326,
+    "actor": "A",
+    "action": 56,
+    "score": {
+      "C": 122,
+      "A": 5,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 328,
+    "actor": "A",
+    "action": 57,
+    "score": {
+      "C": 122,
+      "A": 5,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 330,
+    "actor": "C",
+    "action": 55,
+    "score": {
+      "C": 122,
+      "A": 5,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 332,
+    "actor": "B",
+    "action": 51,
+    "score": {
+      "C": 122,
+      "A": 5,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 334,
+    "actor": "C",
+    "action": 56,
+    "score": {
+      "C": 122,
+      "A": 5,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 336,
+    "actor": "B",
+    "action": 52,
+    "score": {
+      "C": 122,
+      "A": 5,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 338,
+    "actor": "B",
+    "action": 53,
+    "score": {
+      "C": 122,
+      "A": 5,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 340,
+    "actor": "A",
+    "action": 58,
+    "score": {
+      "C": 122,
+      "A": 5,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 344,
+    "actor": "A",
+    "action": 59,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 52
+    },
+    "newpasses": {
+      "X03": true
+    },
+    "transfers": {
+      "X03": {
+        "from": null,
+        "to": "A",
+        "points": 5,
+        "file": "mosslight/history_exchange.py"
+      }
+    }
+  },
+  {
+    "seq": 345,
+    "actor": "C",
+    "action": 57,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 346,
+    "actor": "B",
+    "action": 54,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 348,
+    "actor": "B",
+    "action": 55,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 351,
+    "actor": "A",
+    "action": 60,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 352,
+    "actor": "C",
+    "action": 58,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 355,
+    "actor": "C",
+    "action": 59,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 356,
+    "actor": "B",
+    "action": 56,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 358,
+    "actor": "A",
+    "action": 61,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 52
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 362,
+    "actor": "B",
+    "action": 57,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 57
+    },
+    "newpasses": {
+      "N01": true
+    },
+    "transfers": {
+      "N01": {
+        "from": null,
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/field_calibration.py"
+      }
+    }
+  },
+  {
+    "seq": 363,
+    "actor": "A",
+    "action": 62,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 57
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 365,
+    "actor": "C",
+    "action": 60,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 57
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 367,
+    "actor": "A",
+    "action": 63,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 57
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 370,
+    "actor": "B",
+    "action": 58,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 67
+    },
+    "newpasses": {
+      "I01": true
+    },
+    "transfers": {
+      "I01": {
+        "from": null,
+        "to": "B",
+        "points": 10,
+        "file": "mosslight/irrigation_flow.py"
+      }
+    }
+  },
+  {
+    "seq": 371,
+    "actor": "C",
+    "action": 61,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 67
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 373,
+    "actor": "A",
+    "action": 64,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 67
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 377,
+    "actor": "B",
+    "action": 59,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {
+      "I02": true
+    },
+    "transfers": {
+      "I02": {
+        "from": null,
+        "to": "B",
+        "points": 20,
+        "file": "mosslight/irrigation.py"
+      }
+    }
+  },
+  {
+    "seq": 378,
+    "actor": "C",
+    "action": 62,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 379,
+    "actor": "A",
+    "action": 65,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 381,
+    "actor": "C",
+    "action": 63,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 383,
+    "actor": "A",
+    "action": 66,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 385,
+    "actor": "C",
+    "action": 64,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 388,
+    "actor": "A",
+    "action": 67,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 391,
+    "actor": "B",
+    "action": 60,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 92
+    },
+    "newpasses": {
+      "N02": true
+    },
+    "transfers": {
+      "N02": {
+        "from": null,
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/workspace_catalog.py"
+      }
+    }
+  },
+  {
+    "seq": 392,
+    "actor": "C",
+    "action": 65,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 92
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 393,
+    "actor": "A",
+    "action": 68,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 92
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 395,
+    "actor": "B",
+    "action": 61,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 92
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 397,
+    "actor": "B",
+    "action": 62,
+    "score": {
+      "C": 122,
+      "A": 10,
+      "B": 92
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 402,
+    "actor": "C",
+    "action": 66,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {
+      "N02": {
+        "from": "B",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/workspace_catalog.py"
+      }
+    }
+  },
+  {
+    "seq": 403,
+    "actor": "B",
+    "action": 63,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 405,
+    "actor": "A",
+    "action": 69,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 406,
+    "actor": "C",
+    "action": 67,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 409,
+    "actor": "B",
+    "action": 64,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 411,
+    "actor": "A",
+    "action": 70,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 414,
+    "actor": "B",
+    "action": 65,
+    "score": {
+      "C": 124,
+      "A": 10,
+      "B": 91
+    },
+    "newpasses": {
+      "P07": true
+    },
+    "transfers": {
+      "P07": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/state.py"
+      },
+      "P08": {
+        "from": "C",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/state.py"
+      },
+      "P09": {
+        "from": "C",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/state.py"
+      },
+      "P10": {
+        "from": "C",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/state.py"
+      }
+    }
+  },
+  {
+    "seq": 415,
+    "actor": "A",
+    "action": 71,
+    "score": {
+      "C": 124,
+      "A": 10,
+      "B": 91
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 417,
+    "actor": "C",
+    "action": 68,
+    "score": {
+      "C": 124,
+      "A": 10,
+      "B": 91
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 419,
+    "actor": "A",
+    "action": 72,
+    "score": {
+      "C": 124,
+      "A": 10,
+      "B": 91
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 421,
+    "actor": "B",
+    "action": 66,
+    "score": {
+      "C": 124,
+      "A": 10,
+      "B": 91
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 424,
+    "actor": "C",
+    "action": 69,
+    "score": {
+      "C": 130,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {
+      "P03": true,
+      "P11": true
+    },
+    "transfers": {
+      "P03": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/model.py"
+      },
+      "P07": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/state.py"
+      },
+      "P08": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/state.py"
+      },
+      "P09": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/state.py"
+      },
+      "P10": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/state.py"
+      },
+      "P11": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/state.py"
+      }
+    }
+  },
+  {
+    "seq": 425,
+    "actor": "A",
+    "action": 73,
+    "score": {
+      "C": 130,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 427,
+    "actor": "C",
+    "action": 70,
+    "score": {
+      "C": 130,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 429,
+    "actor": "A",
+    "action": 74,
+    "score": {
+      "C": 130,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 431,
+    "actor": "C",
+    "action": 71,
+    "score": {
+      "C": 130,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 433,
+    "actor": "A",
+    "action": 75,
+    "score": {
+      "C": 130,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 435,
+    "actor": "A",
+    "action": 76,
+    "score": {
+      "C": 130,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 437,
+    "actor": "C",
+    "action": 72,
+    "score": {
+      "C": 130,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 439,
+    "actor": "A",
+    "action": 77,
+    "score": {
+      "C": 130,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 441,
+    "actor": "B",
+    "action": 67,
+    "score": {
+      "C": 130,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 443,
+    "actor": "C",
+    "action": 73,
+    "score": {
+      "C": 130,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 445,
+    "actor": "A",
+    "action": 78,
+    "score": {
+      "C": 130,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 449,
+    "actor": "B",
+    "action": 68,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {
+      "P02": {
+        "from": "C",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/model.py"
+      },
+      "P03": {
+        "from": "C",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/model.py"
+      },
+      "P04": {
+        "from": "C",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/model.py"
+      }
+    }
+  },
+  {
+    "seq": 450,
+    "actor": "A",
+    "action": 79,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 451,
+    "actor": "C",
+    "action": 74,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 453,
+    "actor": "A",
+    "action": 80,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 455,
+    "actor": "B",
+    "action": 69,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 457,
+    "actor": "C",
+    "action": 75,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 459,
+    "actor": "B",
+    "action": 70,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 461,
+    "actor": "A",
+    "action": 81,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 463,
+    "actor": "B",
+    "action": 71,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 465,
+    "actor": "A",
+    "action": 82,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 467,
+    "actor": "B",
+    "action": 72,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 469,
+    "actor": "C",
+    "action": 76,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 471,
+    "actor": "B",
+    "action": 73,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 473,
+    "actor": "A",
+    "action": 83,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 475,
+    "actor": "B",
+    "action": 74,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 477,
+    "actor": "C",
+    "action": 77,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 479,
+    "actor": "A",
+    "action": 84,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 481,
+    "actor": "A",
+    "action": 85,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 483,
+    "actor": "B",
+    "action": 75,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 486,
+    "actor": "C",
+    "action": 78,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 487,
+    "actor": "B",
+    "action": 76,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 489,
+    "actor": "A",
+    "action": 86,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 491,
+    "actor": "B",
+    "action": 77,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 493,
+    "actor": "C",
+    "action": 79,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 495,
+    "actor": "A",
+    "action": 87,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 497,
+    "actor": "B",
+    "action": 78,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 499,
+    "actor": "C",
+    "action": 80,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 501,
+    "actor": "A",
+    "action": 88,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 503,
+    "actor": "B",
+    "action": 79,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 505,
+    "actor": "B",
+    "action": 80,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 507,
+    "actor": "B",
+    "action": 81,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 509,
+    "actor": "B",
+    "action": 82,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 511,
+    "actor": "A",
+    "action": 89,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 513,
+    "actor": "C",
+    "action": 81,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 515,
+    "actor": "B",
+    "action": 83,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 517,
+    "actor": "A",
+    "action": 90,
+    "score": {
+      "C": 127,
+      "A": 10,
+      "B": 90
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 520,
+    "actor": "C",
+    "action": 82,
+    "score": {
+      "C": 131,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {
+      "P01": true
+    },
+    "transfers": {
+      "P01": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/model.py"
+      },
+      "P02": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/model.py"
+      },
+      "P03": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/model.py"
+      },
+      "P04": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/model.py"
+      }
+    }
+  },
+  {
+    "seq": 521,
+    "actor": "B",
+    "action": 84,
+    "score": {
+      "C": 131,
+      "A": 10,
+      "B": 87
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 524,
+    "actor": "A",
+    "action": 91,
+    "score": {
+      "C": 131,
+      "A": 15,
+      "B": 82
+    },
+    "newpasses": {},
+    "transfers": {
+      "N01": {
+        "from": "B",
+        "to": "A",
+        "points": 5,
+        "file": "mosslight/field_calibration.py"
+      }
+    }
+  },
+  {
+    "seq": 525,
+    "actor": "B",
+    "action": 85,
+    "score": {
+      "C": 131,
+      "A": 15,
+      "B": 82
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 527,
+    "actor": "C",
+    "action": 83,
+    "score": {
+      "C": 131,
+      "A": 15,
+      "B": 82
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 529,
+    "actor": "A",
+    "action": 92,
+    "score": {
+      "C": 131,
+      "A": 15,
+      "B": 82
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 531,
+    "actor": "B",
+    "action": 86,
+    "score": {
+      "C": 65,
+      "A": 15,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {
+      "H01": {
+        "from": "C",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "H02": {
+        "from": "C",
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/history.py"
+      },
+      "H03": {
+        "from": "C",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "H04": {
+        "from": "C",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "H05": {
+        "from": "C",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "L01": {
+        "from": "C",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/ensembles.py"
+      },
+      "Q01": {
+        "from": "C",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/studies.py"
+      },
+      "Q02": {
+        "from": "C",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/studies.py"
+      },
+      "R02": {
+        "from": "C",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/ensembles.py"
+      },
+      "V01": {
+        "from": "C",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/campaigns.py"
+      },
+      "V02": {
+        "from": "C",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/campaigns.py"
+      },
+      "V03": {
+        "from": "C",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/campaigns.py"
+      },
+      "V04": {
+        "from": "C",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/campaigns.py"
+      },
+      "X02": {
+        "from": "C",
+        "to": "B",
+        "points": 5,
+        "file": "mosslight/history.py"
+      }
+    }
+  },
+  {
+    "seq": 534,
+    "actor": "A",
+    "action": 93,
+    "score": {
+      "C": 65,
+      "A": 15,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 535,
+    "actor": "B",
+    "action": 87,
+    "score": {
+      "C": 65,
+      "A": 15,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 537,
+    "actor": "A",
+    "action": 94,
+    "score": {
+      "C": 65,
+      "A": 15,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 539,
+    "actor": "B",
+    "action": 88,
+    "score": {
+      "C": 65,
+      "A": 15,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 541,
+    "actor": "A",
+    "action": 95,
+    "score": {
+      "C": 65,
+      "A": 15,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 544,
+    "actor": "C",
+    "action": 84,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {
+      "N01": {
+        "from": "A",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/field_calibration.py"
+      }
+    }
+  },
+  {
+    "seq": 545,
+    "actor": "A",
+    "action": 96,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 547,
+    "actor": "C",
+    "action": 85,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 549,
+    "actor": "A",
+    "action": 97,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 551,
+    "actor": "C",
+    "action": 86,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 556,
+    "actor": "A",
+    "action": 98,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 557,
+    "actor": "B",
+    "action": 89,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 558,
+    "actor": "C",
+    "action": 87,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 560,
+    "actor": "C",
+    "action": 88,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 562,
+    "actor": "B",
+    "action": 90,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 565,
+    "actor": "A",
+    "action": 99,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 567,
+    "actor": "C",
+    "action": 89,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 569,
+    "actor": "A",
+    "action": 100,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 571,
+    "actor": "B",
+    "action": 91,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 573,
+    "actor": "B",
+    "action": 92,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 575,
+    "actor": "C",
+    "action": 90,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 577,
+    "actor": "A",
+    "action": 101,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 579,
+    "actor": "C",
+    "action": 91,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 583,
+    "actor": "A",
+    "action": 102,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 584,
+    "actor": "C",
+    "action": 92,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 585,
+    "actor": "B",
+    "action": 93,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 588,
+    "actor": "A",
+    "action": 103,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 589,
+    "actor": "C",
+    "action": 93,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 591,
+    "actor": "C",
+    "action": 94,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 593,
+    "actor": "B",
+    "action": 94,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 595,
+    "actor": "A",
+    "action": 104,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 597,
+    "actor": "B",
+    "action": 95,
+    "score": {
+      "C": 70,
+      "A": 10,
+      "B": 148
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 601,
+    "actor": "A",
+    "action": 105,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 122
+    },
+    "newpasses": {},
+    "transfers": {
+      "H01": {
+        "from": "B",
+        "to": "A",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "H02": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/history.py"
+      },
+      "H03": {
+        "from": "B",
+        "to": "A",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "H04": {
+        "from": "B",
+        "to": "A",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "H05": {
+        "from": "B",
+        "to": "A",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "X02": {
+        "from": "B",
+        "to": "A",
+        "points": 5,
+        "file": "mosslight/history.py"
+      }
+    }
+  },
+  {
+    "seq": 602,
+    "actor": "B",
+    "action": 96,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 122
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 603,
+    "actor": "C",
+    "action": 95,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 122
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 606,
+    "actor": "B",
+    "action": 97,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {
+      "E19": true
+    },
+    "transfers": {
+      "E19": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/gardening.py"
+      }
+    }
+  },
+  {
+    "seq": 607,
+    "actor": "C",
+    "action": 96,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 609,
+    "actor": "A",
+    "action": 106,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 611,
+    "actor": "A",
+    "action": 107,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 613,
+    "actor": "B",
+    "action": 98,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 615,
+    "actor": "C",
+    "action": 97,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 617,
+    "actor": "B",
+    "action": 99,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 620,
+    "actor": "C",
+    "action": 98,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 622,
+    "actor": "A",
+    "action": 108,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 624,
+    "actor": "A",
+    "action": 109,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 626,
+    "actor": "B",
+    "action": 100,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 628,
+    "actor": "C",
+    "action": 99,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 632,
+    "actor": "A",
+    "action": 110,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 633,
+    "actor": "C",
+    "action": 100,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 634,
+    "actor": "B",
+    "action": 101,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 636,
+    "actor": "A",
+    "action": 111,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 640,
+    "actor": "C",
+    "action": 101,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 642,
+    "actor": "A",
+    "action": 112,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 643,
+    "actor": "B",
+    "action": 102,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 644,
+    "actor": "C",
+    "action": 102,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 646,
+    "actor": "B",
+    "action": 103,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 648,
+    "actor": "C",
+    "action": 103,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 650,
+    "actor": "A",
+    "action": 113,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 654,
+    "actor": "C",
+    "action": 104,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 655,
+    "actor": "B",
+    "action": 104,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 656,
+    "actor": "A",
+    "action": 114,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 658,
+    "actor": "A",
+    "action": 115,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 123
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 662,
+    "actor": "B",
+    "action": 105,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {
+      "E22": true
+    },
+    "transfers": {
+      "E22": {
+        "from": null,
+        "to": "B",
+        "points": 1,
+        "file": "mosslight/nursery.py"
+      }
+    }
+  },
+  {
+    "seq": 663,
+    "actor": "C",
+    "action": 105,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 665,
+    "actor": "C",
+    "action": 106,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 667,
+    "actor": "B",
+    "action": 106,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 669,
+    "actor": "C",
+    "action": 107,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 671,
+    "actor": "A",
+    "action": 116,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 673,
+    "actor": "B",
+    "action": 107,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 675,
+    "actor": "C",
+    "action": 108,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 677,
+    "actor": "C",
+    "action": 109,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 679,
+    "actor": "A",
+    "action": 117,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 681,
+    "actor": "A",
+    "action": 118,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 683,
+    "actor": "C",
+    "action": 110,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 685,
+    "actor": "C",
+    "action": 111,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 687,
+    "actor": "C",
+    "action": 112,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 689,
+    "actor": "A",
+    "action": 119,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 691,
+    "actor": "B",
+    "action": 108,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 693,
+    "actor": "C",
+    "action": 113,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 696,
+    "actor": "B",
+    "action": 109,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 698,
+    "actor": "B",
+    "action": 110,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 700,
+    "actor": "A",
+    "action": 120,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 702,
+    "actor": "B",
+    "action": 111,
+    "score": {
+      "C": 70,
+      "A": 36,
+      "B": 124
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 705,
+    "actor": "A",
+    "action": 121,
+    "score": {
+      "C": 70,
+      "A": 56,
+      "B": 104
+    },
+    "newpasses": {},
+    "transfers": {
+      "I02": {
+        "from": "B",
+        "to": "A",
+        "points": 20,
+        "file": "mosslight/irrigation.py"
+      }
+    }
+  },
+  {
+    "seq": 706,
+    "actor": "B",
+    "action": 112,
+    "score": {
+      "C": 70,
+      "A": 56,
+      "B": 104
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 708,
+    "actor": "A",
+    "action": 122,
+    "score": {
+      "C": 70,
+      "A": 56,
+      "B": 104
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 710,
+    "actor": "C",
+    "action": 114,
+    "score": {
+      "C": 70,
+      "A": 56,
+      "B": 104
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 712,
+    "actor": "A",
+    "action": 123,
+    "score": {
+      "C": 70,
+      "A": 56,
+      "B": 104
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 715,
+    "actor": "C",
+    "action": 115,
+    "score": {
+      "C": 70,
+      "A": 56,
+      "B": 104
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 717,
+    "actor": "A",
+    "action": 124,
+    "score": {
+      "C": 70,
+      "A": 56,
+      "B": 104
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 719,
+    "actor": "A",
+    "action": 125,
+    "score": {
+      "C": 70,
+      "A": 56,
+      "B": 104
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 721,
+    "actor": "B",
+    "action": 113,
+    "score": {
+      "C": 70,
+      "A": 56,
+      "B": 104
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 722,
+    "actor": "A",
+    "action": 126,
+    "score": {
+      "C": 70,
+      "A": 56,
+      "B": 104
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 724,
+    "actor": "B",
+    "action": 114,
+    "score": {
+      "C": 70,
+      "A": 56,
+      "B": 104
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 727,
+    "actor": "A",
+    "action": 127,
+    "score": {
+      "C": 70,
+      "A": 56,
+      "B": 104
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 728,
+    "actor": "C",
+    "action": 116,
+    "score": {
+      "C": 70,
+      "A": 56,
+      "B": 104
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 731,
+    "actor": "C",
+    "action": 117,
+    "score": {
+      "C": 77,
+      "A": 56,
+      "B": 98
+    },
+    "newpasses": {
+      "F07": true
+    },
+    "transfers": {
+      "F02": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/analysis.py"
+      },
+      "F03": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/analysis.py"
+      },
+      "F04": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/analysis.py"
+      },
+      "F05": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/analysis.py"
+      },
+      "F07": {
+        "from": null,
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/analysis.py"
+      },
+      "F08": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/analysis.py"
+      },
+      "F09": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/analysis.py"
+      }
+    }
+  },
+  {
+    "seq": 732,
+    "actor": "A",
+    "action": 128,
+    "score": {
+      "C": 77,
+      "A": 56,
+      "B": 98
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 734,
+    "actor": "B",
+    "action": 115,
+    "score": {
+      "C": 77,
+      "A": 56,
+      "B": 98
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 736,
+    "actor": "A",
+    "action": 129,
+    "score": {
+      "C": 77,
+      "A": 56,
+      "B": 98
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 738,
+    "actor": "C",
+    "action": 118,
+    "score": {
+      "C": 77,
+      "A": 56,
+      "B": 98
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 740,
+    "actor": "B",
+    "action": 116,
+    "score": {
+      "C": 77,
+      "A": 56,
+      "B": 98
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 742,
+    "actor": "A",
+    "action": 130,
+    "score": {
+      "C": 77,
+      "A": 56,
+      "B": 98
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 744,
+    "actor": "B",
+    "action": 117,
+    "score": {
+      "C": 77,
+      "A": 56,
+      "B": 98
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 746,
+    "actor": "B",
+    "action": 118,
+    "score": {
+      "C": 77,
+      "A": 56,
+      "B": 98
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 749,
+    "actor": "B",
+    "action": 119,
+    "score": {
+      "C": 77,
+      "A": 56,
+      "B": 98
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 750,
+    "actor": "C",
+    "action": 119,
+    "score": {
+      "C": 77,
+      "A": 56,
+      "B": 98
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 753,
+    "actor": "A",
+    "action": 131,
+    "score": {
+      "C": 77,
+      "A": 77,
+      "B": 77
+    },
+    "newpasses": {},
+    "transfers": {
+      "P24": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P26": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P27": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P28": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P29": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P30": {
+        "from": "B",
+        "to": "A",
+        "points": 5,
+        "file": "mosslight/courier.py"
+      },
+      "P31": {
+        "from": "B",
+        "to": "A",
+        "points": 5,
+        "file": "mosslight/courier.py"
+      },
+      "P32": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P34": {
+        "from": "B",
+        "to": "A",
+        "points": 5,
+        "file": "mosslight/courier.py"
+      }
+    }
+  },
+  {
+    "seq": 755,
+    "actor": "C",
+    "action": 120,
+    "score": {
+      "C": 143,
+      "A": 51,
+      "B": 37
+    },
+    "newpasses": {},
+    "transfers": {
+      "H01": {
+        "from": "A",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "H02": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/history.py"
+      },
+      "H03": {
+        "from": "A",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "H04": {
+        "from": "A",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "H05": {
+        "from": "A",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/history.py"
+      },
+      "L01": {
+        "from": "B",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/ensembles.py"
+      },
+      "Q01": {
+        "from": "B",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/studies.py"
+      },
+      "Q02": {
+        "from": "B",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/studies.py"
+      },
+      "R02": {
+        "from": "B",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/ensembles.py"
+      },
+      "V01": {
+        "from": "B",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/campaigns.py"
+      },
+      "V02": {
+        "from": "B",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/campaigns.py"
+      },
+      "V03": {
+        "from": "B",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/campaigns.py"
+      },
+      "V04": {
+        "from": "B",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/campaigns.py"
+      },
+      "X02": {
+        "from": "A",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/history.py"
+      }
+    }
+  },
+  {
+    "seq": 757,
+    "actor": "A",
+    "action": 132,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {
+      "E21": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/nursery.py"
+      },
+      "E22": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/nursery.py"
+      },
+      "E23": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/nursery.py"
+      },
+      "E24": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/nursery.py"
+      },
+      "E25": {
+        "from": "C",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/planning.py"
+      },
+      "E26": {
+        "from": "C",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/planning.py"
+      },
+      "E27": {
+        "from": "C",
+        "to": "A",
+        "points": 5,
+        "file": "mosslight/planning.py"
+      },
+      "E29": {
+        "from": "C",
+        "to": "A",
+        "points": 5,
+        "file": "mosslight/planning.py"
+      },
+      "F10": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F11": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F12": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F13": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F14": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F15": {
+        "from": "B",
+        "to": "A",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      }
+    }
+  },
+  {
+    "seq": 758,
+    "actor": "C",
+    "action": 121,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 760,
+    "actor": "A",
+    "action": 133,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 762,
+    "actor": "C",
+    "action": 122,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 764,
+    "actor": "B",
+    "action": 120,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 766,
+    "actor": "C",
+    "action": 123,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 769,
+    "actor": "C",
+    "action": 124,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 770,
+    "actor": "B",
+    "action": 121,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 774,
+    "actor": "A",
+    "action": 134,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 775,
+    "actor": "B",
+    "action": 122,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 776,
+    "actor": "C",
+    "action": 125,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 778,
+    "actor": "C",
+    "action": 126,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 781,
+    "actor": "A",
+    "action": 135,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 782,
+    "actor": "C",
+    "action": 127,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 786,
+    "actor": "A",
+    "action": 136,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 787,
+    "actor": "B",
+    "action": 123,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 788,
+    "actor": "C",
+    "action": 128,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 790,
+    "actor": "A",
+    "action": 137,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 793,
+    "actor": "C",
+    "action": 129,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 795,
+    "actor": "B",
+    "action": 124,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 798,
+    "actor": "B",
+    "action": 125,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 799,
+    "actor": "A",
+    "action": 138,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 801,
+    "actor": "C",
+    "action": 130,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 803,
+    "actor": "A",
+    "action": 139,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 805,
+    "actor": "A",
+    "action": 140,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 807,
+    "actor": "B",
+    "action": 126,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 810,
+    "actor": "B",
+    "action": 127,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 812,
+    "actor": "B",
+    "action": 128,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 814,
+    "actor": "C",
+    "action": 131,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 816,
+    "actor": "B",
+    "action": 129,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 819,
+    "actor": "B",
+    "action": 130,
+    "score": {
+      "C": 131,
+      "A": 73,
+      "B": 27
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 822,
+    "actor": "C",
+    "action": 132,
+    "score": {
+      "C": 181,
+      "A": 26,
+      "B": 24
+    },
+    "newpasses": {},
+    "transfers": {
+      "F26": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/exchange.py"
+      },
+      "F27": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/exchange.py"
+      },
+      "F28": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/exchange.py"
+      },
+      "I02": {
+        "from": "A",
+        "to": "C",
+        "points": 20,
+        "file": "mosslight/irrigation.py"
+      },
+      "M01": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/save_merge.py"
+      },
+      "P24": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P26": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P27": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P28": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P29": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P30": {
+        "from": "A",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/courier.py"
+      },
+      "P31": {
+        "from": "A",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/courier.py"
+      },
+      "P32": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/courier.py"
+      },
+      "P34": {
+        "from": "A",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/courier.py"
+      },
+      "X03": {
+        "from": "A",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/history_exchange.py"
+      }
+    }
+  },
+  {
+    "seq": 824,
+    "actor": "C",
+    "action": 133,
+    "score": {
+      "C": 181,
+      "A": 26,
+      "B": 24
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 826,
+    "actor": "C",
+    "action": 134,
+    "score": {
+      "C": 181,
+      "A": 26,
+      "B": 24
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 828,
+    "actor": "C",
+    "action": 135,
+    "score": {
+      "C": 181,
+      "A": 26,
+      "B": 24
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 830,
+    "actor": "C",
+    "action": 136,
+    "score": {
+      "C": 181,
+      "A": 26,
+      "B": 24
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 832,
+    "actor": "C",
+    "action": 137,
+    "score": {
+      "C": 181,
+      "A": 26,
+      "B": 24
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 834,
+    "actor": "C",
+    "action": 138,
+    "score": {
+      "C": 181,
+      "A": 26,
+      "B": 24
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 836,
+    "actor": "C",
+    "action": 139,
+    "score": {
+      "C": 231
+    },
+    "newpasses": {},
+    "transfers": {
+      "E08": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/habitat.py"
+      },
+      "E09": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/habitat.py"
+      },
+      "E11": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/habitat.py"
+      },
+      "E13": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/habitat.py"
+      },
+      "E14": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/gardening.py"
+      },
+      "E15": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/gardening.py"
+      },
+      "E16": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/gardening.py"
+      },
+      "E17": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/gardening.py"
+      },
+      "E18": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/gardening.py"
+      },
+      "E19": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/gardening.py"
+      },
+      "E20": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/gardening.py"
+      },
+      "E21": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/nursery.py"
+      },
+      "E22": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/nursery.py"
+      },
+      "E23": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/nursery.py"
+      },
+      "E24": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/nursery.py"
+      },
+      "E25": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/planning.py"
+      },
+      "E26": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/planning.py"
+      },
+      "E27": {
+        "from": "A",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/planning.py"
+      },
+      "E29": {
+        "from": "A",
+        "to": "C",
+        "points": 5,
+        "file": "mosslight/planning.py"
+      },
+      "F10": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F11": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F12": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F13": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F14": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F15": {
+        "from": "A",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/notebook.py"
+      },
+      "F21": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/experiments.py"
+      },
+      "F22": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/experiments.py"
+      },
+      "F23": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/experiments.py"
+      },
+      "F25": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/experiments.py"
+      },
+      "I01": {
+        "from": "B",
+        "to": "C",
+        "points": 10,
+        "file": "mosslight/irrigation_flow.py"
+      },
+      "P12": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/commands.py"
+      },
+      "P13": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/commands.py"
+      },
+      "P23": {
+        "from": "B",
+        "to": "C",
+        "points": 1,
+        "file": "mosslight/render.py"
+      }
+    }
+  },
+  {
+    "seq": 838,
+    "actor": "C",
+    "action": 140,
+    "score": {
+      "C": 231
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 840,
+    "actor": "C",
+    "action": 141,
+    "score": {
+      "C": 231
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 842,
+    "actor": "C",
+    "action": 142,
+    "score": {
+      "C": 231
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 844,
+    "actor": "C",
+    "action": 143,
+    "score": {
+      "C": 231
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 847,
+    "actor": "C",
+    "action": 144,
+    "score": {
+      "C": 231
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 849,
+    "actor": "C",
+    "action": 145,
+    "score": {
+      "C": 231
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 851,
+    "actor": "C",
+    "action": 146,
+    "score": {
+      "C": 231
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 853,
+    "actor": "C",
+    "action": 147,
+    "score": {
+      "C": 231
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 855,
+    "actor": "C",
+    "action": 148,
+    "score": {
+      "C": 231
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 858,
+    "actor": "C",
+    "action": 149,
+    "score": {
+      "C": 231
+    },
+    "newpasses": {},
+    "transfers": {}
+  },
+  {
+    "seq": 860,
+    "actor": "C",
+    "action": 150,
+    "score": {
+      "C": 231
+    },
+    "newpasses": {},
+    "transfers": {}
+  }
+]

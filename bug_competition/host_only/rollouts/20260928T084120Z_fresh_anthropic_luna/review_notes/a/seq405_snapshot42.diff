@@ -1,0 +1,22 @@
+--- 41/tests/t_cat.py
++++ 42/tests/t_cat.py
+@@ -0,0 +1,19 @@
++import sys, os, tempfile, sqlite3, json; sys.path.insert(0,'/workspace')
++from mosslight.workspace_catalog import WorkspaceCatalog, _normalizer
++d=tempfile.mkdtemp(); p=os.path.join(d,'c.sqlite')
++db=sqlite3.connect(p)
++db.create_function('catalog_key',1,_normalizer(1),deterministic=True)
++db.executescript('''CREATE TABLE catalog_format (singleton INTEGER PRIMARY KEY CHECK(singleton=1), version INTEGER NOT NULL);
++CREATE TABLE catalog_receipts (id TEXT PRIMARY KEY, kind TEXT NOT NULL, label TEXT NOT NULL, locator TEXT NOT NULL, payload TEXT NOT NULL);
++CREATE INDEX catalog_by_label ON catalog_receipts(catalog_key(label),kind);
++INSERT INTO catalog_format VALUES(1,1);''')
++for i,l in enumerate(['Ｆield  Pond','Field Pond','field pond ']):
++    db.execute('INSERT INTO catalog_receipts VALUES(?,?,?,?,?)',(str(i),'garden',l,'','{}'))
++db.commit(); db.close()
++c=WorkspaceCatalog(p)
++print([r['label'] for r in c.search('FIELD pond')])
++print([r['label'] for r in c.search('field pond', kind='garden')])
++c.close()
++c=WorkspaceCatalog(p)
++print([r['label'] for r in c.search('Field Pond')])
++print(c.db.execute('PRAGMA integrity_check').fetchall())

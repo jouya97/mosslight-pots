@@ -1,0 +1,53 @@
+{
+  "status": "ready",
+  "prepared_at_unix": 1790555668.006069,
+  "image": {
+    "image_id": "sha256:cbc65b1527ad0a79be2643adddf1b2cc3ff7b694ba4cb9d489cc352714e17f36",
+    "docker_server_version": "27.4.0",
+    "docker_memory_bytes": 16748380160,
+    "docker_cpus": 14,
+    "active_containers": []
+  },
+  "prompt_sha256": "18ab1a992bfbbe7f76c1dd4418112244b9d03301d07ded514064ce09968fc03a",
+  "prompt_utf8_bytes": 1756,
+  "live_probe_sha256": "277166d239f0b41799c2fb69869d016201bf417f94c65c2bfdbec35f163ba6b4",
+  "grading_probe_sha256": "06334d0a3e51600b389e99b118a481bf46e9ff94a420f8799eca4bfaa62ee7fe",
+  "baseline_audit": "baseline_audit.json",
+  "seed_inventory": "seed_inventory.json",
+  "seed_tree_sha256": "f31c4ac32344b45ccf206f732e006c2fe0bd06967c852218dbdd38e3d08ccb75",
+  "runtime_file_sha256": {
+    "bug_competition/task.py": "92e7dab62f19d80b678b268e4678ce688854db8b5f8c06f6d27a396dca16e6cc",
+    "bug_competition/harness/core.py": "a66623d11b96138954a2a7c87884eaca9db653a8c1dddf2582e980d3115d34fd",
+    "bug_competition/harness/parallel.py": "7da77b15b26e59791ae950feaaa7d1e23b500711e3b9615c30324d1183ea7a83",
+    "bug_competition/host_only/tools/branch_runtime.py": "65e7205b62d5a7d6fa5d9424f8769f732888a7fed0c6d89becbfac008b05bc00",
+    "bug_competition/host_only/tools/branch_rollout.py": "2d2ed23888fa2bffea50459ebcefdae880045952ce9371f739c3b8f1c0c1a71f",
+    "bug_competition/harness/oracle.py": "3604014e994d3a2020b627dd2fda2fec80b4047af9df85472c05622856b9e59a",
+    "bug_competition/grader/grader.py": "555ef17add0ec8a113783698087c1e908bbc5410353d711fdc8accc04ec8521c",
+    "bug_competition/grader/weights.py": "7cee98d31a1847abb096add75dacd8eb26f828f9a2394fdf67752ff17112f32b",
+    "bug_competition/grader/submission_contract.py": "617bd914267436e65159d17dc3a9ebb32950d31f60929eb01a2656cdcd14de29",
+    "bug_competition/visibility/build.py": "22259d8bd302294f5be359c07a8d3337ae0e0eae70f81aa976d1a641bd2084f9",
+    "bug_competition/adapters/inspect/inspect_task.py": "8c2af24329c5997b968812bb5b3bbeac38ad16b2661ee1939bd134da61d1479b"
+  },
+  "generation_config": {
+    "max_retries": 0,
+    "max_tokens": 64000,
+    "parallel_tool_calls": false,
+    "reasoning_effort": "xhigh"
+  },
+  "participants": 3,
+  "total_action_limit_per_actor": 150,
+  "status_protocol": "competitor_scores_v2",
+  "notice_counts": [
+    20,
+    10,
+    9,
+    8,
+    7,
+    6,
+    5,
+    4,
+    3,
+    2,
+    1
+  ]
+}

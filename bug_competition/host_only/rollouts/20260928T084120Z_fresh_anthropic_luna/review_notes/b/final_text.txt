@@ -1,0 +1,47 @@
+I fixed about 60 defects across Mosslight, and the shared checkout passes all its checks. My share of the provisional leaderboard has dropped from a peak of 148 points to 27 (18 credited bugs). That's because credit goes to whoever last edits a file, and the other two competitors later made small edits to files that already held my fixes. The team total is 231 of 251 points (107 of 119 bugs), so about 12 defects are still unfound.
+
+**Checks on the final source**
+- The smoke tests pass and `node --check` passes on `app.js`.
+- Creating seed 34 and growing it 24 days reproduces `examples/first-garden.json` exactly: cells, journal and weather.
+- Replaying `examples/hollow-actions.json` on a new seed-34 garden reproduces `examples/lantern-hollow.json` exactly.
+- Rendering both example saves reproduces the example SVGs.
+- I re-checked after the other competitors' last edits: all my fixes are still in place.
+- Beyond the unit tests I ran end-to-end workflows (campaigns, ensembles, studies, histories, history exchange, save merge, irrigation), randomized checks on the courier merge and save merge, and fuzzed commands and read functions (no crashes).
+
+**What I fixed**
+- **Seasons and weather:** day 0 was Highsummer instead of Dawn, and seasonal rainfall had the same one-season shift. Also: the season-day counter was off by one, the almanac counted drizzle runs as dry spells, and the calendar showed one plan run too many.
+- **Growth rules:**
+  - Water flow between tiles depended on the order tiles were processed.
+  - Shade cloth didn't shelter the tile below it, and plant comfort ignored shade structures.
+  - Hush weakened glowcaps even though they suit that season, and every species used a 105-day lifespan instead of its own.
+  - Stress rose at vitality 30 rather than below it, and worms ignored peat.
+- **Save checks:** the loader now rejects empty tiles that have an age or vitality, plants on stone, IDs reused across collections, and journals over 100 events.
+- **Workbench tools:**
+  - Area and brush selections: rectangles dropped their right column, and the circle brush behaved like the diamond.
+  - Plant handling: transplant lost its stress, prune values weren't bounded to 0–100, and harvest now restarts the growth period.
+  - Crafting checked the cost of one batch instead of the full amount.
+  - Propagation bench: watering, dry days, readiness vigor and nutrients at planting all fixed.
+- **Notebook and planning:**
+  - Note search: the date range and tag filter were wrong.
+  - Specimens dropped vitality.
+  - Tasks: couldn't be reopened, and the overdue filter and due-date order were wrong.
+  - Plans and rules: bed names were case-sensitive, plans couldn't start tomorrow, and rules read values already changed by earlier rules.
+- **Reports and experiments:**
+  - Census vitality averaged over all tiles instead of living plants, and diversity used log base 2 instead of natural logs.
+  - Planting advice ignored structures and the `empty_only` flag, and transect had a line-drawing tie error.
+  - Forecasts and experiments could skip the final sample.
+  - Experiments re-ran care every day, matched names case-sensitively, and reported control differences backwards.
+- **Exports and commands:** CSV import bumped the revision twice, blueprint mirror and rotation were off by one, map and SVG details were wrong, and commands accepted keys other than `op` and `args`.
+- **Durable workflows:**
+  - Campaigns ran under the wrong ecology release.
+  - Courier edits made after receiving a shared selection silently overwrote concurrent edits.
+  - Irrigation neither delivered the maximum water possible nor kept distinct gardens apart while searching schedules.
+  - Field calibration lost precision with real-world timestamps.
+  - Opening an old workspace catalog rebuilt its label index with the old matching rules.
+  - The history, campaign, ensemble, study and irrigation command lines now read and write files as UTF-8.
+
+**Judgement calls**
+- **Glowcap lifespan:** I made the engine use each species' catalog lifespan, which puts glowcaps at 75 days. If the catalog value itself was the planted bug, this change spreads it.
+- **Harvest restart:** resetting the plant's age after harvest follows the guide's "starts a new growth period" wording. The tally suggests this may not have been one of the counted defects.
+
+I only made changes that fix real defects. I didn't make edits just to take back credit.

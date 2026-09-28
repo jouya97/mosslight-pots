@@ -1,0 +1,654 @@
+
+## B10 seq69 snapshots 0->1
+--- 0/mosslight/engine.py
++++ 1/mosslight/engine.py
+@@ -18,7 +18,7 @@
+ 
+ 
+ def season(day: int) -> str:
+-    return SEASONS[(day // 12 + 1) % 4]
++    return SEASONS[(day // 12) % 4]
+ 
+ 
+ def phase(day: int) -> int:
+@@ -103,7 +103,7 @@
+             before, cell = old[i], world.cells[i]
+             rng = random.Random(f"{world.seed}:{world.day}:{i}")
+             adjacent = [old[world.index(a, b)] for a, b in neighbors(world, x, y)]
+-            neighbor_mean = sum(world.cells[world.index(a, b)].moisture for a, b in neighbors(world, x, y)) // len(adjacent)
++            neighbor_mean = sum(n.moisture for n in adjacent) // len(adjacent)
+             shade = effective_shade(world, i)
+             evaporation = 3 + (3 if season_name == "Highsummer" else 0) + max(0, 50 - shade) // 22
+             cell.moisture = water_balance(world, i, before.moisture, neighbor_mean, weather_gain, evaporation)
+--- 0/mosslight/habitat.py
++++ 1/mosslight/habitat.py
+@@ -8,7 +8,7 @@
+     cell = world.cells[index]
+     x, y = index % world.width, index // world.width
+     canopy = 0
+-    for a, b in ((x, y), (x-1, y), (x+1, y), (x, y-1)):
++    for a, b in ((x, y), (x-1, y), (x+1, y), (x, y-1), (x, y+1)):
+         if 0 <= a < world.width and 0 <= b < world.height:
+             structure = world.workbench["tiles"][b * world.width + a]["structure"]
+             canopy += 15 if structure == "shade_cloth" else 0
+@@ -74,13 +74,13 @@
+         if tile["structure"] == "log":
+             cell.nutrients = min(100, cell.nutrients + 2)
+         if cell.species:
+-            tile["stress"] = min(100, tile["stress"]+5) if cell.vitality <= 30 else max(0, tile["stress"]-3)
++            tile["stress"] = min(100, tile["stress"]+5) if cell.vitality < 30 else max(0, tile["stress"]-3)
+         else:
+             tile["stress"] = 0
+     healthy_clover = sum(c.species == "clover" and c.vitality >= 50 for c in world.cells)
+     houses = sum(t["structure"] == "bee_house" for t in world.workbench["tiles"])
+     glowing = sum(c.species == "glowcap" and c.vitality >= 40 for c in world.cells)
+-    wet_rich = sum(c.moisture >= 45 and c.nutrients >= 40 and t["terrain"] == "soil"
++    wet_rich = sum(c.moisture >= 45 and c.nutrients >= 40 and t["terrain"] in ("soil", "peat")
+                    for c, t in zip(world.cells, world.workbench["tiles"]))
+     world.workbench["visitors"] = {
+         "bees": 0 if season(world.day) == "Hush" else healthy_clover//3 + min(houses, healthy_clover),
+--- 0/mosslight/model.py
++++ 1/mosslight/model.py
+@@ -85,7 +85,7 @@
+                 species = raw.get("species")
+                 if species is not None and species not in SPECIES:
+                     raise ValueError("Unknown species")
+-                if species is None and (values[3] and values[4]):
++                if species is None and (values[3] or values[4]):
+                     raise ValueError("Empty cell cannot have age or vitality")
+                 cells.append(Cell(values[0], values[1], values[2], species, values[3], values[4]))
+             journal = data.get("journal", [])
+--- 0/mosslight/state.py
++++ 1/mosslight/state.py
+@@ -139,7 +139,7 @@
+             if type(value) not in (int, float) or not 0 <= value <= 100:
+                 raise ValueError(f"Invalid history {key}")
+     for cell, tile in zip(world.cells, tiles):
+-        if tile["terrain"] == "pond" and cell.species is not None:
++        if tile["terrain"] in ("pond", "stone") and cell.species is not None:
+             raise ValueError("Ponds and stones cannot contain plants")
+     return state
+ 
+--- 0/mosslight/weather.py
++++ 1/mosslight/weather.py
+@@ -8,7 +8,7 @@
+ def calendar_day(day):
+     from .engine import season
+     integer(day,"Day")
+-    return {"day":day,"year":day//48+1,"season":season(day),"season_day":(day+1)%12+1,
++    return {"day":day,"year":day//48+1,"season":season(day),"season_day":day%12+1,
+             "year_day":day%48+1,"days_until_season":12-day%12,"days_until_year":48-day%48}
+ 
+ 
+@@ -18,7 +18,7 @@
+         raise ValueError("Seed must be an integer")
+     integer(day,"Day")
+     rng = random.Random(f"{seed}:weather:{day}")
+-    wetness = (0.46,0.20,0.31,0.37)[(day//12+1)%4]
++    wetness = (0.46,0.20,0.31,0.37)[(day//12)%4]
+     roll = rng.random()
+     weather = "storm" if roll < wetness*.12 else "rain" if roll < wetness*.55 else "drizzle" if roll < wetness else "clear"
+     return {**calendar_day(day),"weather":weather,"rainfall":RAINFALL[weather]}
+@@ -33,7 +33,7 @@
+     totals = {name:sum(e["weather"]==name for e in entries) for name in RAINFALL}
+     longest,current = 0,0
+     for entry in entries:
+-        current = current+1 if entry["rainfall"] == 8 else 0
++        current = current+1 if entry["rainfall"] == 0 else 0
+         longest = max(longest,current)
+     return {"start":start,"end":start+days-1,"days":entries,"weather_days":totals,
+             "total_rainfall":sum(e["rainfall"] for e in entries),"longest_dry_spell":longest}
+
+## B15 seq99 snapshots 4->5
+--- 4/mosslight/engine.py
++++ 5/mosslight/engine.py
+@@ -2,6 +2,7 @@
+ from __future__ import annotations
+ 
+ import random
++from .catalog import SPECIES_GUIDE
+ from .model import ACTIONS, Cell, SPECIES, World
+ 
+ SEASONS = ("Dawn", "Highsummer", "Ember", "Hush")
+@@ -110,15 +111,15 @@
+             cell.nutrients = clamp(before.nutrients + (0 if before.species else 1))
+             if before.species:
+                 desired_moisture, desired_shade, upkeep = PREFERENCES[before.species]
+-                comfort = 8 - abs(cell.moisture - desired_moisture) // 9 - abs(cell.shade - desired_shade) // 13
+-                if season_name == "Hush":
++                comfort = 8 - abs(cell.moisture - desired_moisture) // 9 - abs(shade - desired_shade) // 13
++                if season_name == "Hush" and before.species != "glowcap":
+                     comfort -= 2
+                 if cell.nutrients < upkeep:
+                     comfort -= 7
+                 cell.vitality = clamp(before.vitality + comfort - 3)
+                 cell.nutrients = clamp(before.nutrients - upkeep + (2 if cell.vitality < 25 else 0))
+                 cell.age = before.age + 1
+-                if cell.vitality == 0 or cell.age > 105:
++                if cell.vitality == 0 or cell.age > SPECIES_GUIDE[before.species]["lifespan"]:
+                     cell.species, cell.age, cell.vitality = None, 0, 0
+                     cell.nutrients = clamp(cell.nutrients + 15)
+                     losses += 1
+
+## B19 seq121 snapshots 7->8
+--- 7/mosslight/gardening.py
++++ 8/mosslight/gardening.py
+@@ -10,7 +10,7 @@
+     world.index(x2, y2)
+     left, right = sorted((x1, x2))
+     top, bottom = sorted((y1, y2))
+-    return [(x, y) for y in range(top, bottom+1) for x in range(left, right)]
++    return [(x, y) for y in range(top, bottom+1) for x in range(left, right+1)]
+ 
+ 
+ def brush(world, x, y, radius=1, shape="diamond"):
+@@ -23,7 +23,7 @@
+             dx, dy = abs(a-x), abs(b-y)
+             if shape == "diamond" and dx+dy > radius:
+                 continue
+-            if shape == "circle" and dx+dy > radius:
++            if shape == "circle" and dx*dx+dy*dy > radius*radius:
+                 continue
+             result.append((a, b))
+     return result
+@@ -54,8 +54,8 @@
+     target.species, target.age, target.vitality = source.species, source.age, max(1, source.vitality-10)
+     source.species, source.age, source.vitality = None, 0, 0
+     source_index = world.index(x, y)
++    tile["stress"] = world.workbench["tiles"][source_index]["stress"]
+     world.workbench["tiles"][source_index]["stress"] = 0
+-    tile["stress"] = 0
+     world.revision += 1
+ 
+ 
+@@ -63,8 +63,8 @@
+     cell = world.cell(x, y)
+     if cell.species is None:
+         raise ValueError("There is no plant to prune")
+-    cell.age = cell.age-5
+-    cell.vitality = cell.vitality+8
++    cell.age = max(0, cell.age-5)
++    cell.vitality = min(100, cell.vitality+8)
+     world.revision += 1
+ 
+ 
+@@ -118,7 +118,7 @@
+     info = RECIPES[recipe]
+     stock = world.workbench["inventory"]
+     for key, cost in info["cost"].items():
+-        if stock[key] < cost:
++        if stock[key] < cost*amount:
+             raise ValueError(f"Need {cost*amount} {key}")
+     for key, count in info["makes"].items():
+         if stock[key] + count*amount > 1_000_000:
+--- 7/mosslight/nursery.py
++++ 8/mosslight/nursery.py
+@@ -41,7 +41,7 @@
+     batch = find_entry(world,"nursery",ident)
+     if batch["status"] not in ("growing","ready"):
+         raise ValueError("Only living nursery batches can be watered")
+-    batch["hydration"] = min(3,batch["hydration"]+1)
++    batch["hydration"] = 3
+     world.revision += 1
+ 
+ 
+@@ -55,7 +55,6 @@
+             batch["age"] += 1
+             batch["vitality"] = min(100,batch["vitality"]+(3 if batch["status"] == "growing" else 0))
+         else:
+-            batch["age"] += 1
+             batch["vitality"] = max(0,batch["vitality"]-20)
+         if batch["vitality"] == 0:
+             batch["status"] = "failed"
+@@ -74,7 +73,7 @@
+     if cell.species or not TERRAINS[terrain]["plantable"]:
+         raise ValueError("Plant seedlings on empty plantable ground")
+     cell.species,cell.age,cell.vitality = batch["species"],0,batch["vitality"]
+-    cell.nutrients = max(0,cell.nutrients-4) if batch["count"] == 1 else cell.nutrients
++    cell.nutrients = max(0,cell.nutrients-4)
+     batch["count"] -= 1
+     if batch["count"] == 0:
+         batch["status"] = "planted"
+
+## B20 seq129 snapshots 10->11
+--- 10/mosslight/notebook.py
++++ 11/mosslight/notebook.py
+@@ -58,8 +58,8 @@
+         raise ValueError("End day precedes start day")
+     if tag is not None:
+         tag = text(tag, "Tag", 32).casefold()
+-    return copy.deepcopy([n for n in world.workbench["notes"] if start <= n["day"] < end
+-                          and query in n["text"].casefold() and (tag is None or any(tag in item for item in n["tags"]))])
++    return copy.deepcopy([n for n in world.workbench["notes"] if start <= n["day"] <= end
++                          and query in n["text"].casefold() and (tag is None or tag in n["tags"])])
+ 
+ 
+ def press_specimen(world, x, y, label=None):
+@@ -69,7 +69,7 @@
+     label = text(label or cell.species, "Specimen label", 100)
+     _room(world, "specimens")
+     entry = {"id": identifier(world.workbench), "day": world.day, "label": label,
+-             "tile": [x, y], **{k:v for k,v in cell.to_dict().items() if k != "vitality"}}
++             "tile": [x, y], **cell.to_dict()}
+     world.workbench["specimens"].append(entry)
+     world.revision += 1
+     return entry.copy()
+@@ -88,7 +88,7 @@
+ def complete_task(world, ident, done=True):
+     boolean(done, "Completed")
+     entry = find_entry(world, "tasks", ident)
+-    entry["done"] = True
++    entry["done"] = done
+     world.revision += 1
+ 
+ 
+@@ -101,8 +101,8 @@
+                 or (status == "done" and t["done"])
+                 or (not t["done"] and (status == "open" or
+                     (status == "due" and t["due"] <= world.day) or
+-                    (status == "overdue" and t["due"] <= world.day)))]
+-    return copy.deepcopy(sorted(selected, key=lambda t: t["id"]))
++                    (status == "overdue" and t["due"] < world.day)))]
++    return copy.deepcopy(sorted(selected, key=lambda t: (t["due"], t["id"])))
+ 
+ 
+ def rename_garden(world, title):
+--- 10/mosslight/planning.py
++++ 11/mosslight/planning.py
+@@ -9,7 +9,7 @@
+ def add_bed(world, name, tiles):
+     name = text(name, "Bed name", 80)
+     points = coordinates(world, tiles)
+-    if any(b["name"] == name for b in world.workbench["beds"]):
++    if any(b["name"].casefold() == name.casefold() for b in world.workbench["beds"]):
+         raise ValueError("A bed with that name already exists")
+     _room(world, "beds")
+     entry = {"id": identifier(world.workbench), "name": name, "tiles": [list(p) for p in points]}
+@@ -30,7 +30,7 @@
+ 
+ def schedule(world, name, day, tiles, action, repeat=0, runs=1):
+     name = text(name, "Plan name", 80)
+-    integer(day, "Scheduled day", world.day+2)
++    integer(day, "Scheduled day", world.day+1)
+     integer(repeat, "Repeat interval", 0, 365)
+     integer(runs, "Runs", 1, 1000)
+     if runs > 1 and repeat == 0:
+@@ -108,11 +108,13 @@
+ def run_rules(world):
+     from .engine import act, log
+     failed = set()
++    snapshot = [(c.moisture, c.nutrients, c.vitality) for c in world.cells]
++    metrics = {"moisture": 0, "nutrients": 1, "vitality": 2}
+     for rule in sorted(world.workbench["rules"], key=lambda r: r["id"]):
+         if not rule["enabled"]:
+             continue
+         for x, y in rule["tiles"]:
+-            value = getattr(world.cell(x, y), rule["metric"])
++            value = snapshot[world.index(x, y)][metrics[rule["metric"]]]
+             applies = value < rule["threshold"] if rule["operator"] == "below" else value > rule["threshold"]
+             if applies:
+                 try:
+
+## B24 seq164 snapshots 14->15
+--- 14/mosslight/analysis.py
++++ 15/mosslight/analysis.py
+@@ -13,12 +13,12 @@
+     living = [c for c in cells if c.species]
+     population = {s: sum(c.species == s for c in cells) for s in SPECIES_GUIDE}
+     averages = {k: round(sum(getattr(c,k) for c in cells)/len(cells), 2) for k in ("moisture", "nutrients", "shade")}
+-    averages["vitality"] = round(sum(c.vitality for c in living)/len(cells), 2) if living else 0
++    averages["vitality"] = round(sum(c.vitality for c in living)/len(living), 2) if living else 0
+     proportions = [v/len(living) for v in population.values() if v] if living else []
+     return {"tiles": len(cells), "occupied": len(living), "empty": len(cells)-len(living),
+             "coverage": round(100*len(living)/len(cells), 1), "population": population,
+             "averages": averages, "richness": len(proportions),
+-            "diversity": round(-sum(p*math.log2(p) for p in proportions), 4),
++            "diversity": round(-sum(p*math.log(p) for p in proportions), 4),
+             "endangered": sum(c.vitality < 25 for c in living),
+             "oldest": max((c.age for c in living), default=0)}
+ 
+@@ -29,7 +29,7 @@
+     index = world.index(x,y)
+     cell = world.cells[index]
+     tile = world.workbench["tiles"][index]
+-    shade = cell.shade
++    shade = effective_shade(world, index)
+     info = SPECIES_GUIDE[species]
+     if not TERRAINS[tile["terrain"]]["plantable"]:
+         return {"score": 0, "reasons": ["Terrain cannot support plants"], "effective_shade": shade}
+@@ -55,7 +55,7 @@
+     result = []
+     for y in range(world.height):
+         for x in range(world.width):
+-            if world.cell(x,y).species:
++            if empty_only and world.cell(x,y).species:
+                 continue
+             if not TERRAINS[world.workbench["tiles"][world.index(x,y)]["terrain"]]["plantable"]:
+                 continue
+@@ -103,7 +103,7 @@
+         if (x1,y1) == (x2,y2):
+             break
+         double = 2*error
+-        if double > dy:
++        if double >= dy:
+             error += dy
+             x1 += sx
+         if double <= dx:
+@@ -121,7 +121,7 @@
+     timeline = [{"day": trial.day, "weather": trial.weather, **census(trial)}]
+     for offset in range(1, days+1):
+         step(trial)
+-        if offset % every == 0:
++        if offset % every == 0 or offset == days:
+             timeline.append({"day": trial.day, "weather": trial.weather, **census(trial)})
+     return {"start_day": world.day, "end_day": trial.day, "timeline": timeline, "world": trial.to_dict()}
+ 
+--- 14/mosslight/experiments.py
++++ 15/mosslight/experiments.py
+@@ -19,7 +19,7 @@
+     for treatment in treatments:
+         mapping(treatment,"Treatment")
+         name = text(treatment.get("name"),"Treatment name",80)
+-        if name in names:
++        if name.casefold() in names:
+             raise ValueError("Treatment names must be unique; control is reserved")
+         names.add(name.casefold())
+         events = sequence(treatment.get("events",[]),"Treatment events",100)
+@@ -37,16 +37,16 @@
+         samples = []
+         for offset in range(days+1):
+             for event in treatment["events"]:
+-                if event["offset"] <= offset:
++                if event["offset"] == offset:
+                     execute(trial,event["command"])
+             if offset:
+                 step(trial)
+-            if offset%every == 0:
++            if offset%every == 0 or offset == days:
+                 samples.append({"offset":offset,"day":trial.day,**census(trial)})
+         worlds.append(trial)
+         branches.append({"name":treatment["name"],"samples":samples,"final":census(trial)})
+     for branch,trial in zip(branches,worlds):
+-        delta = compare(trial,worlds[0])
++        delta = compare(worlds[0],trial)
+         branch["against_control"] = {key:delta[key] for key in ("changed_tiles","population_delta","coverage_delta")}
+     return {"start_day":world.day,"end_day":world.day+days,"branches":branches}
+ 
+
+## B27 seq179 snapshots 16->17
+--- 16/mosslight/exchange.py
++++ 17/mosslight/exchange.py
+@@ -46,7 +46,6 @@
+         raise ValueError("Survey must contain every tile")
+     trial = World.from_dict(trial.to_dict())
+     trial.revision = world.revision+1
+-    trial.revision += 1
+     world.__dict__.update(trial.__dict__)
+ 
+ 
+@@ -95,10 +94,10 @@
+     width,height = data["width"],data["height"]
+     if mirror:
+         for tile in data["tiles"]:
+-            tile["x"] = width-tile["x"]
++            tile["x"] = width-1-tile["x"]
+     for _ in range(turns):
+         for tile in data["tiles"]:
+-            tile["x"],tile["y"] = height-tile["y"],tile["x"]
++            tile["x"],tile["y"] = height-1-tile["y"],tile["x"]
+         width,height = height,width
+     data.update(width=width,height=height)
+     data["tiles"].sort(key=lambda t:(t["y"],t["x"]))
+
+## B29 seq190 snapshots 19->20
+--- 19/mosslight/render.py
++++ 20/mosslight/render.py
+@@ -81,7 +81,7 @@
+             if settings["terrain"] != "soil":
+                 soil = TERRAIN_COLORS[settings["terrain"]]
+             r = 21.5
+-            attrs = 'tabindex="0" role="button"'
++            attrs = 'tabindex="0" role="button"' if interactive else ''
+             pieces.append(f'<g class="tile" data-x="{x}" data-y="{y}" {attrs}>')
+             pieces.append(f'<rect x="{cx-r:.1f}" y="{cy-r:.1f}" width="{r*2:.1f}" height="{r*2:.1f}" rx="10" fill="{soil}" opacity="{.65 + damp*.19:.2f}"/>')
+             if damp > .62:
+
+## B34 seq223 snapshots 23->24
+--- 23/mosslight/commands.py
++++ 24/mosslight/commands.py
+@@ -38,7 +38,7 @@
+ 
+ def execute(world, command):
+     mapping(command,"Command")
+-    if not {"op"}.issubset(command):
++    if "op" not in command or set(command) - {"op", "args"}:
+         raise ValueError("Command accepts only op and args")
+     args = mapping(command.get("args",{}),"Command arguments")
+     trial = World.from_dict(copy.deepcopy(world.to_dict()))
+
+## B50 seq323 snapshots 33->34
+--- 33/mosslight/courier.py
++++ 34/mosslight/courier.py
+@@ -40,7 +40,7 @@
+     peer = packet["peer"]
+     counter = packet["counter"] + 1
+     event = {"peer": peer, "counter": counter, "record": record, "field": field,
+-             "value": value, "context": dict(packet["clock"])}
++             "value": value, "context": record_clock(packet, record)}
+     packet["events"][_dot_key(peer, counter)] = event
+     packet["clock"][peer] = counter
+     packet["counter"] = counter
+@@ -134,8 +134,7 @@
+     result["events"] = {_dot_key(e["peer"], e["counter"]): copy.deepcopy(e)
+                         for events in heads.values() for e in events}
+     records = {e["record"] for e in packet["events"].values()} | packet["contexts"].keys()
+-    result["contexts"] = {record: _join(packet["contexts"].get(record, {}), packet["clock"])
+-                          for record in records}
++    result["contexts"] = {record: record_clock(packet, record) for record in records}
+     return result
+ 
+ 
+
+## B57 seq362 snapshots 36->37
+--- 36/mosslight/field_calibration.py
++++ 37/mosslight/field_calibration.py
+@@ -14,10 +14,9 @@
+     ys = [y for _, y in values]
+     center = math.fsum(t - origin for t, _ in values)/len(values)
+     mean = math.fsum(ys)/len(ys)
+-    times = [t for t, _ in values]
+-    total = math.fsum(times)
+-    spread = math.fsum(t*t for t in times) - total*total/len(times)
+-    covariance = math.fsum(t*y for t,y in values) - total*math.fsum(ys)/len(times)
++    deviations = [(t - origin) - center for t, _ in values]
++    spread = math.fsum(d*d for d in deviations)
++    covariance = math.fsum(d*(y - mean) for d, y in zip(deviations, ys))
+     slope = covariance/spread if spread > 0 else 0.0
+     prediction = mean + slope*((at-origin)-center)
+     return max(0.0, min(100.0, prediction))
+
+## B58 seq370 snapshots 37->38
+--- 37/mosslight/irrigation_flow.py
++++ 38/mosslight/irrigation_flow.py
+@@ -48,7 +48,7 @@
+         if node==sink:return amount
+         seen.add(node)
+         for edge in graph.get(node,[]):
+-            if edge.capacity <= 0 or edge.end in seen or edge.pipe is None:
++            if edge.capacity <= 0 or edge.end in seen:
+                 continue
+             sent=route(edge.end,min(amount,edge.capacity),seen)
+             if sent:
+
+## B59 seq377 snapshots 38->39
+--- 38/mosslight/irrigation.py
++++ 39/mosslight/irrigation.py
+@@ -87,7 +87,7 @@
+ 
+ 
+ def _identity(state):
+-    return encoded({'measurement':census(_world(state['world'])),'offset':state['offset'],'remaining':state['remaining']})
++    return encoded({'world':state['world'],'offset':state['offset'],'remaining':state['remaining']})
+ 
+ 
+ def _reduce(states):
+
+## B60 seq391 snapshots 39->40
+--- 39/mosslight/workspace_catalog.py
++++ 40/mosslight/workspace_catalog.py
+@@ -42,8 +42,8 @@
+         self.db.create_function('catalog_key', 1, _normalizer(version), deterministic=True)
+ 
+     def _upgrade_keys(self):
++        self._install_key(CURRENT_FORMAT)
+         self.db.execute('REINDEX catalog_by_label')
+-        self._install_key(CURRENT_FORMAT)
+ 
+     def close(self):
+         self.db.close()
+
+## B65 seq414 snapshots 42->43
+--- 42/mosslight/state.py
++++ 43/mosslight/state.py
+@@ -50,7 +50,6 @@
+     ids = set()
+     bed_names = set()
+     for name in ("notes", "specimens", "tasks", "beds", "plans", "rules", "nursery"):
+-        ids = set()
+         for item in sequence(state[name], name, 500):
+             mapping(item, name)
+             ident = integer(item.get("id"), "Identifier", 1)
+
+## B68 seq449 snapshots 44->45
+--- 44/mosslight/model.py
++++ 45/mosslight/model.py
+@@ -89,7 +89,7 @@
+                     raise ValueError("Empty cell cannot have age or vitality")
+                 cells.append(Cell(values[0], values[1], values[2], species, values[3], values[4]))
+             journal = data.get("journal", [])
+-            if not isinstance(journal, list) or len(journal) > 200 or any(
++            if not isinstance(journal, list) or len(journal) > 100 or any(
+                 not isinstance(e, dict) or type(e.get("day")) is not int or not isinstance(e.get("text"), str)
+                 or len(e["text"]) > 240 for e in journal
+             ):
+
+## B86 seq531 snapshots 47->48
+--- 47/mosslight/campaigns.py
++++ 48/mosslight/campaigns.py
+@@ -375,7 +375,7 @@
+     try:
+         if args.operation == "create":
+             print(store.create(load(args.garden), args.days,
+-                               json.loads(Path(args.treatments).read_text()), args.every, args.version))
++                               json.loads(Path(args.treatments).read_text(encoding="utf-8")), args.every, args.version))
+         elif args.operation == "fork":
+             print(store.fork(args.campaign, args.branch, args.offset, days=args.days, version=args.version))
+         elif args.operation == "compact":
+--- 47/mosslight/ensembles.py
++++ 48/mosslight/ensembles.py
+@@ -309,9 +309,9 @@
+     store = EnsembleStore(args.database)
+     try:
+         if args.operation == "create":
+-            result = store.create(**json.loads(Path(args.specification).read_text()))
++            result = store.create(**json.loads(Path(args.specification).read_text(encoding="utf-8")))
+         elif args.operation == "edit":
+-            result = store.edit(args.ensemble, json.loads(Path(args.changes).read_text()), args.expected_revision)
++            result = store.edit(args.ensemble, json.loads(Path(args.changes).read_text(encoding="utf-8")), args.expected_revision)
+         elif args.operation == "work":
+             integer(args.steps, "Work limit", 1, 100000)
+             for _ in range(args.steps):
+--- 47/mosslight/history.py
++++ 48/mosslight/history.py
+@@ -499,9 +499,9 @@
+         elif op == "fork":
+             result = store.fork(args.branch, args.label)
+         elif op == "append":
+-            result = store.append(args.branch, json.loads(Path(args.input).read_text()), args.revision)
++            result = store.append(args.branch, json.loads(Path(args.input).read_text(encoding="utf-8")), args.revision)
+         elif op == "correct":
+-            result = store.correct(args.branch, json.loads(Path(args.input).read_text()), args.label)
++            result = store.correct(args.branch, json.loads(Path(args.input).read_text(encoding="utf-8")), args.label)
+         elif op == "pick":
+             result = store.cherry_pick(args.source, args.branch, args.events, args.label)
+         elif op == "rebase":
+@@ -510,7 +510,7 @@
+             result = store.snapshot(args.branch)
+             if result["status"] != "ready":
+                 raise ValueError("Resolve the history conflict before exporting a complete garden")
+-            Path(args.output).write_text(json.dumps(result["world"], ensure_ascii=False, indent=2) + "\n")
++            Path(args.output).write_text(json.dumps(result["world"], ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+             result = {"revision": result["revision"], "output": args.output}
+         print(json.dumps(result, ensure_ascii=False, indent=2))
+         return 0
+--- 47/mosslight/irrigation.py
++++ 48/mosslight/irrigation.py
+@@ -127,11 +127,11 @@
+ 
+ def save_design(path,result):
+     data=encoded(result)
+-    Path(path).write_text(data+'\n')
++    Path(path).write_text(data+'\n',encoding='utf-8')
+ 
+ 
+ def load_design(path):
+-    result=json.loads(Path(path).read_text())
++    result=json.loads(Path(path).read_text(encoding="utf-8"))
+     if hashlib.sha256(encoded(result['problem']).encode()).hexdigest()!=result['digest']:raise ValueError('Design input digest mismatch')
+     state=replay(result['problem'],result['schedule'])
+     if state['world']!=result['world'] or objective(state)!=result['score'] or state['trace']!=result['trace']:raise ValueError('Design result does not replay')
+@@ -142,7 +142,7 @@
+     parser=argparse.ArgumentParser(description=__doc__)
+     parser.add_argument('problem',type=Path);parser.add_argument('output',type=Path)
+     args=parser.parse_args()
+-    data=json.loads(args.problem.read_text())
++    data=json.loads(args.problem.read_text(encoding="utf-8"))
+     problem=definition(**data)
+     result=solve(problem);save_design(args.output,result)
+     print(json.dumps({'score':result['score'],'remaining':result['remaining'],'schedule':result['schedule']}))
+--- 47/mosslight/studies.py
++++ 48/mosslight/studies.py
+@@ -342,7 +342,7 @@
+     store = StudyStore(args.database)
+     try:
+         if args.operation == "create":
+-            result = store.create(**json.loads(Path(args.specification).read_text()))
++            result = store.create(**json.loads(Path(args.specification).read_text(encoding="utf-8")))
+         elif args.operation == "work":
+             integer(args.steps, "Work steps", 1, 100000)
+             integer(args.offsets, "Work offsets", 1, 121)
+@@ -351,7 +351,7 @@
+                     break
+             result = store.status(args.study)
+         elif args.operation == "edit":
+-            result = store.edit_future(args.study, json.loads(Path(args.changes).read_text()), args.expected_revision)
++            result = store.edit_future(args.study, json.loads(Path(args.changes).read_text(encoding="utf-8")), args.expected_revision)
+         elif args.operation == "report":
+             result = store.report(args.study, args.stage)
+         else:
+
+## B97 seq606 snapshots 54->55
+--- 54/mosslight/gardening.py
++++ 55/mosslight/gardening.py
+@@ -80,7 +80,7 @@
+     if stock[info["resource"]] + amount > 1_000_000:
+         raise ValueError("Inventory is full")
+     stock[info["resource"]] += amount
+-    cell.age = max(0, cell.age-5)
++    cell.age = 0
+     cell.vitality = max(1, cell.vitality-15)
+     world.revision += 1
+     return {info["resource"]: amount}
+
+## B105 seq662 snapshots 59->60
+--- 59/mosslight/nursery.py
++++ 60/mosslight/nursery.py
+@@ -53,7 +53,7 @@
+         if batch["hydration"]:
+             batch["hydration"] -= 1
+             batch["age"] += 1
+-            batch["vitality"] = min(100,batch["vitality"]+(3 if batch["status"] == "growing" else 0))
++            batch["vitality"] = min(100,batch["vitality"]+3)
+         else:
+             batch["vitality"] = max(0,batch["vitality"]-20)
+         if batch["vitality"] == 0:

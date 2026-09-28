@@ -1,0 +1,20 @@
+--- 49/tests/t_irr.py
++++ 50/tests/t_irr.py
+@@ -0,0 +1,17 @@
++import sys, os, tempfile, json; sys.path.insert(0,'/workspace')
++from mosslight import create
++from mosslight.irrigation import definition, solve, replay, save_design, load_design, objective
++w=create(34,6,4)
++layout={"source":"tank","pipes":[{"from":"tank","to":"north","capacity":20},{"from":"tank","to":"south","capacity":20}],
++ "outlets":{"north":{"demand":20,"tiles":[[0,0],[1,0]]},"south":{"demand":20,"tiles":[[0,3],[1,3]]}}}
++choices=[{"name":"closed","open":[]},{"name":"north","open":["north"]},{"name":"both","open":["north","south"]}]
++p=definition(w,layout,choices,3,30,[5,0,5])
++r=solve(p); print(r['schedule'], r['score'], r['remaining'], r['explored'])
++import itertools
++best=None
++for s in itertools.product(range(3),repeat=3):
++    st=replay(p,list(s)); key=(objective(st),st['remaining'])
++    if best is None or key>best[0]: best=(key,s)
++print(best)
++d=tempfile.mkdtemp(); f=os.path.join(d,'r.json'); save_design(f,r); print(load_design(f)['score'])
++print(w.cells[0].moisture, p['world']['cells'][0]['moisture'])

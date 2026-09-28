@@ -104,6 +104,20 @@ class ProvisionalOracleTests(unittest.TestCase):
                 self.assertTrue(provisional(root, self.probes[ident]))
                 self.assertFalse(final(root, self.probes[ident]))
 
+    def test_oracle_cleanup_timeout_is_fatal_and_identifies_stage(self):
+        from bug_competition.harness.core import CommandTimeout
+        def fake(command, seconds, **kwargs):
+            if command[:3] == ['docker', 'rm', '-f']:
+                raise CommandTimeout('command deadline')
+            return {'exit_code': 0, 'output': ''}
+        oracle = DockerOracle(DEFAULT_MANIFEST)
+        oracle.programs = {'H01': oracle.programs['H01']}
+        root = self.tree()
+        with patch('bug_competition.harness.oracle.process', side_effect=fake):
+            with self.assertRaisesRegex(RuntimeError, 'provisional oracle container cleanup timed out') as caught:
+                oracle(root, 60)
+        self.assertIsInstance(caught.exception.__cause__, CommandTimeout)
+
     def test_containers_use_grader_boundary_and_mount_only_their_own_check(self):
         commands = []
         def fake(command, seconds, **kwargs):

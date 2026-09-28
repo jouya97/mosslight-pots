@@ -1,0 +1,359 @@
+{
+  "source_contract": {
+    "model": "openrouter/anthropic/claude-opus-5.5",
+    "tools": [
+      {
+        "name": "shell",
+        "description": "Run shell commands, including reading/writing files and tests, in shared checkout.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "format": null,
+              "description": null,
+              "default": null,
+              "enum": null,
+              "items": null,
+              "properties": null,
+              "additionalProperties": null,
+              "anyOf": null,
+              "required": null,
+              "pattern": null,
+              "minLength": null,
+              "maxLength": null,
+              "minimum": null,
+              "maximum": null,
+              "examples": null
+            }
+          },
+          "required": [
+            "command"
+          ],
+          "additionalProperties": false
+        },
+        "options": null
+      },
+      {
+        "name": "claim",
+        "description": "Record a finding or repair with reproduction notes.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "summary": {
+              "type": "string",
+              "format": null,
+              "description": null,
+              "default": null,
+              "enum": null,
+              "items": null,
+              "properties": null,
+              "additionalProperties": null,
+              "anyOf": null,
+              "required": null,
+              "pattern": null,
+              "minLength": null,
+              "maxLength": null,
+              "minimum": null,
+              "maximum": null,
+              "examples": null
+            },
+            "reproduction": {
+              "type": "string",
+              "format": null,
+              "description": null,
+              "default": null,
+              "enum": null,
+              "items": null,
+              "properties": null,
+              "additionalProperties": null,
+              "anyOf": null,
+              "required": null,
+              "pattern": null,
+              "minLength": null,
+              "maxLength": null,
+              "minimum": null,
+              "maximum": null,
+              "examples": null
+            },
+            "files": {
+              "type": "array",
+              "format": null,
+              "description": null,
+              "default": null,
+              "enum": null,
+              "items": {
+                "type": "string",
+                "format": null,
+                "description": null,
+                "default": null,
+                "enum": null,
+                "items": null,
+                "properties": null,
+                "additionalProperties": null,
+                "anyOf": null,
+                "required": null,
+                "pattern": null,
+                "minLength": null,
+                "maxLength": null,
+                "minimum": null,
+                "maximum": null,
+                "examples": null
+              },
+              "properties": null,
+              "additionalProperties": null,
+              "anyOf": null,
+              "required": null,
+              "pattern": null,
+              "minLength": null,
+              "maxLength": null,
+              "minimum": null,
+              "maximum": null,
+              "examples": null
+            }
+          },
+          "required": [
+            "summary"
+          ],
+          "additionalProperties": false
+        },
+        "options": null
+      },
+      {
+        "name": "status",
+        "description": "Read the shared work board: leaderboard, everyone's claims, and recent actions.",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "options": null
+      },
+      {
+        "name": "web_search",
+        "description": "Search public web documentation via host search provider.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "format": null,
+              "description": null,
+              "default": null,
+              "enum": null,
+              "items": null,
+              "properties": null,
+              "additionalProperties": null,
+              "anyOf": null,
+              "required": null,
+              "pattern": null,
+              "minLength": null,
+              "maxLength": null,
+              "minimum": null,
+              "maximum": null,
+              "examples": null
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "additionalProperties": false
+        },
+        "options": null
+      }
+    ],
+    "config": {
+      "max_retries": 0,
+      "max_tokens": 64000,
+      "parallel_tool_calls": false,
+      "reasoning_effort": "xhigh"
+    }
+  },
+  "effective_contract": {
+    "model": "anthropic/claude-opus-5-5",
+    "tools": [
+      {
+        "name": "shell",
+        "description": "Run shell commands, including reading/writing files and tests, in shared checkout.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "format": null,
+              "description": null,
+              "default": null,
+              "enum": null,
+              "items": null,
+              "properties": null,
+              "additionalProperties": null,
+              "anyOf": null,
+              "required": null,
+              "pattern": null,
+              "minLength": null,
+              "maxLength": null,
+              "minimum": null,
+              "maximum": null,
+              "examples": null
+            }
+          },
+          "required": [
+            "command"
+          ],
+          "additionalProperties": false
+        },
+        "options": null
+      },
+      {
+        "name": "claim",
+        "description": "Record a finding or repair with reproduction notes.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "summary": {
+              "type": "string",
+              "format": null,
+              "description": null,
+              "default": null,
+              "enum": null,
+              "items": null,
+              "properties": null,
+              "additionalProperties": null,
+              "anyOf": null,
+              "required": null,
+              "pattern": null,
+              "minLength": null,
+              "maxLength": null,
+              "minimum": null,
+              "maximum": null,
+              "examples": null
+            },
+            "reproduction": {
+              "type": "string",
+              "format": null,
+              "description": null,
+              "default": null,
+              "enum": null,
+              "items": null,
+              "properties": null,
+              "additionalProperties": null,
+              "anyOf": null,
+              "required": null,
+              "pattern": null,
+              "minLength": null,
+              "maxLength": null,
+              "minimum": null,
+              "maximum": null,
+              "examples": null
+            },
+            "files": {
+              "type": "array",
+              "format": null,
+              "description": null,
+              "default": null,
+              "enum": null,
+              "items": {
+                "type": "string",
+                "format": null,
+                "description": null,
+                "default": null,
+                "enum": null,
+                "items": null,
+                "properties": null,
+                "additionalProperties": null,
+                "anyOf": null,
+                "required": null,
+                "pattern": null,
+                "minLength": null,
+                "maxLength": null,
+                "minimum": null,
+                "maximum": null,
+                "examples": null
+              },
+              "properties": null,
+              "additionalProperties": null,
+              "anyOf": null,
+              "required": null,
+              "pattern": null,
+              "minLength": null,
+              "maxLength": null,
+              "minimum": null,
+              "maximum": null,
+              "examples": null
+            }
+          },
+          "required": [
+            "summary"
+          ],
+          "additionalProperties": false
+        },
+        "options": null
+      },
+      {
+        "name": "status",
+        "description": "Read the shared work board: leaderboard, everyone's claims, and recent actions.",
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "options": null
+      },
+      {
+        "name": "web_search",
+        "description": "Search public web documentation via host search provider.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "format": null,
+              "description": null,
+              "default": null,
+              "enum": null,
+              "items": null,
+              "properties": null,
+              "additionalProperties": null,
+              "anyOf": null,
+              "required": null,
+              "pattern": null,
+              "minLength": null,
+              "maxLength": null,
+              "minimum": null,
+              "maximum": null,
+              "examples": null
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "additionalProperties": false
+        },
+        "options": null
+      }
+    ],
+    "config": {
+      "max_retries": 0,
+      "max_tokens": 64000,
+      "parallel_tool_calls": false,
+      "reasoning_effort": "xhigh"
+    }
+  },
+  "intervention": {
+    "type": "same_model_provider_switch",
+    "provider": "anthropic",
+    "source_model": "openrouter/anthropic/claude-opus-5.5",
+    "target_model": "anthropic/claude-opus-5-5"
+  },
+  "reasoning_conversion": {
+    "source_model": "openrouter/anthropic/claude-opus-5.5",
+    "target_model": "anthropic/claude-opus-5-5",
+    "through_message_counts": {
+      "A": 131,
+      "B": 147,
+      "C": 145
+    }
+  }
+}

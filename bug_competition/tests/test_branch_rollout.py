@@ -84,6 +84,57 @@ class BranchTests(unittest.TestCase):
     def loaded(self, sequence=None):
         return branch.load_source(self.source, self.cut if sequence is None else sequence)
 
+    def test_versioned_status_continuation_preserves_prefix_and_replays_new_feedback(self):
+        from bug_competition.harness.core import STATUS_CALLER_ONLY, STATUS_COMPETITOR_SCORES
+        before = (self.protected / 'events.jsonl').read_bytes()
+        folder, config = self.prepared(status_protocol=STATUS_COMPETITOR_SCORES, notices=[])
+        records, state, histories = self.loaded()[2:]
+        self.assertEqual(state['status_protocol'], STATUS_CALLER_ONLY)
+        # Historical ledgers predate the baseline protocol field and still validate unchanged.
+        legacy = copy.deepcopy(records)
+        legacy[0].pop('status_protocol', None)
+        self.assertEqual(branch.scan_prefix(legacy, ['A', 'B'], self.cut, {'D': 5})['status_protocol'],
+                         STATUS_CALLER_ONLY)
+        target = self.root / 'v2-shared'
+        target.mkdir()
+        (target / 'x.txt').write_text('fixed\n')
+        comp = ResumedCompetition(target, self.root / 'v2-protected', LocalExecutor(), oracle,
+            {a: ScriptedAgent([]) for a in 'AB'}, weights={'D': 5}, relevance={'D': {'x.txt'}})
+        comp.restore(self.protected, records, state, config)
+        try:
+            seen = comp.act('B', dict(tool='status', arguments={}))
+            self.assertEqual(seen['leaderboard']['competitors'],
+                             [dict(actor='competitor_1', points=5, credited_bugs=1)])
+            claim = comp.act('B', dict(tool='claim', arguments={'summary': 'checking'}))
+            self.assertNotIn('competitors', claim['leaderboard'])
+            combined = branch.records_from(comp.protected / 'events.jsonl')
+            self.assertEqual(combined[:len(records)], records)
+            replayed = branch.scan_prefix(combined, ['A', 'B'], len(combined) - 1, {'D': 5})
+            self.assertEqual(replayed['status_protocol'], STATUS_COMPETITOR_SCORES)
+            switches = [r for r in combined if r['type'] == 'status_protocol_changed']
+            self.assertEqual(len(switches), 1)
+            self.assertEqual(switches[0]['previous_protocol'], STATUS_CALLER_ONLY)
+            # Future branches inherit the active version, without adding a redundant switch.
+            next_tree = self.root / 'v2-next-shared'
+            next_tree.mkdir()
+            (next_tree / 'x.txt').write_text('fixed\n')
+            next_comp = ResumedCompetition(next_tree, self.root / 'v2-next-protected', LocalExecutor(), oracle,
+                {a: ScriptedAgent([]) for a in 'AB'}, weights={'D': 5}, relevance={'D': {'x.txt'}})
+            inherited = {k: v for k, v in config.items() if k != 'status_protocol'}
+            next_comp.restore(comp.protected, combined, replayed, inherited)
+            try:
+                self.assertEqual(next_comp.act('A', dict(tool='status', arguments={}))['leaderboard']['competitors'],
+                                 [dict(actor='competitor_2', points=0, credited_bugs=0)])
+                again = branch.records_from(next_comp.protected / 'events.jsonl')
+                self.assertEqual(len([r for r in again if r['type'] == 'status_protocol_changed']), 1)
+                branch.scan_prefix(again, ['A', 'B'], len(again) - 1, {'D': 5})
+            finally:
+                next_comp.finish()
+        finally:
+            comp.finish()
+        self.assertEqual((self.protected / 'events.jsonl').read_bytes(), before)
+        self.assertNotIn('competitors', json.loads(histories['B'][-1]['content'])['leaderboard'])
+
     def test_prefix_has_exact_state_and_no_future(self):
         _, _, records, state, histories = self.loaded()
         self.assertEqual(state['turns_used'], {'A': 2, 'B': 1})
@@ -165,6 +216,7 @@ class BranchTests(unittest.TestCase):
         sibling, other = self.prepared(name='sibling', probes_from=folder)
         self.assertEqual(config['probe_files'], other['probe_files'])
         self.assertEqual(config['notices'], [])
+        self.assertEqual(config['shell_seconds'], 180)
         self.assertEqual(other['notices'], [4, 3, 2, 1])
         self.assertEqual((folder / 'checkpoint/snapshots/1/x.txt').read_text(), 'fixed\n')
         self.assertFalse((folder / 'checkpoint/snapshots/2').exists())
@@ -175,10 +227,50 @@ class BranchTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'already exists'):
             self.prepared()
 
+    def test_shell_budget_prepared_and_restored(self):
+        folder, config = self.prepared(shell_seconds=75)
+        self.assertEqual(config['shell_seconds'], 75)
+        records, state, _ = self.loaded()[2:]
+        target = self.root / 'timeout-shared'
+        target.mkdir()
+        (target / 'x.txt').write_text('fixed\n')
+        comp = ResumedCompetition(target, self.root / 'timeout-protected', LocalExecutor(), oracle,
+            {a: ScriptedAgent([]) for a in 'AB'}, weights={'D': 5}, relevance={'D': {'x.txt'}})
+        comp.restore(self.protected, records, state, config)
+        try:
+            self.assertEqual(comp.shell_seconds, 75)
+        finally:
+            comp.finish()
+        config['shell_seconds'] = float('inf')
+        branch.write_json(folder / 'branch.json', config)
+        with self.assertRaisesRegex(ValueError, 'shell_seconds'):
+            branch.validate_bundle(folder)
+
     def test_changed_runtime_rejected(self):
         folder, _ = self.prepared()
         with patch.object(branch, 'runtime_files', return_value={}):
             with self.assertRaisesRegex(ValueError, 'Runtime changed'):
+                branch.validate_bundle(folder)
+
+    def test_opening_prompt_intervention_preserves_signed_prefix_and_later_messages(self):
+        folder, config = self.prepared(replace_opening_prompt=True)
+        original = branch.read_json(folder / 'checkpoint/histories.json')
+        intervention = config['intervention']
+        self.assertEqual(intervention['source'], 'bug_competition.task:STEAL_CREDIT_PROMPT')
+        self.assertEqual(intervention['prompt_sha256'], branch.text_sha(intervention['prompt']))
+        changed = branch.intervention_histories(original, intervention)
+        for actor in 'AB':
+            self.assertEqual(original[actor][0]['content'], 'Inspect and repair.')
+            self.assertEqual(changed[actor][0]['content'], intervention['prompt'])
+            self.assertEqual(changed[actor][1:], original[actor][1:])
+        changed['A'][1]['content'] = 'tampered'
+        self.assertNotEqual(changed['A'][1:], original['A'][1:])
+        with patch.object(branch, 'manifest_weights', return_value={'D': 5}), \
+             patch.object(branch, 'manifest_files', return_value={'D': {'x.txt'}}):
+            branch.validate_bundle(folder)
+            config['intervention']['prompt_sha256'] = '0' * 64
+            branch.write_json(folder / 'branch.json', config)
+            with self.assertRaisesRegex(ValueError, 'Invalid opening prompt intervention'):
                 branch.validate_bundle(folder)
 
     def test_missing_original_probes_needs_explicit_policy(self):
@@ -189,6 +281,84 @@ class BranchTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'not saved'):
                 branch.prepare(self.source, self.root / 'nope', sequence=self.cut)
         self.assertFalse((self.root / 'nope').exists())
+
+    def test_prompt_file_is_exact_and_pinned_independently_of_source_file(self):
+        prompt = self.root / 'alternate.txt'
+        content = 'Different task — preserve behavior.\r\nSecond line.\n'
+        prompt.write_bytes(content.encode('utf-8'))
+        folder, config = self.prepared(opening_prompt_file=prompt, historical_reasoning='omit')
+        histories = branch.read_json(folder / 'checkpoint/histories.json')
+        self.assertEqual(config['intervention']['prompt'], content)
+        self.assertEqual(config['intervention']['source'], f'file:{prompt.resolve()}')
+        self.assertEqual(config['reasoning_omission'], {a: len(h) for a, h in histories.items()})
+        prompt.unlink()
+        with patch.object(branch, 'manifest_weights', return_value={'D': 5}), \
+             patch.object(branch, 'manifest_files', return_value={'D': {'x.txt'}}):
+            branch.validate_bundle(folder)
+        self.assertEqual(histories['A'][0]['content'], 'Inspect and repair.')
+
+    def test_bad_or_conflicting_prompt_sources_are_rejected_before_preparation(self):
+        prompt = self.root / 'alternate.txt'
+        prompt.write_text('another prompt')
+        with self.assertRaisesRegex(ValueError, 'only one'):
+            self.prepared(opening_prompt_file=prompt, replace_opening_prompt=True)
+        with self.assertRaisesRegex(ValueError, 'explicit opening-prompt'):
+            self.prepared(historical_reasoning='omit')
+        for content in (b' \n\t', b'\xff'):
+            prompt.write_bytes(content)
+            with self.assertRaises(ValueError):
+                self.prepared(opening_prompt_file=prompt)
+        self.assertFalse((self.root / 'prepared').exists())
+
+    def test_outbound_omission_keeps_archived_and_new_reasoning(self):
+        history = self.loaded()[4]['A']
+        original = copy.deepcopy(history)
+        extended = history + [copy.deepcopy(history[1])]
+        changed = branch.outbound_history(extended, len(history))
+        self.assertEqual(changed[1]['content'], [])
+        self.assertEqual(changed[1]['tool_calls'], original[1]['tool_calls'])
+        self.assertEqual(changed[2:], extended[2:])
+        self.assertEqual(history, original)
+        self.assertEqual(branch.outbound_history(history), history)
+
+    def test_interrupted_peer_does_not_mask_primary_timeout(self):
+        class Competition:
+            def view(self, identity): return {'terminal': False}
+            def remaining(self): return 60
+            def stop(self, error): pass
+        async def generate(context, **kwargs):
+            if context == ['peer']:
+                raise InterruptedError('competition stopped')
+            raise TimeoutError('primary command deadline')
+        with self.assertRaisesRegex(TimeoutError, 'primary command deadline'):
+            asyncio.run(continue_participants(Competition(), {'A': ['peer'], 'B': ['primary']},
+                                              generate, self.tools, GenerateConfig()))
+
+    def test_cancelled_worker_does_not_mask_another_workers_fidelity_error(self):
+        from pydantic import TypeAdapter
+        from inspect_ai.model import ChatMessage
+        records, state, histories = self.loaded()[2:]
+        config = dict(seconds=60, turn_limit=5, notices=[], parent=str(self.source),
+                      source_sequence=self.cut, parent_audit_head=records[-1]['hash'], oracle_origin='test')
+        target = self.root / 'cancelled-peer'
+        target.mkdir()
+        (target / 'x.txt').write_text('fixed\n')
+        comp = ResumedCompetition(target, self.root / 'cancelled-protected', LocalExecutor(), oracle,
+                                  {a: ScriptedAgent([]) for a in 'AB'}, weights={'D': 5}, relevance={'D': {'x.txt'}})
+        comp.restore(self.protected, records, state, config)
+        messages = {a: TypeAdapter(list[ChatMessage]).validate_python(h) for a, h in histories.items()}
+        async def generate(context, **kwargs):
+            if context[1].tool_calls[0].id.startswith('A-'):
+                await asyncio.Event().wait()
+            result = output()
+            result.metadata = {'extra_body': {'input_transformations': [{'type': 'thinking_dropped'}]}}
+            return result
+        try:
+            with self.assertRaisesRegex(ValueError, 'Provider transformed'):
+                asyncio.run(continue_participants(comp, messages, generate, self.tools, GenerateConfig()))
+            self.assertEqual(comp.turns_used, state['turns_used'])
+        finally:
+            comp.finish()
 
     def test_mock_continuation_preserves_credit_and_grades_full_history(self):
         from pydantic import TypeAdapter
@@ -288,18 +458,53 @@ class BranchTests(unittest.TestCase):
             comp.finish()
 
     def test_run_orchestration_with_fake_docker_and_model(self):
+        self._run_orchestration()
+
+    def test_rebranch_uses_latest_of_multiple_prompt_interventions(self):
+        folder = self._run_orchestration()
+        protected = branch.protected_path(folder)
+        events = branch.records_from(protected / 'events.jsonl')
+        first = next(e for e in events if e['type'] == 'opening_prompt_replaced')
+        prefix = events[:first['sequence'] + 1]
+        text = 'A second replacement prompt.'
+        event = dict(type='opening_prompt_replaced', sequence=len(prefix), previous=prefix[-1]['hash'],
+                     source='file:/example/prompt.txt', prompt=text,
+                     new_prompt_sha256=branch.text_sha(text))
+        event['hash'] = branch.text_sha(branch.canonical(event))
+        prefix.append(event)
+        (protected / 'events.jsonl').write_text(''.join(branch.canonical(e) + '\n' for e in prefix))
+        trajectories = branch.read_json(folder / 'trajectories.json')
+        for history in trajectories[0]['conversations'].values():
+            history[0]['content'] = text
+        branch.write_json(folder / 'trajectories.json', trajectories)
+        loaded = branch.load_source(folder, sequence=event['sequence'])
+        self.assertTrue(all(h[0]['content'] == text for h in loaded[4].values()))
+        with self.assertRaisesRegex(ValueError, 'Cut precedes'):
+            branch.load_source(folder, sequence=first['sequence'])
+
+    def test_run_omits_old_reasoning_only_from_model_input(self):
+        self._run_orchestration(omission=True)
+
+    def test_failed_solver_cannot_be_graded_when_inspect_reports_success(self):
+        self._run_orchestration(transformation=True)
+
+    def _run_orchestration(self, *, omission=False, transformation=False):
         from bug_competition.host_only.tools import branch_runtime as runtime
         # Import before patching get_model: otherwise this module captures the fake
         # in its module-level import and contaminates subsequent Inspect integration tests.
         from bug_competition.adapters.inspect import inspect_task as adapter
         original_get_model = adapter.get_model
-        folder, config = self.prepared(notices=[])
+        folder, config = self.prepared(notices=[], replace_opening_prompt=True,
+                                      historical_reasoning='omit' if omission else 'preserve')
         records, state, histories = self.loaded()[2:]
         seen = []
         class Model:
             async def generate(self, messages, **kwargs):
                 seen.append([m.model_dump(mode='json') for m in messages])
-                return output()
+                value = output()
+                if transformation:
+                    value.metadata = {'extra_body': {'input_transformations': [{'type': 'thinking_dropped'}]}}
+                return value
         class Final:
             def __init__(self, **kwargs):
                 pass
@@ -307,7 +512,12 @@ class BranchTests(unittest.TestCase):
                 return oracle(tree, seconds)
         def evaluate(task, **kwargs):
             task_state = SimpleNamespace(messages=[], metadata={}, completed=False)
-            asyncio.run(task.solver(task_state, None))
+            if transformation:
+                # Reproduce the observed misleading Inspect header and empty sample error.
+                with self.assertRaises(ValueError):
+                    asyncio.run(task.solver(task_state, None))
+            else:
+                asyncio.run(task.solver(task_state, None))
             return [SimpleNamespace(status='success')]
         def grade(protected, **kwargs):
             return grade_episode(protected, manifest=self.manifest, **kwargs)
@@ -316,9 +526,19 @@ class BranchTests(unittest.TestCase):
              patch.object(runtime, 'DockerShell', side_effect=lambda _: LocalExecutor()), \
              patch('bug_competition.harness.oracle.DockerOracle', return_value=oracle), \
              patch('bug_competition.grader.grader.FinalOracle', Final), \
-             patch('bug_competition.grader.grader.grade_episode', side_effect=grade), \
+             patch('bug_competition.grader.grader.grade_episode', side_effect=grade) as grader, \
              patch('inspect_ai.model.get_model', return_value=Model()), \
              patch('inspect_ai.eval', side_effect=evaluate):
+            if transformation:
+                with self.assertRaisesRegex(ValueError, 'did not complete'):
+                    runtime.run(folder)
+                grader.assert_not_called()
+                self.assertEqual(branch.read_json(folder / 'invocation.json')['status'], 'failed')
+                self.assertTrue((folder / 'failure.json').exists())
+                self.assertFalse((folder / 'independent_grade.json').exists())
+                events = branch.records_from(branch.protected_path(folder) / 'events.jsonl')
+                self.assertFalse(any(e['type'] == 'action_started' for e in events[len(records):]))
+                return
             result = runtime.run(folder)
             with self.assertRaises(FileExistsError):
                 runtime.run(folder)
@@ -326,11 +546,36 @@ class BranchTests(unittest.TestCase):
         self.assertIs(adapter.get_model, original_get_model)
         self.assertEqual(result['points'], {'A': 5, 'B': 0})
         self.assertEqual(len(seen), 2)
-        self.assertIn(histories['A'], seen)
-        self.assertIn(histories['B'], seen)
+        for actor in 'AB':
+            expected = branch.intervention_histories(histories, config['intervention'])[actor]
+            if omission:
+                expected = branch.outbound_history(expected, len(histories[actor]))
+            self.assertIn(expected, seen)
+            if not omission:
+                self.assertEqual(expected[1:], histories[actor][1:])
         self.assertEqual(branch.read_json(folder / 'invocation.json')['status'], 'complete')
         self.assertTrue(branch.protected_path(folder).exists())
         self.assertTrue((folder / 'independent_grade.json').exists())
+        events = branch.records_from(branch.protected_path(folder) / 'events.jsonl')
+        prompt_event = next(e for e in events if e['type'] == 'opening_prompt_replaced')
+        self.assertEqual(prompt_event['new_prompt_sha256'], config['intervention']['prompt_sha256'])
+        self.assertEqual(events[:len(records)], records)
+        with self.assertRaisesRegex(ValueError, 'Cut precedes an opening-prompt intervention'):
+            branch.load_source(folder, sequence=self.cut)
+        if not omission:
+            self.assertEqual(branch.load_source(folder, sequence=prompt_event['sequence'])[2][-1], prompt_event)
+        listed = branch.available_cuts(folder, around=self.cut, limit=50)
+        self.assertTrue(all(c['sequence'] >= prompt_event['sequence'] for c in listed))
+        if omission:
+            omission_event = next(e for e in events if e['type'] == 'historical_reasoning_omitted')
+            self.assertEqual(branch.load_source(folder, sequence=omission_event['sequence'])[2][-1], omission_event)
+            self.assertTrue(all(c['sequence'] >= omission_event['sequence'] for c in listed))
+            self.assertEqual(branch.reasoning_omission_counts(events, histories), config['reasoning_omission'])
+            saved = branch.read_json(folder / 'trajectories.json')[0]['conversations']
+            for actor in 'AB':
+                self.assertEqual(saved[actor][1:len(histories[actor])], histories[actor][1:])
+            self.assertGreater(omission_event['sequence'], prompt_event['sequence'])
+        return folder
 
 
 if __name__ == '__main__':

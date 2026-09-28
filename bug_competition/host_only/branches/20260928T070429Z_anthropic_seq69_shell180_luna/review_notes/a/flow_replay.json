@@ -1,0 +1,17 @@
+[
+  {
+    "snapshot": 0,
+    "stdout": "{'total': 2, 'outlets': {'b': 2, 'a': 0}, 'pipes': [1, 1, 1]}\n{'total': 1, 'outlets': {'a': 0, 'b': 1}, 'pipes': [1, 1, 0]}\n",
+    "stderr": ""
+  },
+  {
+    "snapshot": 19,
+    "stdout": "{'total': 2, 'outlets': {'b': 1, 'a': 1}, 'pipes': [1, 1, 0]}\n{'total': 2, 'outlets': {'a': 1, 'b': 1}, 'pipes': [1, 0, 1]}\n",
+    "stderr": ""
+  },
+  {
+    "snapshot": 20,
+    "stdout": "{'total': 2, 'outlets': {'b': 1, 'a': 1}, 'pipes': [1, 1, 0]}\n{'total': 2, 'outlets': {'a': 1, 'b': 1}, 'pipes': [1, 0, 1]}\n",
+    "stderr": ""
+  }
+]

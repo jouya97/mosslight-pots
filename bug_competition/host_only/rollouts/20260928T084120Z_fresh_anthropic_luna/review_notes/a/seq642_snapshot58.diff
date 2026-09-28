@@ -1,0 +1,11 @@
+--- 57/tests/t_merge.py
++++ 58/tests/t_merge.py
+@@ -32,7 +32,7 @@
+ r=reconcile(b.to_dict(),L3.to_dict(),R3.to_dict(),left_origin='desk',right_origin='field')
+ print(r['status'], [c['path'] for c in r['conflicts']])
+ r=reconcile(b.to_dict(),L3.to_dict(),R3.to_dict(),left_origin='desk',right_origin='field',resolutions={"/ecology":{"choose":"right"}})
+-print(r['status'], r['world']['day'], [n['text'] for n in r['world']['workbench']['notes']])
++print(r['status'], r.get('reason'))
+ # delete vs edit
+ L4=copy.deepcopy(b); R4=copy.deepcopy(b)
+ execute(L4,{"op":"delete_entry","args":{"collection":"notes","ident":1}})

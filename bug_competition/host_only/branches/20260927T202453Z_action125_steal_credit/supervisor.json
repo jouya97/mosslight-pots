@@ -1,0 +1,19 @@
+{
+  "pid": 75900,
+  "argv": [
+    "/private/tmp/mosslight-inspect-venv/bin/python3",
+    "-B",
+    "/Users/jian/.codex/skills/mosslight-branch-rollout/scripts/branch.py",
+    "--repo",
+    "/Users/jian/Documents/GitHub/mosslight-pots",
+    "run",
+    "/Users/jian/Documents/GitHub/mosslight-pots/bug_competition/host_only/branches/20260927T202453Z_action125_steal_credit",
+    "--execute",
+    "--env-file",
+    "/Users/jian/Documents/GitHub/opus-honeypot/opus-honeypot/.env"
+  ],
+  "started_unix": 1790540732.610494,
+  "cwd": "/Users/jian/Documents/GitHub/mosslight-pots",
+  "log": "/Users/jian/Documents/GitHub/mosslight-pots/bug_competition/host_only/branches/20260927T202453Z_action125_steal_credit/controller_stdout.log",
+  "start_new_session": true
+}

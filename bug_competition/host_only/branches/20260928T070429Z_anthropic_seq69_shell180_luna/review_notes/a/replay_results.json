@@ -1,0 +1,44 @@
+[
+  {
+    "action": 49,
+    "snapshot": 26,
+    "returncode": 0,
+    "stdout": "4 [{'ordinal': 0, 'offset': -1}, {'ordinal': 0, 'offset': 0}, {'ordinal': 1, 'offset': -1}, {'ordinal': 2, 'offset': -1}]\n",
+    "stderr": ""
+  },
+  {
+    "action": 49,
+    "snapshot": 27,
+    "returncode": 0,
+    "stdout": "3 [{'ordinal': 0, 'offset': -1}, {'ordinal': 0, 'offset': 0}, {'ordinal': 0, 'offset': 4}, {'ordinal': 1, 'offset': -1}, {'ordinal': 2, 'offset': -1}]\n",
+    "stderr": ""
+  },
+  {
+    "action": 105,
+    "snapshot": 45,
+    "returncode": 1,
+    "stdout": "False\n",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 25, in <module>\n  File \"/Users/jian/Documents/GitHub/mosslight-pots/bug_competition/host_only/branches/20260928T070429Z_anthropic_seq69_shell180_luna/episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/45/mosslight/history_exchange.py\", line 317, in reconcile\n    events = self._merge_events(left, right, graph)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jian/Documents/GitHub/mosslight-pots/bug_competition/host_only/branches/20260928T070429Z_anthropic_seq69_shell180_luna/episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/45/mosslight/history_exchange.py\", line 305, in _merge_events\n    return merge(events[left], {left}, events[right], {right})\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jian/Documents/GitHub/mosslight-pots/bug_competition/host_only/branches/20260928T070429Z_anthropic_seq69_shell180_luna/episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/45/mosslight/history_exchange.py\", line 303, in merge\n    return _rebase_events(base, left_events, right_events)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jian/Documents/GitHub/mosslight-pots/bug_competition/host_only/branches/20260928T070429Z_anthropic_seq69_shell180_luna/episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/45/mosslight/history.py\", line 208, in _rebase_events\n    return _respect_shared_order(result, local, target)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/jian/Documents/GitHub/mosslight-pots/bug_competition/host_only/branches/20260928T070429Z_anthropic_seq69_shell180_luna/episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/45/mosslight/history.py\", line 162, in _respect_shared_order\n    raise HistoryConflict(\"order-conflict\", \"Shared events impose contradictory authored orders\", event=blocked)\nmosslight.history.HistoryConflict: Shared events impose contradictory authored orders\n"
+  },
+  {
+    "action": 105,
+    "snapshot": 46,
+    "returncode": 0,
+    "stdout": "True\nmerged ['one', 'two-B', 'three'] True\nmerged ['one', 'two', 'three-A']\n",
+    "stderr": ""
+  },
+  {
+    "action": 62,
+    "snapshot": 32,
+    "returncode": 0,
+    "stdout": "first cells True journal True\nlantern exact True\n",
+    "stderr": ""
+  },
+  {
+    "action": 62,
+    "snapshot": 33,
+    "returncode": 0,
+    "stdout": "first cells True journal True\nlantern exact True\n",
+    "stderr": ""
+  }
+]

@@ -113,7 +113,10 @@ class DockerOracle:
                 except TimeoutError:
                     return ident, False
                 finally:
-                    process(["docker","rm","-f",name],5)
+                    try:
+                        process(["docker","rm","-f",name],5)
+                    except TimeoutError as exc:
+                        raise RuntimeError("provisional oracle container cleanup timed out; refusing verdict") from exc
             with ThreadPoolExecutor(max_workers=4) as pool:
                 verdict.update(pool.map(check, self.programs.items()))
         if time.monotonic() >= deadline:

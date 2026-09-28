@@ -1,0 +1,80 @@
+--- 24/mosslight/courier.py
++++ 25/mosslight/courier.py
+@@ -24,7 +24,7 @@
+ 
+ 
+ def precedes(a, b):
+-    return all(a.get(peer, 0) <= b.get(peer, 0) for peer in b.keys())
++    return all(a.get(peer, 0) <= b.get(peer, 0) for peer in a.keys())
+ 
+ 
+ def record_clock(packet, record):
+@@ -54,7 +54,7 @@
+     json.dumps(fields, allow_nan=False)
+     trial = copy.deepcopy(packet)
+     for field, value in fields.items():
+-        _emit(trial, record, field, value)
++        _emit(trial, record, field, copy.deepcopy(value))
+     _emit(trial, record, "$alive", True)
+     packet.clear()
+     packet.update(trial)
+@@ -67,8 +67,7 @@
+ 
+ 
+ def _covered(event, packet):
+-    context = {peer: max(values.get(peer, 0) for values in packet["contexts"].values())
+-               for peer in set().union(*(values.keys() for values in packet["contexts"].values()))}
++    context = packet["contexts"].get(event["record"], {})
+     return event["counter"] <= context.get(event["peer"], 0)
+ 
+ 
+@@ -76,7 +75,7 @@
+     if left.get("version") != 1 or right.get("version") != 1:
+         raise ValueError("Unsupported courier format")
+     for key in left["events"].keys() & right["events"].keys():
+-        if left["events"][key]["record"] != right["events"][key]["record"]:
++        if left["events"][key] != right["events"][key]:
+             raise ValueError("A writer sequence was reused with different content")
+     result = copy.deepcopy(left)
+     result["events"] = {}
+@@ -92,6 +91,7 @@
+             if not _covered(event, left):
+                 result["events"][key] = copy.deepcopy(event)
+     result["clock"] = _join(left["clock"], right["clock"])
++    result["counter"] = max(left["counter"], result["clock"].get(left["peer"], 0))
+     result["contexts"] = {record: _join(left["contexts"].get(record, {}), right["contexts"].get(record, {}))
+                           for record in left["contexts"].keys() | right["contexts"].keys()}
+     return result
+@@ -115,13 +115,13 @@
+     output = []
+     for record in records:
+         alive = heads.get((record, "$alive"), [])
+-        if not alive or any(event["value"] is False for event in alive):
++        if not alive or all(event["value"] is False for event in alive):
+             continue
+         fields = {}
+         for (name, field), events in heads.items():
+             if name != record or field == "$alive":
+                 continue
+-            distinct = {json.dumps(event["value"], ensure_ascii=False, sort_keys=True).casefold(): event["value"] for event in events}
++            distinct = {json.dumps(event["value"], ensure_ascii=False, sort_keys=True): event["value"] for event in events}
+             fields[field] = [copy.deepcopy(distinct[key]) for key in sorted(distinct)]
+         output.append({"record": record, "fields": fields,
+                        "conflicted": any(len(values) > 1 for values in fields.values())})
+@@ -145,13 +145,14 @@
+     result = copy.deepcopy(packet)
+     requested = set(records)
+     result["events"] = {key: event for key, event in result["events"].items() if event["record"] in requested}
+-    result["contexts"] = dict(result["contexts"])
++    result["contexts"] = {record: dict(context) for record, context in result["contexts"].items()
++                          if record in requested}
+     return result
+ 
+ 
+ def acknowledged(acks, peers):
+     writers = set().union(*(set(clock) for clock in acks.values())) if acks else set()
+-    return {writer: max((acks.get(peer, {}).get(writer, 0) for peer in peers), default=0) for writer in writers}
++    return {writer: min((acks.get(peer, {}).get(writer, 0) for peer in peers), default=0) for writer in writers}
+ 
+ 
+ def receipt(note):

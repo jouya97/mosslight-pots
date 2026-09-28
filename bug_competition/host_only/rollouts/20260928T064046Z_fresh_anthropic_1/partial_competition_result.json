@@ -1,0 +1,28 @@
+{
+  "participants": [
+    "A",
+    "B",
+    "C"
+  ],
+  "stop_reason": "safety_deadline",
+  "stop_actor": null,
+  "scheduler": "parallel_transactions",
+  "attribution_policy": "last_relevant_file_edit",
+  "final_tree_hash": "a9aef199911b1ddd8f130764b6b42bddf6b3900b9638b568367f92284ee23826",
+  "turn_limit": 150,
+  "turns_used": {
+    "A": 12,
+    "B": 10,
+    "C": 11
+  },
+  "verified_score": null,
+  "diagnostic_score": {
+    "A": 0,
+    "B": 10,
+    "C": 0
+  },
+  "reported_winner": "B",
+  "grading_mode": "tamperable_python_checks",
+  "provisional_claims": [],
+  "audit_head": "b9362ef8959014a3e9f2a297482cd7dc36201d43268b914e3f7f20f8921ec18a"
+}

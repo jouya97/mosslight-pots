@@ -1,0 +1,11 @@
+--- 53/mosslight/history.py
++++ 54/mosslight/history.py
+@@ -388,7 +388,7 @@
+         except BaseException:
+             self.db.execute("ROLLBACK")
+             raise
+-        return self.snapshot(branch)
++        return {**self.snapshot(branch, revision), "event": event["id"]}
+ 
+     def correct(self, branch, replacements, label="correction"):
+         source = self._branch(branch)

@@ -1,0 +1,99 @@
+--- 66/mosslight/notebook.py
++++ 67/mosslight/notebook.py
+@@ -1,5 +1,6 @@
+ """Searchable personal observations, a specimen cabinet, and dated tasks."""
+ from __future__ import annotations
++import copy
+ from .state import identifier
+ from .validation import boolean, integer, tags, text
+ 
+@@ -29,7 +30,7 @@
+              "tags": labels, "tile": list(tile) if tile is not None else None}
+     world.workbench["notes"].append(entry)
+     world.revision += 1
+-    return entry.copy()
++    return copy.deepcopy(entry)
+ 
+ 
+ def edit_note(world, ident, content=None, labels=None):
+@@ -38,7 +39,7 @@
+     new_tags = entry["tags"] if labels is None else tags(labels)
+     entry.update(text=new_text, tags=new_tags)
+     world.revision += 1
+-    return entry.copy()
++    return copy.deepcopy(entry)
+ 
+ 
+ def delete_entry(world, collection, ident):
+@@ -72,7 +73,7 @@
+              "tile": [x, y], **cell.to_dict()}
+     world.workbench["specimens"].append(entry)
+     world.revision += 1
+-    return entry.copy()
++    return copy.deepcopy(entry)
+ 
+ 
+ def add_task(world, content, due):
+@@ -82,7 +83,7 @@
+     entry = {"id": identifier(world.workbench), "day": world.day, "text": content, "due": due, "done": False}
+     world.workbench["tasks"].append(entry)
+     world.revision += 1
+-    return entry.copy()
++    return copy.deepcopy(entry)
+ 
+ 
+ def complete_task(world, ident, done=True):
+--- 66/mosslight/nursery.py
++++ 67/mosslight/nursery.py
+@@ -1,5 +1,6 @@
+ """A small propagation bench for seeds and cuttings, away from the grid."""
+ from __future__ import annotations
++import copy
+ from .catalog import SPECIES_GUIDE, TERRAINS
+ from .notebook import find_entry, _room
+ from .state import identifier
+@@ -34,7 +35,7 @@
+              "source":source,"day":world.day,"age":0,"hydration":3,"vitality":60,"status":"growing"}
+     world.workbench["nursery"].append(entry)
+     world.revision += 1
+-    return entry.copy()
++    return copy.deepcopy(entry)
+ 
+ 
+ def water_batch(world,ident):
+--- 66/mosslight/planning.py
++++ 67/mosslight/planning.py
+@@ -1,5 +1,6 @@
+ """Named beds, finite repeating care plans, and conditional daily rules."""
+ from __future__ import annotations
++import copy
+ from .model import ACTIONS
+ from .notebook import find_entry, _room
+ from .state import identifier
+@@ -15,7 +16,7 @@
+     entry = {"id": identifier(world.workbench), "name": name, "tiles": [list(p) for p in points]}
+     world.workbench["beds"].append(entry)
+     world.revision += 1
+-    return entry.copy()
++    return copy.deepcopy(entry)
+ 
+ 
+ def delete_bed(world, ident):
+@@ -45,7 +46,7 @@
+              "status": "pending", "last_error": ""}
+     world.workbench["plans"].append(entry)
+     world.revision += 1
+-    return entry.copy()
++    return copy.deepcopy(entry)
+ 
+ 
+ def cancel_plan(world, ident):
+@@ -91,7 +92,7 @@
+              "action": action, "enabled": True}
+     world.workbench["rules"].append(entry)
+     world.revision += 1
+-    return entry.copy()
++    return copy.deepcopy(entry)
+ 
+ 
+ def enable_rule(world, ident, enabled):

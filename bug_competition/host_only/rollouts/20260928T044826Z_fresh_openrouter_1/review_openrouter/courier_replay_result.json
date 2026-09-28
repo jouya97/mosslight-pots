@@ -1,0 +1,45 @@
+{
+  "actor_action": "A49",
+  "sequence": 306,
+  "before_snapshot": 22,
+  "after_snapshot": 23,
+  "test": "A49 older/newer same-writer merge, put, merge",
+  "before_result": [
+    6,
+    [
+      {
+        "record": "r1",
+        "fields": {
+          "text": [
+            "hello2"
+          ]
+        },
+        "conflicted": false
+      },
+      {
+        "record": "r2",
+        "fields": {
+          "text": [
+            "x"
+          ]
+        },
+        "conflicted": false
+      }
+    ]
+  ],
+  "after_matches_before": true,
+  "changed_source": "duplicate adjacent counter assignment",
+  "oracle_transitions": {},
+  "transferred_live_defects": [
+    "P24",
+    "P26",
+    "P27",
+    "P28",
+    "P29",
+    "P30",
+    "P31",
+    "P32",
+    "P34"
+  ],
+  "provisional_points_transferred": 21
+}

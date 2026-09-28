@@ -1,0 +1,27 @@
+{
+  "actor_action": "B33",
+  "global_sequence": 220,
+  "source_snapshots": [
+    23,
+    24
+  ],
+  "method": "Read-only local replay of unchanged _number and estimate function ASTs with standard-library math/Fraction; no Docker or live workspace changes. Final case devised by root, not run by B.",
+  "results": {
+    "B33 ordinary": {
+      "before": 43.5,
+      "after": 43.5
+    },
+    "B33 large timestamps": {
+      "before": 43.5,
+      "after": 43.5
+    },
+    "B33 duplicate timestamp": {
+      "before": 15.0,
+      "after": 15.0
+    },
+    "Root diagnostic: adjacent large integer timestamps": {
+      "before": 15.0,
+      "after": 20.0
+    }
+  }
+}

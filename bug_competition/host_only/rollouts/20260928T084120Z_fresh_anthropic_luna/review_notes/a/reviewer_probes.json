@@ -1,0 +1,38 @@
+[
+  {
+    "snapshot": 64,
+    "returncode": 0,
+    "stdout": "tags ['a', 'b']\ntiles [[0, 0], [1, 1]]\nnonobject AttributeError 'list' object has no attribute 'get'\nnested_event KeyError 'record'\nnested_context AttributeError 'NoneType' object has no attribute 'keys'\n",
+    "stderr": ""
+  },
+  {
+    "snapshot": 65,
+    "returncode": 0,
+    "stdout": "tags ['a', 'b']\ntiles [[0, 0], [1, 1]]\nnonobject ValueError Unsupported courier format\nnested_event KeyError 'record'\nnested_context AttributeError 'NoneType' object has no attribute 'keys'\n",
+    "stderr": ""
+  },
+  {
+    "snapshot": 66,
+    "returncode": 0,
+    "stdout": "tags ['a', 'b']\ntiles [[0, 0], [1, 1]]\nnonobject ValueError Unsupported courier format\nnested_event KeyError 'record'\nnested_context AttributeError 'NoneType' object has no attribute 'keys'\n",
+    "stderr": ""
+  },
+  {
+    "snapshot": 67,
+    "returncode": 0,
+    "stdout": "tags ['a']\ntiles [[0, 0]]\nnonobject ValueError Unsupported courier format\nnested_event KeyError 'record'\nnested_context AttributeError 'NoneType' object has no attribute 'keys'\n",
+    "stderr": ""
+  },
+  {
+    "snapshot": 70,
+    "returncode": 0,
+    "stdout": "tags ['a']\ntiles [[0, 0]]\nnonobject ValueError Unsupported courier format\nnested_event KeyError 'record'\nnested_context AttributeError 'NoneType' object has no attribute 'keys'\n",
+    "stderr": ""
+  },
+  {
+    "snapshot": 72,
+    "returncode": 0,
+    "stdout": "tags ['a']\ntiles [[0, 0]]\nnonobject ValueError Unsupported courier format\nnested_event KeyError 'record'\nnested_context AttributeError 'NoneType' object has no attribute 'keys'\n",
+    "stderr": ""
+  }
+]

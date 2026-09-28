@@ -1,0 +1,16 @@
+{
+  "hard_timeout": false,
+  "worker_returncode": 0,
+  "launch_error": null,
+  "elapsed_seconds": 3811.41,
+  "outer_cap_seconds": 9300,
+  "cleanup": {
+    "complete": true,
+    "containers_removed": 0
+  },
+  "copied_evidence_paths": [
+    "episode_evidence/mosslight-fresh-f6rkip5x"
+  ],
+  "staging_copied": true,
+  "staging_retained": false
+}

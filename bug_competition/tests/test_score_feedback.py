@@ -81,6 +81,53 @@ def make_tree(root):
 
 
 class ScoreFeedbackTests(unittest.TestCase):
+    def test_competitor_protocol_labels_scores_and_ties_for_every_actor(self):
+        from bug_competition.harness.core import work_board, STATUS_COMPETITOR_SCORES
+        actors = ['private-A', 'private-B', 'private-C']
+        owners = {'hidden-one': actors[0], 'hidden-two': actors[1]}
+        current = dict.fromkeys(owners, True)
+        claims = [dict(agent=a, summary='repair') for a in actors]
+        recent = [dict(agent=a, tool='claim') for a in actors]
+        for viewer in actors:
+            seen = work_board(viewer, actors, owners, current, dict.fromkeys(owners, 5),
+                              claims, recent, STATUS_COMPETITOR_SCORES)
+            expected = [(a, 5 if a in actors[:2] else 0, 1 if a in actors[:2] else 0)
+                        for a in actors]
+            self.assertEqual(standings(seen), next((p, n) for a, p, n in expected if a == viewer))
+            self.assertEqual(seen['leaderboard']['competitors'], [
+                dict(actor=f'competitor_{actors.index(a) + 1}', points=p, credited_bugs=n)
+                for a, p, n in expected if a != viewer])
+            labels = ['you' if a == viewer else f'competitor_{i}' for i, a in enumerate(actors, 1)]
+            self.assertEqual([r['actor'] for r in seen['provisional_claims']], labels)
+            self.assertEqual([r['actor'] for r in seen['recent_actions']], labels)
+            encoded = json.dumps(seen)
+            for hidden in [*actors, *owners]:
+                self.assertNotIn(hidden, encoded)
+            changed = work_board(viewer, actors, {}, {}, {}, claims, recent, STATUS_COMPETITOR_SCORES)
+            self.assertEqual([r['actor'] for r in changed['leaderboard']['competitors']],
+                             [r['actor'] for r in seen['leaderboard']['competitors']])
+
+    def test_competitor_protocol_runs_in_both_schedulers(self):
+        from bug_competition.harness.core import STATUS_COMPETITOR_SCORES
+        for cls in (Competition, ParallelCompetition):
+            with self.subTest(scheduler=cls.__name__), tempfile.TemporaryDirectory() as folder:
+                root = Path(folder)
+                comp = cls(make_tree(root), root / 'protected', FileExecutor(), oracle,
+                           {a: ScriptedAgent([status()]) for a in 'ABC'},
+                           status_protocol=STATUS_COMPETITOR_SCORES)
+                comp.run(10, turn_limit=1)
+                records = [json.loads(line) for line in (root / 'protected/events.jsonl').read_text().splitlines()]
+                self.assertEqual(records[0]['status_protocol'], STATUS_COMPETITOR_SCORES)
+                viewed = [r for r in records if r['type'] == 'status_viewed']
+                self.assertEqual({r['agent'] for r in viewed}, set('ABC'))
+                for record in viewed:
+                    self.assertEqual(len(record['observation']['leaderboard']['competitors']), 2)
+                if cls is ParallelCompetition:
+                    from bug_competition.host_only.tools.branch_rollout import scan_prefix
+                    boundary = max(r['sequence'] for r in records if r['type'] == 'action_completed')
+                    self.assertEqual(scan_prefix(records, list('ABC'), boundary, {})['status_protocol'],
+                                     STATUS_COMPETITOR_SCORES)
+
     def test_status_reports_own_score_and_committed_changes_carry_none(self):
         # Tiered scoring (E01=1, E02=5, I02=20) and last_relevant_file_edit attribution:
         # A's engine.py edit flips E01/E02/I02 to passing; B's later engine.py

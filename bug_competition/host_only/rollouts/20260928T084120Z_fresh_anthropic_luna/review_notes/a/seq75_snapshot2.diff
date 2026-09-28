@@ -1,0 +1,23 @@
+--- 1/tests/oracle.py
++++ 2/tests/oracle.py
+@@ -0,0 +1,20 @@
++import json, sys
++sys.path.insert(0,'/workspace')
++from mosslight import create, step
++from mosslight.model import World
++d=json.load(open('/workspace/examples/first-garden.json'))
++w=create(34,16,11)
++step(w,24)
++got=w.to_dict()
++diff=0
++for i,(a,b) in enumerate(zip(got['cells'],d['cells'])):
++    if a!=b:
++        diff+=1
++        if diff<5: print(i,a,b)
++print('cell diffs',diff, 'weather', got['weather'], d['weather'])
++gj=[(e['day'],e['text']) for e in got['journal']]
++dj=[(e['day'],e['text']) for e in d['journal']]
++for x in dj:
++    if x not in gj: print('missing',x)
++for x in gj:
++    if x not in dj: print('extra',x)

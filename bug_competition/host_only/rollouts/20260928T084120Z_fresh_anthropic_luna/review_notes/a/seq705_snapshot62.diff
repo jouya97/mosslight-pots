@@ -1,0 +1,26 @@
+--- 61/mosslight/irrigation.py
++++ 62/mosslight/irrigation.py
+@@ -26,6 +26,14 @@
+ 
+ 
+ def definition(world,layout,choices,days,supply,refill=None,version=DEFAULT_VERSION):
++    try:
++        return _definition(world,layout,choices,days,supply,refill,version)
++    except (KeyError,TypeError,AttributeError,IndexError) as error:
++        raise ValueError('Malformed irrigation design: '+str(error)) from error
++
++
++def _definition(world,layout,choices,days,supply,refill,version):
++    if not isinstance(layout,dict):raise ValueError('Supply a layout object')
+     initial=_world(world)
+     _natural(days,'Days',1);_natural(supply,'Supply')
+     if initial.day+days>1000000:raise ValueError('Design exceeds garden calendar')
+@@ -132,6 +140,8 @@
+ 
+ def load_design(path):
+     result=json.loads(Path(path).read_text(encoding="utf-8"))
++    if not isinstance(result,dict) or not {'problem','schedule','digest','world','score','trace'} <= set(result):
++        raise ValueError('Malformed irrigation design report')
+     if hashlib.sha256(encoded(result['problem']).encode()).hexdigest()!=result['digest']:raise ValueError('Design input digest mismatch')
+     state=replay(result['problem'],result['schedule'])
+     if state['world']!=result['world'] or objective(state)!=result['score'] or state['trace']!=result['trace']:raise ValueError('Design result does not replay')

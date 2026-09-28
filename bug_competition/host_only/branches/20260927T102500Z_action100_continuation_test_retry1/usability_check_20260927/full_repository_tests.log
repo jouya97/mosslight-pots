@@ -1,0 +1,239 @@
+test_alerts_and_report (test_analysis.AnalysisTests.test_alerts_and_report) ... ok
+test_census_empty_and_living_denominators (test_analysis.AnalysisTests.test_census_empty_and_living_denominators) ... ok
+test_comparison_changed_cells_and_population (test_analysis.AnalysisTests.test_comparison_changed_cells_and_population) ... FAIL
+test_forecast_samples_final_day_and_preserves_source (test_analysis.AnalysisTests.test_forecast_samples_final_day_and_preserves_source) ... ok
+test_patches_orthogonal_perimeter_bounds (test_analysis.AnalysisTests.test_patches_orthogonal_perimeter_bounds) ... ok
+test_recommendation_tie_order_and_empty_filter (test_analysis.AnalysisTests.test_recommendation_tie_order_and_empty_filter) ... ok
+test_suitability_exact_and_unplantable (test_analysis.AnalysisTests.test_suitability_exact_and_unplantable) ... ok
+test_transect_endpoint_and_reverse_order (test_analysis.AnalysisTests.test_transect_endpoint_and_reverse_order) ... ok
+test_command_persists_and_stale_revision_conflicts (test_api.APITests.test_command_persists_and_stale_revision_conflicts) ... ok
+test_experiment_route_is_read_only (test_api.APITests.test_experiment_route_is_read_only) ... ok
+test_failed_persistence_preserves_memory_and_history (test_api.APITests.test_failed_persistence_preserves_memory_and_history) ... ok
+test_forecast_is_read_only (test_api.APITests.test_forecast_is_read_only) ... ok
+test_import_revision_checked_and_undoable (test_api.APITests.test_import_revision_checked_and_undoable) ... ok
+test_invalid_queries_return_400 (test_api.APITests.test_invalid_queries_return_400) ... ok
+test_new_edit_clears_redo (test_api.APITests.test_new_edit_clears_redo) ... ok
+test_note_search_and_transect (test_api.APITests.test_note_search_and_transect) ... ok
+test_replay_failure_is_atomic (test_api.APITests.test_replay_failure_is_atomic) ... ok
+test_reports_catalog_and_exports (test_api.APITests.test_reports_catalog_and_exports) ... ok
+test_undo_redo_restore_and_revision_is_monotonic (test_api.APITests.test_undo_redo_restore_and_revision_is_monotonic) ... ok
+test_weather_calendar_and_nursery_routes (test_api.APITests.test_weather_calendar_and_nursery_routes) ... ok
+test_both_releases_retained_and_execution_context_restored (test_campaign_history.HistoricalCampaignTests.test_both_releases_retained_and_execution_context_restored) ... ok
+test_checkpoint_failure_rolls_back_progress_and_terminal_publication (test_campaign_history.HistoricalCampaignTests.test_checkpoint_failure_rolls_back_progress_and_terminal_publication) ... ok
+test_compaction_retains_fork_roots_and_historical_reports (test_campaign_history.HistoricalCampaignTests.test_compaction_retains_fork_roots_and_historical_reports) ... ok
+test_completed_reports_are_immutable_even_when_installation_changes (test_campaign_history.HistoricalCampaignTests.test_completed_reports_are_immutable_even_when_installation_changes) ... ok
+test_fork_boundary_event_is_not_reapplied_and_future_events_follow (test_campaign_history.HistoricalCampaignTests.test_fork_boundary_event_is_not_reapplied_and_future_events_follow) ... ok
+test_historical_campaign_uses_recorded_release_on_resume_and_replay (test_campaign_history.HistoricalCampaignTests.test_historical_campaign_uses_recorded_release_on_resume_and_replay) ... ok
+test_release_and_lineage_participate_in_campaign_identity (test_campaign_history.HistoricalCampaignTests.test_release_and_lineage_participate_in_campaign_identity) ... ok
+test_cancel_fences_computations_already_in_flight (test_campaigns.CampaignTests.test_cancel_fences_computations_already_in_flight) ... ok
+test_changed_engine_fails_closed_and_inputs_remain_owned (test_campaigns.CampaignTests.test_changed_engine_fails_closed_and_inputs_remain_owned) ... ok
+test_failed_command_publishes_no_partial_day (test_campaigns.CampaignTests.test_failed_command_publishes_no_partial_day) ... ok
+test_identity_contains_complete_state_and_ordered_treatment_history (test_campaigns.CampaignTests.test_identity_contains_complete_state_and_ordered_treatment_history) ... ok
+test_process_death_before_and_after_checkpoint_replays_exactly_once (test_campaigns.CampaignTests.test_process_death_before_and_after_checkpoint_replays_exactly_once) ... ok
+test_reclaimed_worker_cannot_publish_or_fail_the_new_owner (test_campaigns.CampaignTests.test_reclaimed_worker_cannot_publish_or_fail_the_new_owner) ... ok
+test_resuming_every_offset_matches_existing_scientific_reference (test_campaigns.CampaignTests.test_resuming_every_offset_matches_existing_scientific_reference) ... ok
+test_two_live_workers_claim_different_branches (test_campaigns.CampaignTests.test_two_live_workers_claim_different_branches) ... ok
+test_all_layers_valid_xml_and_tile_count (test_charts.ChartTests.test_all_layers_valid_xml_and_tile_count) ... ok
+test_fixed_color_scale_endpoints (test_charts.ChartTests.test_fixed_color_scale_endpoints) ... ok
+test_history_empty_and_known_points (test_charts.ChartTests.test_history_empty_and_known_points) ... ok
+test_blueprint_and_guide (test_cli.CLITests.test_blueprint_and_guide) ... ok
+test_command_and_report (test_cli.CLITests.test_command_and_report) ... ok
+test_command_failure_does_not_write_file (test_cli.CLITests.test_command_failure_does_not_write_file) ... ok
+test_exports_and_map (test_cli.CLITests.test_exports_and_map) ... ok
+test_forecast_output_is_separate_and_compare (test_cli.CLITests.test_forecast_output_is_separate_and_compare) ... ok
+test_missing_file_error (test_cli.CLITests.test_missing_file_error) ... ok
+test_new_grow_inspect (test_cli.CLITests.test_new_grow_inspect) ... ok
+test_replay_writes_output_and_keeps_source (test_cli.CLITests.test_replay_writes_output_and_keeps_source) ... ok
+test_interventions_are_local_and_bounded (test_engine.WorldTests.test_interventions_are_local_and_bounded) ... ok
+test_neighbors_and_bad_inputs (test_engine.WorldTests.test_neighbors_and_bad_inputs) ... ok
+test_same_seed_same_world_and_future (test_engine.WorldTests.test_same_seed_same_world_and_future) ... ok
+test_save_validation_rejects_bad_shape_and_species (test_engine.WorldTests.test_save_validation_rejects_bad_shape_and_species) ... ok
+test_seasons_and_day_count (test_engine.WorldTests.test_seasons_and_day_count) ... ok
+test_wet_weather_and_ecology_stay_bounded (test_engine.WorldTests.test_wet_weather_and_ecology_stay_bounded) ... ok
+test_cache_reuse_keeps_equal_source_members_distinct (test_ensembles.EnsembleTests.test_cache_reuse_keeps_equal_source_members_distinct) ... ok
+test_cli_exports_immutable_inputs_and_report (test_ensembles.EnsembleTests.test_cli_exports_immutable_inputs_and_report) ... ok
+test_conditional_selection_and_input_ownership (test_ensembles.EnsembleTests.test_conditional_selection_and_input_ownership) ... ok
+test_edit_recomputes_only_read_plans_and_retains_old_report (test_ensembles.EnsembleTests.test_edit_recomputes_only_read_plans_and_retains_old_report) ... ok
+test_failed_treatment_is_reported_and_source_days_do_not_shift_offsets (test_ensembles.EnsembleTests.test_failed_treatment_is_reported_and_source_days_do_not_shift_offsets) ... ok
+test_matches_ordinary_experiment_and_does_not_mutate_sources (test_ensembles.EnsembleTests.test_matches_ordinary_experiment_and_does_not_mutate_sources) ... ok
+test_newly_discovered_plan_edit_cannot_publish_old_numbers (test_ensembles.EnsembleTests.test_newly_discovered_plan_edit_cannot_publish_old_numbers) ... ok
+test_process_exit_before_publication_leaves_work_retryable (test_ensembles.EnsembleTests.test_process_exit_before_publication_leaves_work_retryable) ... ok
+test_publication_failure_rolls_back_work_and_cache (test_ensembles.EnsembleTests.test_publication_failure_rolls_back_work_and_cache) ... ok
+test_stale_author_edit_and_invalid_batch_are_atomic (test_ensembles.EnsembleTests.test_stale_author_edit_and_invalid_batch_are_atomic) ... ok
+test_two_workers_complete_one_generation_once (test_ensembles.EnsembleTests.test_two_workers_complete_one_generation_once) ... ok
+test_unrelated_edit_preserves_correctness (test_ensembles.EnsembleTests.test_unrelated_edit_preserves_correctness) ... ok
+test_blueprint_application_and_collision (test_exchange.ExchangeTests.test_blueprint_application_and_collision) ... ok
+test_blueprint_local_coordinates_and_rotation (test_exchange.ExchangeTests.test_blueprint_local_coordinates_and_rotation) ... ok
+test_blueprint_rejects_duplicate_tiles_and_bad_dimensions (test_exchange.ExchangeTests.test_blueprint_rejects_duplicate_tiles_and_bad_dimensions) ... ok
+test_csv_expected_header_values_and_roundtrip (test_exchange.ExchangeTests.test_csv_expected_header_values_and_roundtrip) ... ok
+test_csv_missing_duplicate_and_invalid_rows_are_atomic (test_exchange.ExchangeTests.test_csv_missing_duplicate_and_invalid_rows_are_atomic) ... ok
+test_markdown_observations_tasks_and_specimens (test_exchange.ExchangeTests.test_markdown_observations_tasks_and_specimens) ... ok
+test_replay_expected_effects_and_source_unchanged (test_exchange.ExchangeTests.test_replay_expected_effects_and_source_unchanged) ... ok
+test_batch_deduplicates_and_revises_once (test_gardening.GardeningTests.test_batch_deduplicates_and_revises_once) ... ok
+test_batch_failure_rolls_back_earlier_tiles (test_gardening.GardeningTests.test_batch_failure_rolls_back_earlier_tiles) ... ok
+test_brush_shapes_clip_at_edges (test_gardening.GardeningTests.test_brush_shapes_clip_at_edges) ... ok
+test_harvest_yields_and_resets_maturity (test_gardening.GardeningTests.test_harvest_yields_and_resets_maturity) ... ok
+test_material_application (test_gardening.GardeningTests.test_material_application) ... ok
+test_prune_bounds (test_gardening.GardeningTests.test_prune_bounds) ... ok
+test_recipes_and_atomic_shortage (test_gardening.GardeningTests.test_recipes_and_atomic_shortage) ... ok
+test_rectangle_normalizes_and_includes_edges (test_gardening.GardeningTests.test_rectangle_normalizes_and_includes_edges) ... ok
+test_seed_collection_and_sowing (test_gardening.GardeningTests.test_seed_collection_and_sowing) ... ok
+test_transplant_moves_only_plant_and_stress (test_gardening.GardeningTests.test_transplant_moves_only_plant_and_stress) ... ok
+test_transplant_validation (test_gardening.GardeningTests.test_transplant_validation) ... ok
+test_barrel_collects_only_rain (test_habitat.HabitatTests.test_barrel_collects_only_rain) ... ok
+test_history_retains_last_240_days (test_habitat.HabitatTests.test_history_retains_last_240_days) ... ok
+test_mulch_log_and_stress_updates (test_habitat.HabitatTests.test_mulch_log_and_stress_updates) ... ok
+test_mulch_reduces_evaporation (test_habitat.HabitatTests.test_mulch_reduces_evaporation) ... ok
+test_pond_neighbor_bonus (test_habitat.HabitatTests.test_pond_neighbor_bonus) ... ok
+test_shade_cloth_orthogonal_and_capped (test_habitat.HabitatTests.test_shade_cloth_orthogonal_and_capped) ... ok
+test_soil_sand_peat_balances (test_habitat.HabitatTests.test_soil_sand_peat_balances) ... ok
+test_terrain_fixed_water (test_habitat.HabitatTests.test_terrain_fixed_water) ... ok
+test_unplantable_never_colonized (test_habitat.HabitatTests.test_unplantable_never_colonized) ... ok
+test_visitor_thresholds_and_hush (test_habitat.HabitatTests.test_visitor_thresholds_and_hush) ... ok
+test_append_detects_concurrent_head_change_after_computation (test_history.HistoryTests.test_append_detects_concurrent_head_change_after_computation) ... ok
+test_changing_creator_type_cannot_retarget_reference (test_history.HistoryTests.test_changing_creator_type_cannot_retarget_reference) ... ok
+test_checkpoint_reuse_requires_complete_ancestry (test_history.HistoryTests.test_checkpoint_reuse_requires_complete_ancestry) ... ok
+test_cli_exports_and_refuses_conflicted_partial_world (test_history.HistoryTests.test_cli_exports_and_refuses_conflicted_partial_world) ... ok
+test_concurrent_edit_and_deleted_anchor_are_explicit_conflicts (test_history.HistoryTests.test_concurrent_edit_and_deleted_anchor_are_explicit_conflicts) ... ok
+test_correction_resolves_logical_reference_after_reallocation (test_history.HistoryTests.test_correction_resolves_logical_reference_after_reallocation) ... ok
+test_equal_independent_actions_both_apply_shared_actions_apply_once (test_history.HistoryTests.test_equal_independent_actions_both_apply_shared_actions_apply_once) ... ok
+test_imported_entities_and_typed_reference_validation (test_history.HistoryTests.test_imported_entities_and_typed_reference_validation) ... ok
+test_invalid_command_rolls_back_append_and_conflicts_correction (test_history.HistoryTests.test_invalid_command_rolls_back_append_and_conflicts_correction) ... ok
+test_missing_reference_is_conflict_even_when_old_number_is_reused (test_history.HistoryTests.test_missing_reference_is_conflict_even_when_old_number_is_reused) ... ok
+test_nursery_reference_survives_history_correction (test_history.HistoryTests.test_nursery_reference_survives_history_correction) ... ok
+test_pick_references_require_selected_or_preexisting_producer (test_history.HistoryTests.test_pick_references_require_selected_or_preexisting_producer) ... ok
+test_rebase_uses_immutable_fork_base_after_parent_advances (test_history.HistoryTests.test_rebase_uses_immutable_fork_base_after_parent_advances) ... ok
+test_replay_uses_recorded_release_after_process_restart (test_history.HistoryTests.test_replay_uses_recorded_release_after_process_restart) ... ok
+test_three_way_rebase_preserves_correction_and_target_insertions (test_history.HistoryTests.test_three_way_rebase_preserves_correction_and_target_insertions) ... ok
+test_checkout_and_republish_preserve_logical_entity_identity (test_history_exchange.HistoryExchangeTests.test_checkout_and_republish_preserve_logical_entity_identity) ... ok
+test_concurrent_receive_preserves_local_history_and_both_heads (test_history_exchange.HistoryExchangeTests.test_concurrent_receive_preserves_local_history_and_both_heads) ... ok
+test_conflicting_common_histories_report_ambiguous_ancestry (test_history_exchange.HistoryExchangeTests.test_conflicting_common_histories_report_ambiguous_ancestry) ... ok
+test_crisscross_reconciliation_keeps_new_independent_edits (test_history_exchange.HistoryExchangeTests.test_crisscross_reconciliation_keeps_new_independent_edits) ... ok
+test_delivery_order_gives_the_same_graph_frontier (test_history_exchange.HistoryExchangeTests.test_delivery_order_gives_the_same_graph_frontier) ... ok
+test_incompatible_edits_preserved_until_explicit_resolution (test_history_exchange.HistoryExchangeTests.test_incompatible_edits_preserved_until_explicit_resolution) ... ok
+test_missing_ancestor_and_modified_world_are_atomic_rejections (test_history_exchange.HistoryExchangeTests.test_missing_ancestor_and_modified_world_are_atomic_rejections) ... ok
+test_multiple_common_ancestors_preserve_both_observed_reverts (test_history_exchange.HistoryExchangeTests.test_multiple_common_ancestors_preserve_both_observed_reverts) ... ok
+test_process_exit_during_receive_leaves_no_partial_ledger (test_history_exchange.HistoryExchangeTests.test_process_exit_during_receive_leaves_no_partial_ledger) ... ok
+test_resolution_rejects_a_head_set_changed_during_computation (test_history_exchange.HistoryExchangeTests.test_resolution_rejects_a_head_set_changed_during_computation) ... ok
+test_round_trip_duplicate_and_delayed_parcels (test_history_exchange.HistoryExchangeTests.test_round_trip_duplicate_and_delayed_parcels) ... ok
+test_selected_parcel_contains_complete_ancestry_on_fresh_installation (test_history_exchange.HistoryExchangeTests.test_selected_parcel_contains_complete_ancestry_on_fresh_installation) ... ok
+test_sequential_publications_advance_the_checkout_receipt (test_history_exchange.HistoryExchangeTests.test_sequential_publications_advance_the_checkout_receipt) ... ok
+test_audit_binding_change_does_not_conflict_with_authored_correction (test_history_lineage.HistoryLineageTests.test_audit_binding_change_does_not_conflict_with_authored_correction) ... ERROR
+test_contradictory_shared_insertions_report_order_conflict (test_history_lineage.HistoryLineageTests.test_contradictory_shared_insertions_report_order_conflict) ... ok
+test_correcting_a_past_edit_can_reference_a_later_deleted_object (test_history_lineage.HistoryLineageTests.test_correcting_a_past_edit_can_reference_a_later_deleted_object) ... ok
+test_same_authored_action_with_rebound_audit_data_is_pick_idempotent (test_history_lineage.HistoryLineageTests.test_same_authored_action_with_rebound_audit_data_is_pick_idempotent) ... ERROR
+test_shared_event_can_constrain_a_local_insertion_before_destination (test_history_lineage.HistoryLineageTests.test_shared_event_can_constrain_a_local_insertion_before_destination) ... ok
+test_http_lifecycle_and_persisted_state (test_io.IOTests.test_http_lifecycle_and_persisted_state) ... ok
+test_save_load_and_svg_export (test_io.IOTests.test_save_load_and_svg_export) ... ok
+test_failed_note_does_not_consume_id (test_notebook.NotebookTests.test_failed_note_does_not_consume_id) ... ok
+test_identifier_sequence_across_collections (test_notebook.NotebookTests.test_identifier_sequence_across_collections) ... ok
+test_note_edit_and_delete (test_notebook.NotebookTests.test_note_edit_and_delete) ... ok
+test_note_normalization_search_and_location (test_notebook.NotebookTests.test_note_normalization_search_and_location) ... ok
+test_search_returns_independent_copy (test_notebook.NotebookTests.test_search_returns_independent_copy) ... ok
+test_specimen_is_snapshot_not_destructive (test_notebook.NotebookTests.test_specimen_is_snapshot_not_destructive) ... ok
+test_tasks_sort_due_and_complete (test_notebook.NotebookTests.test_tasks_sort_due_and_complete) ... ok
+test_title_trim_and_limits (test_notebook.NotebookTests.test_title_trim_and_limits) ... ok
+test_cutting_cost_and_initial_batch (test_nursery_weather_experiments.NurseryTests.test_cutting_cost_and_initial_batch) ... ok
+test_discard_closes_batch (test_nursery_weather_experiments.NurseryTests.test_discard_closes_batch) ... ok
+test_drying_stops_age_then_fails (test_nursery_weather_experiments.NurseryTests.test_drying_stops_age_then_fails) ... ok
+test_maturity_water_and_planting (test_nursery_weather_experiments.NurseryTests.test_maturity_water_and_planting) ... ok
+test_seeds_are_consumed_only_on_success (test_nursery_weather_experiments.NurseryTests.test_seeds_are_consumed_only_on_success) ... ok
+test_water_restores_three_days_and_report (test_nursery_weather_experiments.NurseryTests.test_water_restores_three_days_and_report) ... ok
+test_almanac_matches_daily_weather (test_nursery_weather_experiments.WeatherExperimentTests.test_almanac_matches_daily_weather) ... ok
+test_calendar_boundaries (test_nursery_weather_experiments.WeatherExperimentTests.test_calendar_boundaries) ... ok
+test_calendar_expands_finite_repeats_and_open_tasks (test_nursery_weather_experiments.WeatherExperimentTests.test_calendar_expands_finite_repeats_and_open_tasks) ... ok
+test_experiment_controls_and_expected_initial_treatment (test_nursery_weather_experiments.WeatherExperimentTests.test_experiment_controls_and_expected_initial_treatment) ... ok
+test_experiment_rejects_time_advancement_and_duplicate_names (test_nursery_weather_experiments.WeatherExperimentTests.test_experiment_rejects_time_advancement_and_duplicate_names) ... ok
+test_final_day_event_runs_before_ecology (test_nursery_weather_experiments.WeatherExperimentTests.test_final_day_event_runs_before_ecology) ... ok
+test_fixed_seed_weather_sequence (test_nursery_weather_experiments.WeatherExperimentTests.test_fixed_seed_weather_sequence) ... ok
+test_next_weather_first_match (test_nursery_weather_experiments.WeatherExperimentTests.test_next_weather_first_match) ... ok
+test_bed_deduplication_unique_names_and_deletion (test_planning.PlanningTests.test_bed_deduplication_unique_names_and_deletion) ... ok
+test_cancel_prevents_execution (test_planning.PlanningTests.test_cancel_prevents_execution) ... ok
+test_disabled_rule_and_deletion (test_planning.PlanningTests.test_disabled_rule_and_deletion) ... ok
+test_failed_plan_does_not_partially_plant (test_planning.PlanningTests.test_failed_plan_does_not_partially_plant) ... ok
+test_finite_repeat_calendar (test_planning.PlanningTests.test_finite_repeat_calendar) ... ok
+test_reject_bad_schedule (test_planning.PlanningTests.test_reject_bad_schedule) ... ok
+test_rule_strict_threshold_and_snapshot_conditions (test_planning.PlanningTests.test_rule_strict_threshold_and_snapshot_conditions) ... ok
+test_schedule_runs_before_ecology (test_planning.PlanningTests.test_schedule_runs_before_ecology) ... ok
+test_allocation_keeps_numeric_plan_order (test_save_merge.SaveMergeTests.test_allocation_keeps_numeric_plan_order) ... ok
+test_cli_writes_a_reviewable_receipt_and_save (test_save_merge.SaveMergeTests.test_cli_writes_a_reviewable_receipt_and_save) ... ok
+test_cross_field_incompatibility_is_reported_without_a_save (test_save_merge.SaveMergeTests.test_cross_field_incompatibility_is_reported_without_a_save) ... ok
+test_delete_edit_conflict_is_explicit_and_resolvable (test_save_merge.SaveMergeTests.test_delete_edit_conflict_is_explicit_and_resolvable) ... ok
+test_different_fields_of_an_inherited_note_merge (test_save_merge.SaveMergeTests.test_different_fields_of_an_inherited_note_merge) ... ok
+test_ecology_conflict_retains_a_consistent_habitat_unit (test_save_merge.SaveMergeTests.test_ecology_conflict_retains_a_consistent_habitat_unit) ... ok
+test_independent_allocations_with_identical_content_survive (test_save_merge.SaveMergeTests.test_independent_allocations_with_identical_content_survive) ... ok
+test_receipt_detects_result_and_source_changes (test_save_merge.SaveMergeTests.test_receipt_detects_result_and_source_changes) ... ok
+test_save_validation_checks_every_bed (test_save_merge.SaveMergeTests.test_save_validation_checks_every_bed) ... ok
+test_stale_conflict_resolution_and_wrong_origins_rejected (test_save_merge.SaveMergeTests.test_stale_conflict_resolution_and_wrong_origins_rejected) ... ok
+test_swapping_replica_inputs_preserves_the_merged_garden (test_save_merge.SaveMergeTests.test_swapping_replica_inputs_preserves_the_merged_garden) ... ok
+test_v1_ancestor_upgrades_before_reconciliation (test_save_merge.SaveMergeTests.test_v1_ancestor_upgrades_before_reconciliation) ... ok
+test_bad_commands_leave_source_unchanged (test_state_commands.StateCommandTests.test_bad_commands_leave_source_unchanged) ... ok
+test_bad_save_values (test_state_commands.StateCommandTests.test_bad_save_values) ... 
+  test_bad_save_values (test_state_commands.StateCommandTests.test_bad_save_values) (field='mystery') ... FAIL
+test_catalog_has_required_and_optional_arguments (test_state_commands.StateCommandTests.test_catalog_has_required_and_optional_arguments) ... ok
+test_command_revises_once_for_multiple_days (test_state_commands.StateCommandTests.test_command_revises_once_for_multiple_days) ... ok
+test_duplicate_ids_invalid_reference_and_future_entry (test_state_commands.StateCommandTests.test_duplicate_ids_invalid_reference_and_future_entry) ... ok
+test_import_rejects_duplicate_rule_tiles (test_state_commands.StateCommandTests.test_import_rejects_duplicate_rule_tiles) ... ok
+test_import_rejects_inconsistent_pending_plan (test_state_commands.StateCommandTests.test_import_rejects_inconsistent_pending_plan) ... ok
+test_roundtrip_is_independent (test_state_commands.StateCommandTests.test_roundtrip_is_independent) ... ok
+test_save_dictionary_has_no_mutable_aliases (test_state_commands.StateCommandTests.test_save_dictionary_has_no_mutable_aliases) ... ok
+test_v1_example_migrates_with_zeroed_extensions (test_state_commands.StateCommandTests.test_v1_example_migrates_with_zeroed_extensions) ... ok
+test_cli_create_work_and_stage_report (test_studies.StudyTests.test_cli_create_work_and_stage_report) ... ok
+test_empty_common_cohort_records_failed_study (test_studies.StudyTests.test_empty_common_cohort_records_failed_study) ... ok
+test_future_edits_freeze_at_dispatch_and_preserve_reports (test_studies.StudyTests.test_future_edits_freeze_at_dispatch_and_preserve_reports) ... ok
+test_later_tie_uses_original_order_not_previous_ranking (test_studies.StudyTests.test_later_tie_uses_original_order_not_previous_ranking) ... ok
+test_partial_cohort_preview_does_not_promote (test_studies.StudyTests.test_partial_cohort_preview_does_not_promote) ... ok
+test_process_crash_reclaims_last_committed_offset (test_studies.StudyTests.test_process_crash_reclaims_last_committed_offset) ... ok
+test_reclaimed_worker_cannot_overwrite_replacement (test_studies.StudyTests.test_reclaimed_worker_cannot_overwrite_replacement) ... ok
+test_source_failure_uses_same_common_cohort_for_all_scores (test_studies.StudyTests.test_source_failure_uses_same_common_cohort_for_all_scores) ... ok
+test_stage_transition_and_publication_roll_back_together (test_studies.StudyTests.test_stage_transition_and_publication_roll_back_together) ... ok
+test_stages_preserve_full_trajectory_and_boundary_samples (test_studies.StudyTests.test_stages_preserve_full_trajectory_and_boundary_samples) ... ok
+test_stale_edit_is_rejected_without_partial_plan_changes (test_studies.StudyTests.test_stale_edit_is_rejected_without_partial_plan_changes) ... ok
+test_shared_database_preserves_history_campaign_and_ensemble_sources (test_workspace_workflows.WorkspaceWorkflowTests.test_shared_database_preserves_history_campaign_and_ensemble_sources) ... ok
+
+======================================================================
+ERROR: test_audit_binding_change_does_not_conflict_with_authored_correction (test_history_lineage.HistoryLineageTests.test_audit_binding_change_does_not_conflict_with_authored_correction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/k4/xzl_yfb55qbdccw_09rkhwt80000gn/T/mosslight-usability-ar2c8f4s/app/full_tests/test_history_lineage.py", line 89, in test_audit_binding_change_does_not_conflict_with_authored_correction
+    rebased = self.store.rebase(local["branch"], remote["branch"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/var/folders/k4/xzl_yfb55qbdccw_09rkhwt80000gn/T/mosslight-usability-ar2c8f4s/app/mosslight/history.py", line 448, in rebase
+    events = _rebase_events(base["events"], local["events"], destination["events"])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/var/folders/k4/xzl_yfb55qbdccw_09rkhwt80000gn/T/mosslight-usability-ar2c8f4s/app/mosslight/history.py", line 178, in _rebase_events
+    raise HistoryConflict("concurrent-edit", "Both histories changed the same authored event", event=ident)
+mosslight.history.HistoryConflict: Both histories changed the same authored event
+
+======================================================================
+ERROR: test_same_authored_action_with_rebound_audit_data_is_pick_idempotent (test_history_lineage.HistoryLineageTests.test_same_authored_action_with_rebound_audit_data_is_pick_idempotent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/k4/xzl_yfb55qbdccw_09rkhwt80000gn/T/mosslight-usability-ar2c8f4s/app/full_tests/test_history_lineage.py", line 95, in test_same_authored_action_with_rebound_audit_data_is_pick_idempotent
+    picked = self.store.cherry_pick(local["branch"], base["branch"], [edit_id])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/var/folders/k4/xzl_yfb55qbdccw_09rkhwt80000gn/T/mosslight-usability-ar2c8f4s/app/mosslight/history.py", line 431, in cherry_pick
+    raise HistoryConflict("concurrent-edit", "An already present event has different content", event=event["id"])
+mosslight.history.HistoryConflict: An already present event has different content
+
+======================================================================
+FAIL: test_comparison_changed_cells_and_population (test_analysis.AnalysisTests.test_comparison_changed_cells_and_population)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/k4/xzl_yfb55qbdccw_09rkhwt80000gn/T/mosslight-usability-ar2c8f4s/app/full_tests/test_analysis.py", line 59, in test_comparison_changed_cells_and_population
+    self.assertEqual(result["coverage_delta"],6.25)
+AssertionError: 6.2 != 6.25
+
+======================================================================
+FAIL: test_bad_save_values (test_state_commands.StateCommandTests.test_bad_save_values) (field='mystery')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/var/folders/k4/xzl_yfb55qbdccw_09rkhwt80000gn/T/mosslight-usability-ar2c8f4s/app/full_tests/test_state_commands.py", line 21, in test_bad_save_values
+    with self.subTest(field=field),self.assertRaises(ValueError):World.from_dict(data)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 191 tests in 10.775s
+
+FAILED (failures=2, errors=2)

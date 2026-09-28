@@ -1,0 +1,37 @@
+{
+  "method": "Independent reviewer replay of original saved grading probes E19/F19 on four immutable snapshots.",
+  "results": [
+    {
+      "label": "before_B66",
+      "snapshot": 33,
+      "verdicts": {
+        "F19": true,
+        "E19": true
+      }
+    },
+    {
+      "label": "after_B66",
+      "snapshot": 34,
+      "verdicts": {
+        "F19": false,
+        "E19": false
+      }
+    },
+    {
+      "label": "after_A76",
+      "snapshot": 35,
+      "verdicts": {
+        "F19": true,
+        "E19": false
+      }
+    },
+    {
+      "label": "after_B72",
+      "snapshot": 36,
+      "verdicts": {
+        "F19": true,
+        "E19": true
+      }
+    }
+  ]
+}

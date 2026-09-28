@@ -1,0 +1,29 @@
+--- 26/tests/t_courier.py
++++ 27/tests/t_courier.py
+@@ -0,0 +1,26 @@
++import sys, copy; sys.path.insert(0,'/workspace')
++from mosslight.courier import *
++a=new_packet('desk'); put(a,'n1',{'text':'Fern','tags':['x']}); put(a,'n2',{'text':'Moss'})
++b=copy.deepcopy(a); b['peer']='field'; b['counter']=0
++put(a,'n1',{'text':'Fern A'}); put(b,'n1',{'text':'fern a'})
++m=merge(a,b); print([ (o['record'],o['fields']['text'],o['conflicted']) for o in observations(m)])
++m2=merge(b,a); print(observations(m)==observations(m2))
++# edit vs delete
++c=copy.deepcopy(m); c['peer']='c'; c['counter']=0
++d=copy.deepcopy(m)
++remove(c,'n2'); put(d,'n2',{'text':'Moss2'})
++print([o['record'] for o in observations(merge(c,d))], [o['record'] for o in observations(merge(d,c))])
++# checkpoint and old
++cp=checkpoint(merge(c,d)); print(observations(merge(cp,a))==observations(cp), observations(merge(a,cp))==observations(cp))
++# projection
++p=project(m,['n2']); 
++q=copy.deepcopy(m); put(q,'n1',{'text':'later'})
++full=checkpoint(q)
++print([o['fields']['text'] for o in observations(merge(full,p))])
++print([o['fields']['text'] for o in observations(merge(p,full))])
++# caller-owned
++tags=['a']; e=new_packet('z'); put(e,'r',{'tags':tags}); tags.append('b'); print(observations(e)[0]['fields'])
++print(acknowledged({'x':{'desk':3},'y':{'desk':1}},['x','y']), acknowledged({'x':{'desk':3}},['x','y']))
++print(recover(receipt('héllo ✦')))
++try: recover('abc')
++except ValueError as ex: print('err',ex)

@@ -1,0 +1,35 @@
+--- 60/tests/t_hx2.py
++++ 61/tests/t_hx2.py
+@@ -0,0 +1,32 @@
++import sys, os, tempfile, json, copy; sys.path.insert(0,'/workspace')
++from mosslight import create
++from mosslight.commands import execute
++from mosslight.history_exchange import HistoryExchange
++from mosslight.history import _digest
++w=create(34,8,6); execute(w,{"op":"note","args":{"content":"orig"}})
++d=tempfile.mkdtemp(); X=HistoryExchange(os.path.join(d,'x.sqlite')); h=X.history
++main=h.create(w)['branch']
++ann=X.announce(main,author='desk',name='pond'); ch=ann['channel']; g=ann['publication']
++co=X.checkout(g)['branch']
++h.append(co,{"op":"note","args":{"content":"n2"}})
++p1=X.publish(co,checkout=co,author='desk')
++try: X.publish(co,checkout=main,author='desk')
++except ValueError as e: print('publish non-checkout:', e)
++parcel=X.export(ch)
++bad=copy.deepcopy(parcel); pid=p1['publication']
++bad['body']['publications'][pid]['author']=' '
++bad['checksum']=_digest(bad['body'])
++Y=HistoryExchange(os.path.join(d,'y.sqlite'))
++try: Y.receive(bad)
++except ValueError as e: print('bad parcel:', e)
++print('roots after bad', Y.db.execute('select count(*) from history_roots').fetchone()[0], Y.db.execute('select count(*) from exchange_publications').fetchone()[0])
++bad2=copy.deepcopy(parcel); bad2['checksum']='0'*64
++try: Y.receive(bad2)
++except ValueError as e: print('bad checksum:', e)
++r=Y.receive(parcel); print('good', r['heads']==[pid])
++# resolve with stale heads
++try: Y.resolve(ch, Y.checkout(pid)['branch'], author='field', expected_heads=[g])
++except ValueError as e: print('stale resolve:', getattr(e,'details',e))
++c=Y.checkout(pid); res=Y.resolve(ch, c['branch'], author='field'); print(res['status'], Y.heads(ch)==[res['publication']])
++# returned data independence
++e=X.export(ch); e['body']['channel']['name']='zzz'; print(X.export(ch)['body']['channel']['name'])

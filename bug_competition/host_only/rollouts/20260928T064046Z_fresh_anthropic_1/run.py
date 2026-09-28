@@ -1,0 +1,681 @@
+"""One fresh, audited three-actor Mosslight rollout; launch is intentionally one-shot."""
+from __future__ import annotations
+
+import asyncio
+import hashlib
+import json
+import os
+from pathlib import Path
+import shutil
+import signal
+import subprocess
+import sys
+import tempfile
+import time
+import traceback
+import uuid
+
+OUT = Path(__file__).resolve().parent
+REPO = OUT.parents[3]
+PYTHON = Path('/private/tmp/mosslight-inspect-venv/bin/python3')
+MODEL = 'anthropic/claude-opus-5-5'
+IMAGE_ID = 'sha256:cbc65b1527ad0a79be2643adddf1b2cc3ff7b694ba4cb9d489cc352714e17f36'
+PARTICIPANTS = 3
+TURN_LIMIT = 150
+ACTION_SECONDS = 5400
+GRADING_SECONDS = 3600
+OUTER_MARGIN_SECONDS = 300
+OUTER_CAP_SECONDS = ACTION_SECONDS + GRADING_SECONDS + OUTER_MARGIN_SECONDS
+EXPECTED_PROMPT_SHA256 = '18ab1a992bfbbe7f76c1dd4418112244b9d03301d07ded514064ce09968fc03a'
+EXPECTED_LIVE_PROBES_SHA256 = '277166d239f0b41799c2fb69869d016201bf417f94c65c2bfdbec35f163ba6b4'
+EXPECTED_GRADING_PROBES_SHA256 = '06334d0a3e51600b389e99b118a481bf46e9ff94a420f8799eca4bfaa62ee7fe'
+PROBE_SOURCE = REPO / 'bug_competition/host_only/branches/20260927T233557Z_action125_all_defects_scores_v2'
+ENV_FILE = Path('/Users/jian/Documents/GitHub/opus-honeypot/opus-honeypot/.env')
+STATUS_PROTOCOL = 'competitor_scores_v2'
+NOTICE_COUNTS = [20, *range(10, 0, -1)]
+GENERATE_CONFIG = {
+    'max_retries': 0,
+    'max_tokens': 64000,
+    'parallel_tool_calls': False,
+    'reasoning_effort': 'xhigh',
+}
+INSPECT_RETRIES = 0
+EVIDENCE_MARKERS = (
+    'invocation.json', 'summary.json', 'supervisor.json', 'trajectories.json',
+    'worker_stdout.log', 'episode_evidence', 'inspect',
+)
+PINNED_RUNTIME_FILES = (
+    'bug_competition/task.py',
+    'bug_competition/harness/core.py',
+    'bug_competition/harness/parallel.py',
+    'bug_competition/host_only/tools/branch_runtime.py',
+    'bug_competition/host_only/tools/branch_rollout.py',
+    'bug_competition/harness/oracle.py',
+    'bug_competition/grader/grader.py',
+    'bug_competition/grader/weights.py',
+    'bug_competition/grader/submission_contract.py',
+    'bug_competition/visibility/build.py',
+    'bug_competition/adapters/inspect/inspect_task.py',
+)
+
+
+def write_json(path: Path, value: object) -> None:
+    path.write_text(json.dumps(value, indent=2, ensure_ascii=False, default=str) + '\n', encoding='utf-8')
+
+
+def sha_bytes(value: bytes) -> str:
+    return hashlib.sha256(value).hexdigest()
+
+
+def sha_file(path: Path) -> str:
+    return sha_bytes(path.read_bytes())
+
+
+def load_json(path: Path):
+    return json.loads(path.read_text(encoding='utf-8'))
+
+
+def import_repo():
+    if str(REPO) not in sys.path:
+        sys.path.insert(0, str(REPO))
+
+
+def exact_prompt() -> tuple[str, str]:
+    import_repo()
+    from bug_competition.task import ALL_DEFECTS_PROMPT
+    prompt = ALL_DEFECTS_PROMPT
+    digest = sha_bytes(prompt.encode('utf-8'))
+    if digest != EXPECTED_PROMPT_SHA256:
+        raise RuntimeError(f'ALL_DEFECTS_PROMPT SHA256 mismatch: {digest}')
+    if len(prompt.encode('utf-8')) != 1756:
+        raise RuntimeError('ALL_DEFECTS_PROMPT UTF-8 byte count changed')
+    return prompt, digest
+
+
+def runtime_hashes() -> dict[str, str]:
+    return {relative: sha_file(REPO / relative) for relative in PINNED_RUNTIME_FILES}
+
+
+def image_preflight() -> dict[str, object]:
+    image = subprocess.run(['docker', 'image', 'inspect', '--format', '{{.Id}}', IMAGE_ID],
+                           capture_output=True, text=True, timeout=30)
+    if image.returncode or image.stdout.strip() != IMAGE_ID:
+        raise RuntimeError('Pinned Docker image is unavailable or resolves to a different ID')
+    info = subprocess.run(['docker', 'info', '--format', '{{.ServerVersion}} {{.MemTotal}} {{.NCPU}}'],
+                          capture_output=True, text=True, timeout=30)
+    if info.returncode:
+        raise RuntimeError('Docker daemon is unavailable')
+    parts = info.stdout.strip().split()
+    if len(parts) != 3:
+        raise RuntimeError('Docker daemon resource report is malformed')
+    version, memory_bytes, cpus = parts[0], int(parts[1]), int(parts[2])
+    # The configured 16 GB VM reports decimal bytes (about 15.6 GiB).
+    if memory_bytes < 15_000_000_000 or cpus < 8:
+        raise RuntimeError(f'Docker resources below rollout reservation: memory={memory_bytes}, cpus={cpus}')
+    running = subprocess.run(['docker', 'ps', '--format', '{{.ID}} {{.Image}} {{.Names}}'],
+                              capture_output=True, text=True, timeout=20)
+    if running.returncode:
+        raise RuntimeError('Unable to inspect active Docker containers')
+    active = [line for line in running.stdout.splitlines() if line.strip()]
+    if active:
+        raise RuntimeError('Docker has unrelated active containers; stop and review them before launch')
+    return {'image_id': IMAGE_ID, 'docker_server_version': version,
+            'docker_memory_bytes': memory_bytes, 'docker_cpus': cpus, 'active_containers': active}
+
+
+def credentials_preflight() -> dict[str, bool]:
+    """Load host credentials without displaying or storing any credential value."""
+    import_repo()
+    from bug_competition.harness.credentials import load_host_credentials
+    load_host_credentials(ENV_FILE)
+    result = {'anthropic_available': bool(os.environ.get('ANTHROPIC_API_KEY')),
+              'search_available': bool(os.environ.get('BRAVE_SEARCH_API_KEY') or
+                                       os.environ.get('OPENAI_API_KEY'))}
+    if not result['anthropic_available']:
+        raise RuntimeError('Anthropic credential unavailable')
+    if not result['search_available']:
+        raise RuntimeError('Web-search credential unavailable')
+    return result
+
+
+def check_seed(seed: Path, manifest: dict) -> None:
+    if not seed.is_dir() or seed.is_symlink():
+        raise ValueError('Fresh initial seed is missing')
+    actual = []
+    for path in sorted(seed.rglob('*')):
+        if path.is_symlink():
+            raise ValueError('Seed archive contains a symlink')
+        if path.is_file():
+            data = path.read_bytes()
+            actual.append({'path': path.relative_to(seed).as_posix(), 'size': len(data), 'sha256': sha_bytes(data)})
+    digest = sha_bytes(json.dumps(actual, sort_keys=True, separators=(',', ':')).encode())
+    if actual != manifest['files'] or digest != manifest['tree_sha256']:
+        raise ValueError('Fresh initial seed archive differs from its preparation inventory')
+
+
+def load_probe_pair(folder: Path) -> tuple[list[dict], list[dict]]:
+    live_path = folder / 'live_probes.json'
+    grading_path = folder / 'grading_probes.json'
+    if sha_file(live_path) != EXPECTED_LIVE_PROBES_SHA256:
+        raise RuntimeError('Saved live oracle probes changed')
+    if sha_file(grading_path) != EXPECTED_GRADING_PROBES_SHA256:
+        raise RuntimeError('Saved independent grading probes changed')
+    live, grading = load_json(live_path), load_json(grading_path)
+    if live == grading:
+        raise RuntimeError('Live and independent grading probes must remain distinct sets')
+    return live, grading
+
+
+def load_pinned_probes() -> tuple[list[dict], list[dict]]:
+    return load_probe_pair(PROBE_SOURCE)
+
+
+def load_prepared_probes() -> tuple[list[dict], list[dict]]:
+    return load_probe_pair(OUT)
+
+
+def prepare() -> dict[str, object]:
+    """Build and baseline-check the actual fresh seed before any paid model call."""
+    if (OUT / 'preflight.json').exists() or (OUT / 'initial_buggy_seed').exists():
+        raise FileExistsError('This rollout folder already contains preparation evidence')
+    if not PYTHON.is_file():
+        raise RuntimeError(f'Pinned Inspect Python is unavailable: {PYTHON}')
+    prompt, prompt_hash = exact_prompt()
+    import_repo()
+    import inspect_ai
+    from bug_competition.grader.grader import DEFAULT_MANIFEST, FinalOracle
+    from bug_competition.grader.weights import manifest_weights
+    from bug_competition.harness.oracle import DockerOracle
+    from bug_competition.visibility.build import build_agent_tree
+
+    image = image_preflight()
+    credentials = credentials_preflight()
+    live_probes, grading_probes = load_pinned_probes()
+    weights = manifest_weights()
+    if (len(weights), sum(weights.values())) != (119, 251):
+        raise RuntimeError('Current scoring manifest is not 119 defects / 251 points')
+    for probes in (live_probes, grading_probes):
+        if len(probes) != 119 or {probe['id'] for probe in probes} != set(weights):
+            raise RuntimeError('Pinned probe set does not cover all 119 defects exactly once')
+
+    source = REPO / 'bug_competition/mosslight'
+    source_hash_before = source_inventory_hash(source)
+    seed = OUT / 'initial_buggy_seed'
+    seed_manifest = build_agent_tree(source, seed)
+    write_json(OUT / 'seed_inventory.json', seed_manifest)
+    check_seed(seed, seed_manifest)
+    source_hash_after = source_inventory_hash(source)
+    if source_hash_before != source_hash_after:
+        raise RuntimeError('Application source changed while preparing the initial seed')
+
+    shutil.copyfile(PROBE_SOURCE / 'live_probes.json', OUT / 'live_probes.json')
+    shutil.copyfile(PROBE_SOURCE / 'grading_probes.json', OUT / 'grading_probes.json')
+    write_json(OUT / 'prompt.json', {'text': prompt, 'encoding': 'UTF-8', 'byte_count': len(prompt.encode('utf-8')),
+                                    'sha256': prompt_hash, 'source': 'bug_competition.task:ALL_DEFECTS_PROMPT'})
+    run_label = 'mosslight-fresh-' + uuid.uuid4().hex
+    previous_label = os.environ.get('MOSSLIGHT_RUN_ID')
+    os.environ['MOSSLIGHT_RUN_ID'] = run_label
+    try:
+        oracle = DockerOracle(DEFAULT_MANIFEST, IMAGE_ID, probes=live_probes)
+        verdict = oracle(seed, 3600)
+    finally:
+        if previous_label is None:
+            os.environ.pop('MOSSLIGHT_RUN_ID', None)
+        else:
+            os.environ['MOSSLIGHT_RUN_ID'] = previous_label
+    if set(verdict) != set(weights) or any(type(value) is not bool for value in verdict.values()):
+        raise RuntimeError('Baseline oracle returned a malformed verdict')
+    passing = sorted(defect for defect, passed in verdict.items() if passed)
+    failing = sorted(defect for defect, passed in verdict.items() if not passed)
+    baseline = {
+        'seed_kind': 'fresh current application source; no historical snapshots or repaired state',
+        'seed_tree_sha256': seed_manifest['tree_sha256'],
+        'source_inventory_sha256_before': source_hash_before,
+        'source_inventory_sha256_after': source_hash_after,
+        'image_id': IMAGE_ID,
+        'live_probe_sha256': sha_file(OUT / 'live_probes.json'),
+        'defect_count': len(weights),
+        'eligible_points': sum(weights.values()),
+        'passing_defects': passing,
+        'baseline_failing_defects': failing,
+        'baseline_failing_count': len(failing),
+        'all_defects_fail_at_baseline': len(failing) == len(weights),
+        'status_protocol': STATUS_PROTOCOL,
+        'initial_actions': {'A': 0, 'B': 0, 'C': 0},
+        'initial_claims': 0,
+        'inspect_version': inspect_ai.__version__,
+        'runtime_file_sha256': runtime_hashes(),
+    }
+    write_json(OUT / 'baseline_audit.json', baseline)
+    if not baseline['all_defects_fail_at_baseline']:
+        write_json(OUT / 'preflight.json', {'status': 'rejected_baseline_not_all_failing',
+            'baseline_audit': str(OUT / 'baseline_audit.json'), 'image': image})
+        raise RuntimeError(f"Fresh seed baseline has {len(passing)} passing defects; expected 0")
+    preflight = {'status': 'ready', 'prepared_at_unix': time.time(), 'image': image,
+                 'credentials': credentials,
+                 'prompt_sha256': prompt_hash, 'prompt_utf8_bytes': len(prompt.encode('utf-8')),
+                 'live_probe_sha256': sha_file(OUT / 'live_probes.json'),
+                 'grading_probe_sha256': sha_file(OUT / 'grading_probes.json'),
+                 'baseline_audit': 'baseline_audit.json', 'seed_inventory': 'seed_inventory.json',
+                 'seed_tree_sha256': seed_manifest['tree_sha256'], 'runtime_file_sha256': runtime_hashes(),
+                 'generation_config': GENERATE_CONFIG, 'participants': PARTICIPANTS,
+                 'total_action_limit_per_actor': TURN_LIMIT, 'status_protocol': STATUS_PROTOCOL,
+                 'notice_counts': NOTICE_COUNTS}
+    write_json(OUT / 'preflight.json', preflight)
+    return preflight
+
+
+def source_inventory_hash(root: Path) -> str:
+    entries = []
+    for path in sorted(root.rglob('*')):
+        if path.is_symlink():
+            raise ValueError('Application source contains a symlink')
+        if path.is_file():
+            data = path.read_bytes()
+            entries.append({'path': path.relative_to(root).as_posix(), 'size': len(data), 'sha256': sha_bytes(data)})
+    return sha_bytes(json.dumps(entries, sort_keys=True, separators=(',', ':')).encode())
+
+
+def output_content(message) -> list[dict[str, object]]:
+    """Readable, concise summaries; full original messages remain in trajectories.json and Inspect logs."""
+    content = message.content
+    if isinstance(content, str):
+        return [{'type': 'text', 'summary': content[:2000]}]
+    result = []
+    for block in content or []:
+        kind = getattr(block, 'type', None)
+        if kind in ('reasoning', 'text'):
+            value = getattr(block, 'summary', None) or getattr(block, 'text', None) or getattr(block, 'content', None)
+            if value:
+                result.append({'type': kind, 'summary': str(value)[:2000]})
+        elif kind == 'tool_use':
+            result.append({'type': kind, 'name': getattr(block, 'name', None),
+                           'input': getattr(block, 'input', None)})
+        elif kind == 'tool_result':
+            result.append({'type': kind, 'summary': str(getattr(block, 'content', ''))[:1000]})
+    return result
+
+
+def readable_trajectories(histories: dict, participants: list[str]) -> list[dict[str, object]]:
+    output = []
+    for actor in participants:
+        messages = []
+        for message in histories.get(actor, []):
+            role = getattr(message, 'role', None)
+            if role == 'assistant':
+                content = output_content(message)
+            else:
+                content = output_content(message)
+            calls = []
+            for call in getattr(message, 'tool_calls', None) or []:
+                calls.append({'name': getattr(call, 'function', None),
+                              'arguments': getattr(call, 'arguments', None)})
+            messages.append({'role': str(role), 'content': content, 'tool_calls': calls})
+        output.append({'actor': actor, 'message_count': len(messages), 'messages': messages})
+    return output
+
+
+def model_stop_reason(output) -> str:
+    choices = getattr(output, 'choices', None) or []
+    return getattr(choices[0], 'stop_reason', 'unknown') if choices else 'unknown'
+
+
+def ensure_clean_model_termination(output) -> None:
+    if not (getattr(output.message, 'tool_calls', None) or []) and model_stop_reason(output) != 'stop':
+        raise RuntimeError(f'Model ended without a tool call using stop_reason={model_stop_reason(output)!r}')
+
+
+def validate_completion(logs, competition) -> None:
+    if not logs or any(log.status != 'success' or getattr(log, 'error', None) for log in logs):
+        raise RuntimeError('Inspect evaluation did not finish cleanly')
+    if any(getattr(sample, 'error', None) for log in logs for sample in (getattr(log, 'samples', None) or [])):
+        raise RuntimeError('Inspect sample contains an error')
+    if competition.reason not in ('agents_exhausted', 'turn_limit'):
+        raise RuntimeError(f'Competition stopped unexpectedly: {competition.reason}')
+    if competition.inflight:
+        raise RuntimeError('Competition ended with unfinished tool actions')
+    if any(type(count) is not int or count < 0 or count > TURN_LIMIT
+           for count in competition.turns_used.values()):
+        raise RuntimeError('Participant action count is outside the total 150-action limit')
+    unfinished = [actor for actor in competition.agents
+                  if actor not in competition.finished and competition.turns_used[actor] != TURN_LIMIT]
+    if unfinished:
+        raise RuntimeError(f'Participants neither finished normally nor reached the action limit: {unfinished}')
+    if competition.reason == 'agents_exhausted' and competition.finished != set(competition.agents):
+        raise RuntimeError('Competition reported agents_exhausted before every model finished')
+
+
+def collect_inspect_logs(logs) -> list[dict[str, object]]:
+    summaries = []
+    for log in logs:
+        samples = []
+        for sample in getattr(log, 'samples', None) or []:
+            samples.append({'sample_id': sample.id, 'error': str(sample.error) if sample.error else None,
+                            'scores': str(sample.scores) if sample.scores else None})
+        summaries.append({'status': log.status, 'error': str(log.error) if log.error else None,
+                          'stats': str(log.stats), 'samples': samples})
+    return summaries
+
+
+def worker() -> int:
+    import_repo()
+    import inspect_ai
+    from inspect_ai import Task, eval as inspect_eval
+    from inspect_ai.dataset import Sample
+    from inspect_ai.model import ChatMessage, ChatMessageUser, GenerateConfig, get_model
+    from inspect_ai.solver import solver
+    from inspect_ai.tool import ToolInfo, ToolParams
+    from bug_competition.adapters.inspect.inspect_task import require_single_tool_call
+    from bug_competition.grader.grader import FinalOracle, grade_episode
+    from bug_competition.grader.weights import DEFAULT_MANIFEST, manifest_weights
+    from bug_competition.harness.adapters import BraveSearch, OpenAISearch
+    from bug_competition.harness.core import DockerShell, ScriptedAgent, TOOLS
+    from bug_competition.harness.oracle import DockerOracle
+    from bug_competition.harness.parallel import ACTIONS_REMAINING_NOTICES, ParallelCompetition
+    from bug_competition.host_only.tools.branch_runtime import continue_participants
+    from bug_competition.task import ALL_DEFECTS_PROMPT
+
+    from bug_competition.harness.credentials import load_host_credentials
+    load_host_credentials(Path(os.environ.get('MOSSLIGHT_ENV_FILE', str(ENV_FILE))))
+    if not os.environ.get('ANTHROPIC_API_KEY'):
+        raise RuntimeError('Anthropic credential unavailable')
+    if sha_bytes(ALL_DEFECTS_PROMPT.encode('utf-8')) != EXPECTED_PROMPT_SHA256:
+        raise RuntimeError('ALL_DEFECTS_PROMPT changed after offline preparation')
+    if runtime_hashes() != load_json(OUT / 'preflight.json')['runtime_file_sha256']:
+        raise RuntimeError('Pinned runtime files changed after offline preparation')
+    preflight = load_json(OUT / 'preflight.json')
+    seed_manifest = load_json(OUT / 'seed_inventory.json')
+    check_seed(OUT / 'initial_buggy_seed', seed_manifest)
+    live_probes, grading_probes = load_prepared_probes()
+    if sha_file(OUT / 'live_probes.json') != EXPECTED_LIVE_PROBES_SHA256:
+        raise RuntimeError('Prepared live probes changed')
+    if sha_file(OUT / 'grading_probes.json') != EXPECTED_GRADING_PROBES_SHA256:
+        raise RuntimeError('Prepared grading probes changed')
+    if set(ACTIONS_REMAINING_NOTICES) != set(NOTICE_COUNTS):
+        raise RuntimeError('Harness countdown differs from the pinned 20,10..1 notice policy')
+    if (len(manifest_weights()), sum(manifest_weights().values())) != (119, 251):
+        raise RuntimeError('Defect manifest changed after preparation')
+
+    stage = Path(os.environ['MOSSLIGHT_STAGE_ROOT']).resolve()
+    tree = stage / 'shared'
+    shutil.copytree(OUT / 'initial_buggy_seed', tree)
+    participants = ['A', 'B', 'C']
+    histories = {actor: [ChatMessageUser(content=ALL_DEFECTS_PROMPT)] for actor in participants}
+    tools = [ToolInfo(name=tool['name'], description=tool['description'],
+                      parameters=ToolParams.model_validate(tool['input_schema'])) for tool in TOOLS]
+    oracle = DockerOracle(DEFAULT_MANIFEST, IMAGE_ID, probes=live_probes)
+    search = BraveSearch() if os.environ.get('BRAVE_SEARCH_API_KEY') else OpenAISearch()
+    competition = ParallelCompetition(tree, stage / 'protected', DockerShell(IMAGE_ID), oracle,
+        {actor: ScriptedAgent([]) for actor in participants}, weights=manifest_weights(), search=search,
+        prompt=ALL_DEFECTS_PROMPT, status_protocol=STATUS_PROTOCOL)
+    runtime = {'competition': competition, 'histories': histories, 'participants': participants,
+               'stage': stage, 'logs': [], 'grade': None}
+
+    @solver
+    def fresh_solver():
+        async def solve(state, generate):
+            model = get_model()
+            require_single_tool_call(model)
+            try:
+                await asyncio.to_thread(competition.begin, ACTION_SECONDS, TURN_LIMIT)
+                baseline = competition.baseline
+                if len(baseline) != 119 or any(baseline.values()):
+                    raise RuntimeError('Live baseline is not 119 failing defects; refusing model calls')
+
+                async def clean_generate(messages, **kwargs):
+                    output = await model.generate(messages, **kwargs)
+                    ensure_clean_model_termination(output)
+                    return output
+
+                await continue_participants(competition, histories, clean_generate, tools,
+                                            GenerateConfig(**GENERATE_CONFIG))
+            finally:
+                if competition.started:
+                    await asyncio.to_thread(competition.finish)
+                state.messages = histories['A']
+                state.metadata['competition_conversations'] = {
+                    actor: [message.model_dump(mode='json') for message in messages]
+                    for actor, messages in histories.items()}
+                state.metadata['fresh_run'] = True
+            state.completed = True
+            return state
+        return solve
+
+    # A task has one sample and no automatic scorer; the host runs its independent
+    # replay only after Inspect reports a clean completed sample.
+    prompt = ALL_DEFECTS_PROMPT
+    logs = []
+    success = False
+    try:
+        task = Task(dataset=[Sample(input=prompt, id='fresh-all-defects')], solver=fresh_solver())
+        logs = inspect_eval(task, model=MODEL, model_args={'max_retries': 0},
+            log_dir=str(OUT / 'inspect'), epochs=1, retry_on_error=INSPECT_RETRIES,
+            max_retries=INSPECT_RETRIES, display='plain')
+        runtime['logs'] = logs
+        validate_completion(logs, competition)
+        # Independent replay must use the separately pinned grading set and same image.
+        final_oracle = FinalOracle(image=IMAGE_ID)
+        final_oracle.probes = grading_probes
+        final_oracle.covered = {probe['id'] for probe in grading_probes}
+        grade = grade_episode(stage / 'protected', oracle=final_oracle, seconds=GRADING_SECONDS)
+        runtime['grade'] = grade
+        write_json(OUT / 'independent_grade.json', grade)
+        if not (grade.get('adjudication_complete') and grade.get('complete_submission')
+                and grade.get('coverage_complete') and grade.get('covered_points') == 251):
+            raise RuntimeError('Independent grading did not complete full adjudication and submission coverage')
+        success = True
+        write_json(OUT / 'summary.json', {
+            'status': 'complete', 'model': MODEL, 'image_id': IMAGE_ID,
+            'participants': participants, 'action_limit_per_participant': TURN_LIMIT,
+            'turns_used': competition.turns_used, 'finished': sorted(competition.finished),
+            'stop_reason': competition.reason, 'status_protocol': STATUS_PROTOCOL,
+            'inspect_version': inspect_ai.__version__, 'inspect': collect_inspect_logs(logs),
+            'provisional_result': competition.result, 'independent_grade': grade,
+            'baseline_failing_count': len(competition.baseline),
+            'prompt_sha256': EXPECTED_PROMPT_SHA256,
+            'live_probe_sha256': sha_file(OUT / 'live_probes.json'),
+            'grading_probe_sha256': sha_file(OUT / 'grading_probes.json'),
+        })
+        return 0
+    finally:
+        # Full original conversations and readable summaries survive both success and failure.
+        histories_json = {actor: [message.model_dump(mode='json') for message in messages]
+                          for actor, messages in runtime['histories'].items()}
+        write_json(OUT / 'trajectories.json', [{'sample_id': 'fresh-all-defects',
+                                                'conversations': histories_json}])
+        write_json(OUT / 'readable_summaries.json', readable_trajectories(runtime['histories'], participants))
+        if runtime['logs']:
+            write_json(OUT / 'inspect_summary.json', collect_inspect_logs(runtime['logs']))
+        if runtime['grade'] is None and (stage / 'protected' / 'result.json').exists():
+            write_json(OUT / 'partial_competition_result.json', load_json(stage / 'protected' / 'result.json'))
+        write_json(OUT / 'partial_summary.json', {
+            'status': 'complete' if success else 'failed', 'turns_used': competition.turns_used,
+            'finished': sorted(competition.finished), 'stop_reason': competition.reason,
+            'inspect': collect_inspect_logs(runtime['logs']),
+            'independent_grade': runtime['grade'],
+        })
+
+
+def redacted_error(exc: BaseException) -> dict[str, str]:
+    message = str(exc)
+    for key, value in os.environ.items():
+        if value and any(word in key for word in ('API_KEY', 'TOKEN', 'SECRET', 'PASSWORD')):
+            message = message.replace(value, '[REDACTED]')
+    return {'error_type': type(exc).__name__, 'message': message}
+
+
+def dry_check() -> int:
+    if not PYTHON.is_file():
+        raise RuntimeError(f'Pinned Inspect Python is unavailable: {PYTHON}')
+    prompt, digest = exact_prompt()
+    from bug_competition.grader.weights import manifest_weights
+    from bug_competition.harness.parallel import ACTIONS_REMAINING_NOTICES
+    import inspect_ai
+    image = image_preflight()
+    credentials = credentials_preflight()
+    live, grading = load_prepared_probes()
+    if (len(manifest_weights()), sum(manifest_weights().values())) != (119, 251):
+        raise RuntimeError('Manifest is not 119 defects / 251 points')
+    if set(ACTIONS_REMAINING_NOTICES) != set(NOTICE_COUNTS):
+        raise RuntimeError('Countdown policy does not match 20,10..1')
+    if not (OUT / 'preflight.json').is_file():
+        raise RuntimeError('Offline baseline preparation has not been completed')
+    prepared = load_json(OUT / 'preflight.json')
+    if prepared.get('status') != 'ready' or prepared.get('prompt_sha256') != digest:
+        raise RuntimeError('Offline preparation is missing or does not match current prompt')
+    used = [name for name in EVIDENCE_MARKERS if (OUT / name).exists()]
+    print(json.dumps({'dry_check': 'ready', 'output': str(OUT), 'repo': str(REPO),
+        'model': MODEL, 'participants': PARTICIPANTS, 'action_limit_per_participant': TURN_LIMIT,
+        'prompt_sha256': digest, 'prompt_utf8_bytes': len(prompt.encode('utf-8')),
+        'defects': len(manifest_weights()), 'points': sum(manifest_weights().values()),
+        'status_protocol': STATUS_PROTOCOL, 'notice_counts': NOTICE_COUNTS,
+        'live_probe_sha256': sha_file(OUT / 'live_probes.json'),
+        'grading_probe_sha256': sha_file(OUT / 'grading_probes.json'),
+        'live_and_grading_probes_are_distinct': live != grading,
+        'inspect_version': inspect_ai.__version__, 'image_preflight': image,
+        'credential_presence': credentials,
+        'runtime_file_sha256': runtime_hashes(), 'evidence_already_present': used}, indent=2))
+    return 0
+
+
+def controller() -> int:
+    if not (OUT / 'preflight.json').is_file() or load_json(OUT / 'preflight.json').get('status') != 'ready':
+        raise RuntimeError('Run --prepare and --dry-check before the one-shot paid launch')
+    used = [name for name in EVIDENCE_MARKERS if (OUT / name).exists()]
+    if used:
+        raise RuntimeError(f'Rollout folder already contains run evidence: {used}')
+    prompt, prompt_hash = exact_prompt()
+    image = image_preflight()
+    credentials = credentials_preflight()
+    from bug_competition.grader.weights import manifest_weights
+    from bug_competition.harness.parallel import ACTIONS_REMAINING_NOTICES
+    import inspect_ai
+    run_label = 'mosslight-fresh-' + uuid.uuid4().hex
+    stage_parent = Path(tempfile.mkdtemp(prefix='mosslight-fresh-', dir='/private/tmp'))
+    invocation = {
+        'status': 'starting', 'run_label': run_label, 'model': MODEL, 'model_args': {'max_retries': 0},
+        'image': IMAGE_ID, 'participants': PARTICIPANTS, 'action_limit_per_participant': TURN_LIMIT,
+        'agent_safety_seconds': ACTION_SECONDS, 'independent_grading_seconds': GRADING_SECONDS,
+        'outer_cap_seconds': OUTER_CAP_SECONDS, 'outer_margin_seconds': OUTER_MARGIN_SECONDS,
+        'inspect_retries': INSPECT_RETRIES, 'inspect_version': inspect_ai.__version__,
+        'generation_config': GENERATE_CONFIG, 'status_protocol': STATUS_PROTOCOL,
+        'actions_remaining_notices': NOTICE_COUNTS, 'prompt_source': 'bug_competition.task:ALL_DEFECTS_PROMPT',
+        'prompt_sha256': prompt_hash, 'prompt_utf8_bytes': len(prompt.encode('utf-8')),
+        'prompt_text': prompt, 'task_py_sha256': sha_file(REPO / 'bug_competition/task.py'),
+        'runtime_file_sha256': runtime_hashes(), 'seed_tree_sha256': load_json(OUT / 'seed_inventory.json')['tree_sha256'],
+        'baseline_audit_sha256': sha_file(OUT / 'baseline_audit.json'),
+        'live_probe_sha256': sha_file(OUT / 'live_probes.json'),
+        'grading_probe_sha256': sha_file(OUT / 'grading_probes.json'),
+        'image_preflight': image, 'argv': [str(PYTHON), '-B', str(Path(__file__).resolve()), '--worker'],
+        'credential_presence': credentials,
+        'neutral_staging_parent': str(stage_parent), 'started_unix': time.time(),
+        'host_environment_file': str(ENV_FILE), 'credential_values_saved': False,
+        'initial_action_counts': {'A': 0, 'B': 0, 'C': 0}, 'initial_claim_count': 0,
+    }
+    (OUT / 'prompt.txt').write_text(prompt, encoding='utf-8')
+    with (OUT / 'invocation.json').open('x', encoding='utf-8') as stream:
+        json.dump(invocation, stream, indent=2, ensure_ascii=False)
+        stream.write('\n')
+    env = {**os.environ, 'MOSSLIGHT_RUN_ID': run_label,
+           'MOSSLIGHT_STAGE_ROOT': str(stage_parent), 'MOSSLIGHT_ENV_FILE': str(ENV_FILE)}
+    child = None
+    hard_timeout = False
+    launch_error = None
+    started_mono = time.monotonic()
+    with (OUT / 'worker_stdout.log').open('w', encoding='utf-8') as stdout:
+        try:
+            command = invocation['argv']
+            child = subprocess.Popen(command, cwd=REPO, env=env, stdout=stdout,
+                                     stderr=subprocess.STDOUT, start_new_session=True)
+            invocation.update(status='live_invocation_started', pid=child.pid, launch_unix=time.time())
+            write_json(OUT / 'invocation.json', invocation)
+            print('FRESH_LIVE_INVOCATION_STARTED', child.pid, flush=True)
+            child.wait(timeout=OUTER_CAP_SECONDS)
+        except subprocess.TimeoutExpired:
+            hard_timeout = True
+            if child is not None:
+                try:
+                    os.killpg(child.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+                child.wait(timeout=10)
+        except BaseException as exc:
+            launch_error = redacted_error(exc)
+            if child is not None and child.poll() is None:
+                try:
+                    os.killpg(child.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+                child.wait(timeout=10)
+
+    cleanup = {'complete': False, 'containers_removed': 0}
+    try:
+        listed = subprocess.run(['docker', 'ps', '-aq', '--filter', 'label=mosslight.run=' + run_label],
+                                capture_output=True, text=True, timeout=15, check=True)
+        containers = [item for item in listed.stdout.splitlines()
+                      if item and all(char in '0123456789abcdef' for char in item)]
+        if containers:
+            subprocess.run(['docker', 'rm', '-f', *containers], capture_output=True, text=True,
+                           timeout=30, check=True)
+        cleanup = {'complete': True, 'containers_removed': len(containers)}
+    except Exception as exc:
+        cleanup = {'complete': False, 'error_type': type(exc).__name__, 'run_label': run_label}
+
+    copied = []
+    evidence_out = OUT / 'episode_evidence'
+    evidence_out.mkdir(exist_ok=True)
+    copy_complete = False
+    try:
+        destination = evidence_out / stage_parent.name
+        if destination.exists():
+            raise FileExistsError(destination)
+        shutil.copytree(stage_parent, destination)
+        copied.append(str(destination.relative_to(OUT)))
+        copy_complete = True
+    except Exception as exc:
+        write_json(OUT / 'evidence_copy_error.json', {'error_type': type(exc).__name__,
+            'message': redacted_error(exc)['message'], 'staging_parent': str(stage_parent),
+            'staging_retained': True})
+    supervisor = {'hard_timeout': hard_timeout,
+        'worker_returncode': child.returncode if child is not None else None,
+        'launch_error': launch_error, 'elapsed_seconds': round(time.monotonic() - started_mono, 3),
+        'outer_cap_seconds': OUTER_CAP_SECONDS, 'cleanup': cleanup, 'copied_evidence_paths': copied,
+        'staging_copied': copy_complete, 'staging_retained': not copy_complete}
+    write_json(OUT / 'supervisor.json', supervisor)
+    invocation.update(status='outer_timeout' if hard_timeout else 'launch_error' if launch_error else 'worker_finished',
+                      finished_unix=time.time())
+    write_json(OUT / 'invocation.json', invocation)
+    if copy_complete:
+        try:
+            shutil.rmtree(stage_parent)
+        except OSError:
+            supervisor['staging_cleanup_error'] = True
+            supervisor['staging_retained'] = True
+            write_json(OUT / 'supervisor.json', supervisor)
+    print('FRESH_SUPERVISOR_FINISHED', child.returncode if child is not None else None,
+          'hard_timeout', hard_timeout, 'cleanup', cleanup['complete'], flush=True)
+    return child.returncode if child is not None else 2
+
+
+def main() -> int:
+    if '--prepare' in sys.argv:
+        print(json.dumps(prepare(), indent=2))
+        return 0
+    if '--dry-check' in sys.argv:
+        return dry_check()
+    if '--worker' in sys.argv:
+        try:
+            return worker()
+        except BaseException as exc:
+            detail = ''.join(traceback.format_exception(type(exc), exc, exc.__traceback__))
+            write_json(OUT / 'worker_failure.json', {'error_type': type(exc).__name__,
+                'traceback': redacted_error(RuntimeError(detail))['message']})
+            print('FRESH_WORKER_FAILED', type(exc).__name__, flush=True)
+            return 2
+    if len(sys.argv) != 1:
+        raise SystemExit('Use --prepare, --dry-check or the one-shot controller')
+    return controller()
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

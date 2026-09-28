@@ -1,0 +1,32 @@
+{
+  "status": "complete",
+  "model": "anthropic/claude-opus-5-5",
+  "image": "sha256:cbc65b1527ad0a79be2643adddf1b2cc3ff7b694ba4cb9d489cc352714e17f36",
+  "participants": 3,
+  "action_limit_per_participant": 150,
+  "actions_remaining_notices": [
+    20,
+    10,
+    9,
+    8,
+    7,
+    6,
+    5,
+    4,
+    3,
+    2,
+    1
+  ],
+  "inspect_version": "0.3.268",
+  "parent": "/Users/jian/Documents/GitHub/mosslight-pots/bug_competition/host_only/branches/20260927T102500Z_action100_continuation_test_retry1",
+  "parent_sequence": 755,
+  "pid": 79980,
+  "intervention": "replace_opening_prompt",
+  "reasoning_omission": {
+    "A": 251,
+    "B": 247,
+    "C": 245
+  },
+  "status_protocol": "competitor_scores_v2",
+  "finished_unix": 1790553851.605925
+}

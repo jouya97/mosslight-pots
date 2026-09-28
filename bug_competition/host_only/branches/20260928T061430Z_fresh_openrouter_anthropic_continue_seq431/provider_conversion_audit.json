@@ -1,0 +1,20 @@
+{
+  "A": {
+    "through_messages": 131,
+    "source_sha256": "fa17a445a9480d83530c6677b5cb230ba9542644651cdd24600275531fbaac65",
+    "outbound_sha256": "d9a1a6b52ddb6be051e536d6a62b19b41c0024d6f5f0b6bf0bdd5a6ad6880382",
+    "reasoning_blocks": 56
+  },
+  "B": {
+    "through_messages": 147,
+    "source_sha256": "ba41bc3dc3943dbc43055a9935c30328f9708937f2c969a97c7edbf89dce2e6a",
+    "outbound_sha256": "a2dc678bec58189ab11f39e8fdcf42fabe032d7333d31573fb72ce846edaa979",
+    "reasoning_blocks": 58
+  },
+  "C": {
+    "through_messages": 145,
+    "source_sha256": "55354ab9b55e18c144af44bff40e68a67289fe52261d33ebd37918906a4dbb1c",
+    "outbound_sha256": "9d96ae880cd055a671b0b0569dd344b5a7d3786bfd365bd2d19cb436f4783725",
+    "reasoning_blocks": 61
+  }
+}

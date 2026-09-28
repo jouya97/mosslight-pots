@@ -1,0 +1,30 @@
+--- 11/tests/oracle2.py
++++ 12/tests/oracle2.py
+@@ -0,0 +1,27 @@
++import json, sys
++sys.path.insert(0,'/workspace')
++from mosslight import create
++from mosslight.exchange import replay
++d=json.load(open('/workspace/examples/lantern-hollow.json'))
++w=create(34,16,11)
++cmds=json.load(open('/workspace/examples/hollow-actions.json'))
++w=replay(w,cmds) or w
++got=w.to_dict()
++for k in got:
++    if k not in ('cells','workbench','journal') and got[k]!=d[k]: print('diff',k,got[k],d[k])
++diff=0
++for i,(a,b) in enumerate(zip(got['cells'],d['cells'])):
++    if a!=b:
++        diff+=1
++        if diff<5: print(i,a,b)
++print('cell diffs',diff)
++for k in d['workbench']:
++    if got['workbench'].get(k)!=d['workbench'][k]:
++        if k=='tiles':
++            for i,(a,b) in enumerate(zip(got['workbench'][k], d['workbench'][k])):
++                if a!=b: print('tile',i,a,b)
++        else: print('wb diff',k,got['workbench'].get(k),d['workbench'][k])
++gj=[(e['day'],e['text']) for e in got['journal']]
++dj=[(e['day'],e['text']) for e in d['journal']]
++print('journal equal', gj==dj)
++if gj!=dj: print(gj); print(dj)

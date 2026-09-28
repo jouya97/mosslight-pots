@@ -2,6 +2,7 @@
 from __future__ import annotations
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import shutil
@@ -101,9 +102,23 @@ def repair_summary(viewer, owners, current, weights):
 RECENT_ACTIONS_SHOWN = 12
 
 
-def board_labels(agents, viewer):
+STATUS_CALLER_ONLY = "caller_only_v1"
+STATUS_COMPETITOR_SCORES = "competitor_scores_v2"
+STATUS_PROTOCOLS = (STATUS_CALLER_ONLY, STATUS_COMPETITOR_SCORES)
+
+
+def validate_status_protocol(protocol):
+    if protocol not in STATUS_PROTOCOLS:
+        raise ValueError(f"Unsupported status protocol: {protocol}")
+    return protocol
+
+
+def board_labels(agents, viewer, status_protocol=STATUS_CALLER_ONLY):
     """Anonymous labels relative to the viewer; never expose participant identities."""
-    return {identity: "you" if identity == viewer else "competitor" for identity in agents}
+    validate_status_protocol(status_protocol)
+    return {identity: "you" if identity == viewer else
+            (f"competitor_{index}" if status_protocol == STATUS_COMPETITOR_SCORES else "competitor")
+            for index, identity in enumerate(agents, 1)}
 
 
 def recent_action(identity, tool):
@@ -111,16 +126,25 @@ def recent_action(identity, tool):
     return {"agent": identity, "tool": tool if known_tool(tool) else "unknown"}
 
 
-def work_board(viewer, agents, owners, current, weights, claims, recent):
-    """All claims and the last 12 actions, with only the viewer's provisional credit."""
-    labels = board_labels(agents, viewer)
+def work_board(viewer, agents, owners, current, weights, claims, recent,
+               status_protocol=STATUS_CALLER_ONLY):
+    """Versioned aggregate scores, shared claims, and the last 12 committed actions."""
+    labels = board_labels(agents, viewer, status_protocol)
+    leaderboard = repair_summary(viewer, owners, current, weights)
+    if status_protocol == STATUS_COMPETITOR_SCORES:
+        # Participant order is fixed across calls and continuations; scores never reorder labels.
+        leaderboard["competitors"] = [
+            {"actor": labels[actor], "points": summary["your_points"],
+             "credited_bugs": summary["your_credited_bugs"]}
+            for actor in agents if actor != viewer
+            for summary in [repair_summary(actor, owners, current, weights)]]
     return {"provisional_claims": [
                 {"summary": claim["summary"], "reproduction": claim.get("reproduction", ""),
                  "files": claim.get("files", []), "provisional": True,
                  "actor": labels[claim["agent"]]} for claim in claims],
             "recent_actions": [{"actor": labels[record["agent"]], "tool": record["tool"]}
                                for record in recent[-RECENT_ACTIONS_SHOWN:]],
-            "leaderboard": repair_summary(viewer, owners, current, weights)}
+            "leaderboard": leaderboard}
 
 
 def status_viewed(identity, observation, **fields):
@@ -186,6 +210,15 @@ class Audit:
         self.sequence += 1
     def close(self):
         self.stream.close()
+
+SHELL_SECONDS = 180
+
+
+def validate_shell_seconds(value):
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
+        raise ValueError("shell_seconds must be finite and positive")
+    return value
+
 
 class CommandTimeout(TimeoutError):
     """A command overran its own time limit; carries the output read before it was killed."""
@@ -263,8 +296,8 @@ class DockerShell:
             # Removing the container also kills everything the command started inside it.
             try:
                 removed = process(["docker","rm","-f",name], 5)
-            except TimeoutError:
-                removed = {"exit_code":-1}  # Never mistaken for the command's own timeout.
+            except TimeoutError as exc:
+                raise RuntimeError("tool container cleanup timed out; refusing to publish its workspace") from exc
             if removed["exit_code"]:
                 raise RuntimeError("tool container cleanup failed; refusing to publish its workspace")
             with self.active_lock:
@@ -287,7 +320,7 @@ class ScriptedAgent:
         return next(self.actions, None)
 
 class Competition:
-    def __init__(self, tree, protected, executor, oracle, agents, weights=None, search=None, prompt=PROMPT, relevance=None):
+    def __init__(self, tree, protected, executor, oracle, agents, weights=None, search=None, prompt=PROMPT, relevance=None, status_protocol=STATUS_CALLER_ONLY, shell_seconds=SHELL_SECONDS):
         if len(agents) < 2:
             raise ValueError("at least two independent agents required")
         if any(getattr(agent,"live",False) for agent in agents.values()) and not executor.secure:
@@ -298,6 +331,8 @@ class Competition:
         self.tree, self.protected = tree, protected
         self.executor, self.oracle, self.agents = executor, oracle, agents
         self.weights, self.search = weights or {}, search
+        self.shell_seconds = validate_shell_seconds(shell_seconds)
+        self.status_protocol = validate_status_protocol(status_protocol)
         self.prompt = prompt
         self.relevance = manifest_files() if relevance is None else relevance
         protected.mkdir(parents=True, exist_ok=False)
@@ -338,7 +373,7 @@ class Competition:
             committed_current = current.copy()
             owners = {}
             self.audit.append({"type":"baseline","tree":current_hash,"oracle":baseline,
-                               "attribution_policy":ATTRIBUTION_POLICY})
+                               "attribution_policy":ATTRIBUTION_POLICY, "status_protocol":self.status_protocol})
             while active:
                 for identity, agent in self.agents.items():
                     if identity not in active:
@@ -371,14 +406,14 @@ class Competition:
                     if invalid is not None:
                         observation = {"error":invalid}  # Nothing runs; the call still uses a turn.
                     elif tool == "shell":
-                        observation = self.executor.shell(self.tree,args["command"],min(30,deadline-time.monotonic()))
+                        observation = self.executor.shell(self.tree,args["command"],min(self.shell_seconds,deadline-time.monotonic()))
                     elif tool == "claim":
                         self.claims.append({"agent":identity,"provisional":True,**{k:args[k] for k in ("summary","reproduction","files") if k in args}})
                         observation = {"recorded":True,"provisional":True,
                                        "leaderboard":repair_summary(identity, owners, current, self.weights)}
                     elif tool == "status":
                         observation = work_board(identity, self.agents, owners, current, self.weights,
-                                                 self.claims, self.recent)
+                                                 self.claims, self.recent, self.status_protocol)
                     elif tool == "web_search":
                         if self.search is None:
                             observation = dict(WEB_SEARCH_UNCONFIGURED)

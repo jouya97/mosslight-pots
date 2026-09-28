@@ -1,0 +1,530 @@
+
+## A19 seq126 snapshot 9->10 mosslight/courier.py ASTsame=False
+--- 
++++ 
+@@ -24,7 +24,7 @@
+ 
+ 
+ def precedes(a, b):
+-    return all(a.get(peer, 0) <= b.get(peer, 0) for peer in b.keys())
++    return all(a.get(peer, 0) <= b.get(peer, 0) for peer in a.keys())
+ 
+ 
+ def record_clock(packet, record):
+@@ -40,7 +40,7 @@
+     peer = packet["peer"]
+     counter = packet["counter"] + 1
+     event = {"peer": peer, "counter": counter, "record": record, "field": field,
+-             "value": value, "context": dict(packet["clock"])}
++             "value": copy.deepcopy(value), "context": record_clock(packet, record)}
+     packet["events"][_dot_key(peer, counter)] = event
+     packet["clock"][peer] = counter
+     packet["counter"] = counter
+@@ -67,8 +67,7 @@
+ 
+ 
+ def _covered(event, packet):
+-    context = {peer: max(values.get(peer, 0) for values in packet["contexts"].values())
+-               for peer in set().union(*(values.keys() for values in packet["contexts"].values()))}
++    context = packet["contexts"].get(event["record"], {})
+     return event["counter"] <= context.get(event["peer"], 0)
+ 
+ 
+@@ -76,7 +75,7 @@
+     if left.get("version") != 1 or right.get("version") != 1:
+         raise ValueError("Unsupported courier format")
+     for key in left["events"].keys() & right["events"].keys():
+-        if left["events"][key]["record"] != right["events"][key]["record"]:
++        if left["events"][key] != right["events"][key]:
+             raise ValueError("A writer sequence was reused with different content")
+     result = copy.deepcopy(left)
+     result["events"] = {}
+@@ -94,6 +93,7 @@
+     result["clock"] = _join(left["clock"], right["clock"])
+     result["contexts"] = {record: _join(left["contexts"].get(record, {}), right["contexts"].get(record, {}))
+                           for record in left["contexts"].keys() | right["contexts"].keys()}
++    result["counter"] = max(left.get("counter", 0), result["clock"].get(left["peer"], 0))
+     return result
+ 
+ 
+@@ -115,13 +115,13 @@
+     output = []
+     for record in records:
+         alive = heads.get((record, "$alive"), [])
+-        if not alive or any(event["value"] is False for event in alive):
++        if not alive or all(event["value"] is False for event in alive):
+             continue
+         fields = {}
+         for (name, field), events in heads.items():
+             if name != record or field == "$alive":
+                 continue
+-            distinct = {json.dumps(event["value"], ensure_ascii=False, sort_keys=True).casefold(): event["value"] for event in events}
++            distinct = {json.dumps(event["value"], ensure_ascii=False, sort_keys=True): event["value"] for event in events}
+             fields[field] = [copy.deepcopy(distinct[key]) for key in sorted(distinct)]
+         output.append({"record": record, "fields": fields,
+                        "conflicted": any(len(values) > 1 for values in fields.values())})
+@@ -134,8 +134,7 @@
+     result["events"] = {_dot_key(e["peer"], e["counter"]): copy.deepcopy(e)
+                         for events in heads.values() for e in events}
+     records = {e["record"] for e in packet["events"].values()} | packet["contexts"].keys()
+-    result["contexts"] = {record: _join(packet["contexts"].get(record, {}), packet["clock"])
+-                          for record in records}
++    result["contexts"] = {record: record_clock(packet, record) for record in records}
+     return result
+ 
+ 
+@@ -145,13 +144,15 @@
+     result = copy.deepcopy(packet)
+     requested = set(records)
+     result["events"] = {key: event for key, event in result["events"].items() if event["record"] in requested}
+-    result["contexts"] = dict(result["contexts"])
++    result["contexts"] = {record: dict(context) for record, context in result["contexts"].items()
++                          if record in requested}
+     return result
+ 
+ 
+ def acknowledged(acks, peers):
+     writers = set().union(*(set(clock) for clock in acks.values())) if acks else set()
+-    return {writer: max((acks.get(peer, {}).get(writer, 0) for peer in peers), default=0) for writer in writers}
++    peers = list(peers)
++    return {writer: min((acks.get(peer, {}).get(writer, 0) for peer in peers), default=0) for writer in writers}
+ 
+ 
+ def receipt(note):
+@@ -176,7 +177,7 @@
+     packet = new_packet(peer)
+     for note in world.workbench["notes"]:
+         record = json.dumps([notebook, note["id"]], ensure_ascii=False, separators=(",", ":"))
+-        put(packet, record, {k: note[k] for k in ("text", "tags", "day", "tile")})
++        put(packet, record, {k: copy.deepcopy(note.get(k)) for k in ("text", "tags", "day", "tile")})
+     return packet
+ 
+ 
+@@ -194,9 +195,9 @@
+         from .model import load
+         packet = from_garden(load(args.garden), args.peer, args.notebook)
+     elif args.operation == "merge":
+-        packet = merge(json.loads(Path(args.left).read_text()), json.loads(Path(args.right).read_text()))
++        packet = merge(json.loads(Path(args.left).read_text(encoding="utf-8")), json.loads(Path(args.right).read_text(encoding="utf-8")))
+     else:
+-        print(json.dumps(observations(json.loads(Path(args.packet).read_text())), indent=2, ensure_ascii=False))
++        print(json.dumps(observations(json.loads(Path(args.packet).read_text(encoding="utf-8"))), indent=2, ensure_ascii=False))
+         return 0
+     Path(args.output).write_text(json.dumps(packet, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+     return 0
+
+
+## A23 seq152 snapshot 14->15 mosslight/save_merge.py ASTsame=False
+--- 
++++ 
+@@ -60,7 +60,9 @@
+ 
+ 
+ def _logical_id(ident, origin, base_ids):
+-    return _encoded(["base", ident])
++    if ident in base_ids:
++        return _encoded(["base", ident])
++    return _encoded([origin, ident])
+ 
+ 
+ def _normalize(save, origin, base_ids):
+@@ -96,6 +98,8 @@
+         raise ValueError("Saves must descend from the same garden and canvas")
+     base_types = {entry["id"]: collection for collection in COLLECTIONS for entry in base["workbench"][collection]}
+     base_ids = set(base_types)
++    if any(value["day"] < base["day"] for value in (left, right)):
++        raise ValueError("A replica is older than its supplied ancestor")
+     if any(value["workbench"]["next_id"] < base["workbench"]["next_id"] for value in (left, right)):
+         raise ValueError("A replica allocation counter precedes its ancestor")
+     for value in (left, right):
+
+
+## A27 seq184 snapshot 16->17 mosslight/field_calibration.py ASTsame=False
+--- 
++++ 
+@@ -5,19 +5,33 @@
+ from .model import World
+ 
+ 
++def _number(value):
++    if isinstance(value, bool) or not isinstance(value, (int, float)):
++        raise ValueError('Supply finite timestamps and moisture percentages')
++    return float(value)
++
++
+ def estimate(readings, at):
+-    values = [(float(row['timestamp']), float(row['moisture'])) for row in readings]
+-    at = float(at)
++    if not isinstance(readings, (list, tuple)) or any(not isinstance(row, dict) for row in readings):
++        raise ValueError('Supply a list of timestamped moisture readings')
++    try:
++        values = [(_number(row['timestamp']), _number(row['moisture'])) for row in readings]
++    except KeyError as exc:
++        raise ValueError('Each reading needs a timestamp and moisture') from exc
++    at = _number(at)
+     if not values or not math.isfinite(at) or any(not math.isfinite(t) or not math.isfinite(y) or not 0 <= y <= 100 for t, y in values):
+         raise ValueError('Supply finite timestamps and moisture percentages')
+-    origin = values[0][0]
+-    ys = [y for _, y in values]
+-    center = math.fsum(t - origin for t, _ in values)/len(values)
++    grouped = {}
++    for t, y in values:
++        grouped.setdefault(t, []).append(y)
++    points = sorted((t, math.fsum(ys)/len(ys)) for t, ys in grouped.items())
++    origin = points[0][0]
++    offsets = [t - origin for t, _ in points]
++    ys = [y for _, y in points]
++    center = math.fsum(offsets)/len(offsets)
+     mean = math.fsum(ys)/len(ys)
+-    times = [t for t, _ in values]
+-    total = math.fsum(times)
+-    spread = math.fsum(t*t for t in times) - total*total/len(times)
+-    covariance = math.fsum(t*y for t,y in values) - total*math.fsum(ys)/len(times)
++    spread = math.fsum((d - center)*(d - center) for d in offsets)
++    covariance = math.fsum((d - center)*(y - mean) for d, y in zip(offsets, ys))
+     slope = covariance/spread if spread > 0 else 0.0
+     prediction = mean + slope*((at-origin)-center)
+     return max(0.0, min(100.0, prediction))
+@@ -31,8 +45,13 @@
+         original = value.to_dict() if isinstance(value, World) else value
+         world = World.from_dict(copy.deepcopy(original))
+         moisture = estimate(observations[label], at)
+-        for cell in world.cells:
+-            cell.moisture = round(moisture)
++        for cell, tile in zip(world.cells, world.workbench['tiles']):
++            if tile['terrain'] == 'pond':
++                cell.moisture = 100
++            elif tile['terrain'] == 'stone':
++                cell.moisture = 0
++            else:
++                cell.moisture = round(moisture)
+         sources[label] = world
+         receipt['estimates'][label] = moisture
+     return sources, receipt
+
+
+## A30 seq198 snapshot 19->20 mosslight/irrigation.py ASTsame=False
+--- 
++++ 
+@@ -134,7 +134,7 @@
+     result=json.loads(Path(path).read_text())
+     if hashlib.sha256(encoded(result['problem']).encode()).hexdigest()!=result['digest']:raise ValueError('Design input digest mismatch')
+     state=replay(result['problem'],result['schedule'])
+-    if state['world']!=result['world'] or objective(state)!=result['score'] or state['trace']!=result['trace']:raise ValueError('Design result does not replay')
++    if state['world']!=result['world'] or objective(state)!=result['score'] or state['remaining']!=result.get('remaining') or state['trace']!=result['trace']:raise ValueError('Design result does not replay')
+     return result
+ 
+ 
+
+
+## A33 seq216 snapshot 22->23 mosslight/workspace_catalog.py ASTsame=False
+--- 
++++ 
+@@ -12,7 +12,7 @@
+ def _normalizer(version):
+     if version == 1:
+         return lambda value: value.casefold()
+-    return lambda value: ' '.join(unicodedata.normalize('NFKC', value).casefold().split())
++    return lambda value: ' '.join(unicodedata.normalize('NFKC', unicodedata.normalize('NFKC', value).casefold()).split())
+ 
+ 
+ class WorkspaceCatalog:
+@@ -97,10 +97,12 @@
+             raise ValueError('Unsupported catalog parcel')
+         with self.db:
+             for item in parcel['receipts']:
+-                if item['kind'] not in ('garden','history','study') or not isinstance(item['label'],str) or not item['label'].strip():
++                if not isinstance(item, dict) or not isinstance(item.get('id'), str) or not item['id'] \
++                        or item.get('kind') not in ('garden','history','study') or not isinstance(item.get('label'),str) \
++                        or not item['label'].strip() or not isinstance(item.get('locator', ''), str) or 'payload' not in item:
+                     raise ValueError('Invalid receipt')
+                 encoded=json.dumps(item['payload'],allow_nan=False,sort_keys=True,separators=(',',':'))
+-                data=(item['id'],item['kind'],item['label'],item['locator'],encoded)
++                data=(item['id'],item['kind'],item['label'],item.get('locator',''),encoded)
+                 existing=self.db.execute('SELECT id,kind,label,locator,payload FROM catalog_receipts WHERE id=?',(item['id'],)).fetchone()
+                 if existing is not None and existing != data:
+                     raise ValueError('Conflicting receipt identity')
+
+
+## A39 seq254 snapshot 25->26 mosslight/ensemble_compute.py ASTsame=False
+--- 
++++ 
+@@ -50,7 +50,7 @@
+                   "runtime": definition["runtime"]})
+     cached = lookup(key)
+     requested_identity = {"replicate": spec["replicate"], "treatment": spec["treatment"]}
+-    identity = copy.deepcopy(cached["origin"]["identity"]) if cached is not None else requested_identity
++    identity = requested_identity
+     if cached is not None:
+         payload = copy.deepcopy(cached["payload"])
+         origin = copy.deepcopy(cached["origin"])
+
+
+## A39 seq254 snapshot 25->26 mosslight/ensemble_reports.py ASTsame=False
+--- 
++++ 
+@@ -16,7 +16,7 @@
+         paired_ids = [replicate for replicate in definition["replicates"]
+                       if replicate in controls and replicate in rows
+                       and rows[replicate]["payload"]["status"] == "complete"]
+-        pairs = list(zip(controls.values(), [rows[replicate] for replicate in paired_ids]))
++        pairs = [(controls[replicate], rows[replicate]) for replicate in paired_ids]
+         series = []
+         if pairs:
+             for index, sample in enumerate(pairs[0][0]["payload"]["samples"]):
+
+
+## A39 seq254 snapshot 25->26 mosslight/ensembles.py ASTsame=False
+--- 
++++ 
+@@ -221,7 +221,9 @@
+             current = self._inputs(ensemble, workspace["head"])
+             row = self.db.execute("SELECT generation, dirty FROM ensemble_nodes WHERE ensemble = ? AND node = ?",
+                                   (ensemble, ticket["node"])).fetchone()
+-            checked_reads = {key: ticket["inputs"][key]["digest"] for key in ticket["known_reads"]}
++            checked_reads = {key: ticket["inputs"][key]["digest"] for key in ticket["known_reads"]
++                             if key in ticket["inputs"]}
++            checked_reads.update(computed["reads"])
+             valid = (row is not None and row["dirty"] and row["generation"] == ticket["generation"]
+                      and all(key in current and current[key]["digest"] == fingerprint
+                              for key, fingerprint in checked_reads.items()))
+@@ -271,10 +273,7 @@
+                               (ensemble, revision)).fetchone()
+         if row is None:
+             raise ValueError("This revision has no complete published report")
+-        envelope = json.loads(row[0])
+-        envelope["result"] = summarize(workspace["definition"], self._outcomes(ensemble))
+-        envelope["result_digest"] = digest(envelope["result"])
+-        return envelope
++        return json.loads(row[0])
+ 
+     def replay(self, ensemble, revision=None):
+         workspace = self._workspace(ensemble)
+
+
+## A49 seq305 snapshot 26->27 mosslight/campaigns.py ASTsame=False
+--- 
++++ 
+@@ -266,6 +266,9 @@
+                 lineage = json.loads(row[0]).get("lineage")
+                 if lineage and lineage["campaign"] == campaign:
+                     protected.add((lineage["ordinal"], lineage["offset"]))
++            for row in self.db.execute("""SELECT ordinal, MAX(offset) AS last FROM checkpoints
++                    WHERE campaign = ? GROUP BY ordinal""", (campaign,)).fetchall():
++                protected.add((row["ordinal"], row["last"]))
+             rows = self.db.execute("SELECT ordinal, offset FROM checkpoints WHERE campaign = ?", (campaign,)).fetchall()
+             removed = 0
+             for row in rows:
+@@ -374,7 +377,7 @@
+     try:
+         if args.operation == "create":
+             print(store.create(load(args.garden), args.days,
+-                               json.loads(Path(args.treatments).read_text()), args.every, args.version))
++                               json.loads(Path(args.treatments).read_text(encoding="utf-8")), args.every, args.version))
+         elif args.operation == "fork":
+             print(store.fork(args.campaign, args.branch, args.offset, days=args.days, version=args.version))
+         elif args.operation == "compact":
+
+
+## A62 seq391 snapshot 32->33 mosslight/engine.py ASTsame=False
+--- 
++++ 
+@@ -114,7 +114,7 @@
+                 comfort = 8 - abs(cell.moisture - desired_moisture) // 9 - abs(shade - desired_shade) // 13
+                 if season_name == "Hush" and before.species != "glowcap":
+                     comfort -= 2
+-                if cell.nutrients < upkeep:
++                if before.nutrients < upkeep:
+                     comfort -= 7
+                 cell.vitality = clamp(before.vitality + comfort - 3)
+                 cell.nutrients = clamp(before.nutrients - upkeep + (2 if cell.vitality < 25 else 0))
+
+
+## A76 seq457 snapshot 34->35 mosslight/analysis.py ASTsame=False
+--- 
++++ 
+@@ -103,7 +103,7 @@
+         if (x1,y1) == (x2,y2):
+             break
+         double = 2*error
+-        if double > dy:
++        if double >= dy:
+             error += dy
+             x1 += sx
+         if double <= dx:
+
+
+## A76 seq457 snapshot 34->35 mosslight/weather.py ASTsame=False
+--- 
++++ 
+@@ -42,7 +42,7 @@
+ def next_weather(world,kind,within=48):
+     from .validation import choice
+     choice(kind,RAINFALL,"weather")
+-    for entry in almanac(world,within,start=world.day)["days"]:
++    for entry in almanac(world,within)["days"]:
+         if entry["weather"] == kind:
+             return entry
+     return None
+
+
+## A88 seq520 snapshot 36->37 mosslight/courier.py ASTsame=False
+--- 
++++ 
+@@ -163,6 +163,8 @@
+ 
+ 
+ def recover(slip):
++    if not isinstance(slip, str) or not slip:
++        raise ValueError("The recovery slip is incomplete or damaged")
+     try:
+         return zlib.decompress(base64.b85decode(slip.encode("ascii"))).decode("utf-8")
+     except (ValueError, zlib.error, UnicodeError) as exc:
+
+
+## A89 seq527 snapshot 37->38 mosslight/courier.py ASTsame=False
+--- 
++++ 
+@@ -166,7 +166,8 @@
+     if not isinstance(slip, str) or not slip:
+         raise ValueError("The recovery slip is incomplete or damaged")
+     try:
+-        return zlib.decompress(base64.b85decode(slip.encode("ascii"))).decode("utf-8")
++        compact = "".join(slip.split())
++        return zlib.decompress(base64.b85decode(compact.encode("ascii"))).decode("utf-8")
+     except (ValueError, zlib.error, UnicodeError) as exc:
+         raise ValueError("The recovery slip is incomplete or damaged") from exc
+ 
+
+
+## A90 seq537 snapshot 38->39 mosslight/irrigation.py ASTsame=False
+--- 
++++ 
+@@ -30,11 +30,15 @@
+     _natural(days,'Days',1);_natural(supply,'Supply')
+     if initial.day+days>1000000:raise ValueError('Design exceeds garden calendar')
+     if not isinstance(choices,list) or not choices:raise ValueError('Supply valve choices')
++    if not isinstance(layout,dict) or not isinstance(layout.get('pipes'),list):raise ValueError('Supply a layout with pipes and outlets')
++    if any(not isinstance(pipe,dict) or set(pipe)-{'from','to','capacity'} or not {'from','to','capacity'}<=set(pipe) for pipe in layout['pipes']):
++        raise ValueError('Each pipe needs from, to and capacity')
+     outlets=layout.get('outlets')
+     if not isinstance(outlets,dict) or not outlets:raise ValueError('Supply outlets')
+     tile_set=set()
+     for name,outlet in outlets.items():
+         if not isinstance(name,str) or not name:raise ValueError('Outlet needs a name')
++        if not isinstance(outlet,dict) or 'demand' not in outlet or 'tiles' not in outlet:raise ValueError('An outlet needs demand and tiles')
+         _natural(outlet['demand'],'Demand')
+         tiles=outlet['tiles']
+         if not isinstance(tiles,list) or not tiles:raise ValueError('An outlet needs tiles')
+@@ -45,6 +49,7 @@
+             tile_set.add(index)
+     choice_names=set()
+     for choice in choices:
++        if not isinstance(choice,dict) or 'name' not in choice or 'open' not in choice:raise ValueError('Each valve choice needs a name and open outlets')
+         if not isinstance(choice['name'],str) or not choice['name'] or choice['name'] in choice_names:raise ValueError('Choice names must be unique')
+         choice_names.add(choice['name'])
+         if not isinstance(choice['open'],list) or len(set(choice['open']))!=len(choice['open']) or any(name not in outlets for name in choice['open']):raise ValueError('Unknown or repeated outlet')
+
+
+## A93 seq558 snapshot 40->41 mosslight/ensembles.py ASTsame=False
+--- 
++++ 
+@@ -311,9 +311,9 @@
+     store = EnsembleStore(args.database)
+     try:
+         if args.operation == "create":
+-            result = store.create(**json.loads(Path(args.specification).read_text()))
++            result = store.create(**json.loads(Path(args.specification).read_text(encoding="utf-8")))
+         elif args.operation == "edit":
+-            result = store.edit(args.ensemble, json.loads(Path(args.changes).read_text()), args.expected_revision)
++            result = store.edit(args.ensemble, json.loads(Path(args.changes).read_text(encoding="utf-8")), args.expected_revision)
+         elif args.operation == "work":
+             integer(args.steps, "Work limit", 1, 100000)
+             for _ in range(args.steps):
+
+
+## A93 seq558 snapshot 40->41 mosslight/irrigation.py ASTsame=False
+--- 
++++ 
+@@ -132,11 +132,11 @@
+ 
+ def save_design(path,result):
+     data=encoded(result)
+-    Path(path).write_text(data+'\n')
++    Path(path).write_text(data+'\n',encoding='utf-8')
+ 
+ 
+ def load_design(path):
+-    result=json.loads(Path(path).read_text())
++    result=json.loads(Path(path).read_text(encoding='utf-8'))
+     if hashlib.sha256(encoded(result['problem']).encode()).hexdigest()!=result['digest']:raise ValueError('Design input digest mismatch')
+     state=replay(result['problem'],result['schedule'])
+     if state['world']!=result['world'] or objective(state)!=result['score'] or state['remaining']!=result.get('remaining') or state['trace']!=result['trace']:raise ValueError('Design result does not replay')
+@@ -147,7 +147,7 @@
+     parser=argparse.ArgumentParser(description=__doc__)
+     parser.add_argument('problem',type=Path);parser.add_argument('output',type=Path)
+     args=parser.parse_args()
+-    data=json.loads(args.problem.read_text())
++    data=json.loads(args.problem.read_text(encoding='utf-8'))
+     problem=definition(**data)
+     result=solve(problem);save_design(args.output,result)
+     print(json.dumps({'score':result['score'],'remaining':result['remaining'],'schedule':result['schedule']}))
+
+
+## A103 seq629 snapshot 43->44 mosslight/courier.py ASTsame=False
+--- 
++++ 
+@@ -5,6 +5,7 @@
+ import copy
+ import json
+ from pathlib import Path
++import sys
+ import zlib
+ 
+ 
+@@ -194,15 +195,19 @@
+     combine.add_argument("left"); combine.add_argument("right"); combine.add_argument("--output", required=True)
+     show = sub.add_parser("inspect"); show.add_argument("packet")
+     args = parser.parse_args(argv)
+-    if args.operation == "export":
+-        from .model import load
+-        packet = from_garden(load(args.garden), args.peer, args.notebook)
+-    elif args.operation == "merge":
+-        packet = merge(json.loads(Path(args.left).read_text(encoding="utf-8")), json.loads(Path(args.right).read_text(encoding="utf-8")))
+-    else:
+-        print(json.dumps(observations(json.loads(Path(args.packet).read_text(encoding="utf-8"))), indent=2, ensure_ascii=False))
+-        return 0
+-    Path(args.output).write_text(json.dumps(packet, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
++    try:
++        if args.operation == "export":
++            from .model import load
++            packet = from_garden(load(args.garden), args.peer, args.notebook)
++        elif args.operation == "merge":
++            packet = merge(json.loads(Path(args.left).read_text(encoding="utf-8")), json.loads(Path(args.right).read_text(encoding="utf-8")))
++        else:
++            print(json.dumps(observations(json.loads(Path(args.packet).read_text(encoding="utf-8"))), indent=2, ensure_ascii=False))
++            return 0
++        Path(args.output).write_text(json.dumps(packet, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
++    except (ValueError, KeyError, TypeError, OSError) as error:
++        print(f"courier: {error}", file=sys.stderr)
++        return 2
+     return 0
+ 
+ 
+
+
+## A105 seq648 snapshot 45->46 mosslight/history_exchange.py ASTsame=False
+--- 
++++ 
+@@ -302,7 +302,10 @@
+             base = comparison(bases)
+             return _rebase_events(base, left_events, right_events)
+ 
+-        return merge(events[left], {left}, events[right], {right})
++        # Publication identities are shared by every installation, so a canonical
++        # operand order lets collaborators who combine the same work converge.
++        first, second = sorted((left, right))
++        return merge(events[first], {first}, events[second], {second})
+ 
+     def reconcile(self, left, right, *, author):
+         left_node, right_node = self._publication(left), self._publication(right)
