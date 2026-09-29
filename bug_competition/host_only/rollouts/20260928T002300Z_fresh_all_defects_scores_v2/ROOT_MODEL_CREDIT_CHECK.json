@@ -1,0 +1,26 @@
+{
+  "A105": {
+    "sequence": 642,
+    "before_snapshot": 35,
+    "after_snapshot": 36,
+    "before_model_sha256": "2fc9e8bd580078e0a7163d3dc3e865cdade0a9ec7f659c6a5b6e50d6a1879e69",
+    "after_model_sha256": "a188b73e1a19a241265cb75ef0a1e6e5ad1dd14f802406ccb19f9f47f01b2866",
+    "live_oracle_transitions": {},
+    "ownership_transfers": {
+      "P02": "A",
+      "P03": "A",
+      "P04": "A"
+    }
+  },
+  "A107": {
+    "sequence": 647,
+    "before_snapshot": 36,
+    "after_snapshot": 37,
+    "before_model_sha256": "a188b73e1a19a241265cb75ef0a1e6e5ad1dd14f802406ccb19f9f47f01b2866",
+    "after_model_sha256": "2fc9e8bd580078e0a7163d3dc3e865cdade0a9ec7f659c6a5b6e50d6a1879e69",
+    "live_oracle_transitions": {},
+    "ownership_transfers": {}
+  },
+  "model_restored_byte_for_byte": true,
+  "live_points_transferred_C_to_A": 3
+}

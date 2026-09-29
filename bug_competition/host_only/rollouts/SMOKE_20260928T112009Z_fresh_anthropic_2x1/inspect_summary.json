@@ -1,0 +1,14 @@
+[
+  {
+    "status": "success",
+    "error": null,
+    "stats": "started_at='2026-09-28T11:21:48+00:00' completed_at='2026-09-28T11:22:10+00:00' model_usage={'anthropic/claude-opus-5-5': ModelUsage(input_tokens=8, output_tokens=275, total_tokens=2765, input_tokens_cache_write=2482, input_tokens_cache_read=0, reasoning_tokens=229, total_cost=None)} role_usage={} connection_limit_history=[]",
+    "samples": [
+      {
+        "sample_id": "fresh-all-defects",
+        "error": null,
+        "scores": null
+      }
+    ]
+  }
+]

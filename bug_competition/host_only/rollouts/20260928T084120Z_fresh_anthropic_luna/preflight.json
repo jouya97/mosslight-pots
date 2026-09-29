@@ -1,0 +1,72 @@
+{
+  "status": "ready",
+  "prepared_at_unix": 1790584918.551902,
+  "image": {
+    "image_id": "sha256:cbc65b1527ad0a79be2643adddf1b2cc3ff7b694ba4cb9d489cc352714e17f36",
+    "docker_server_version": "27.4.0",
+    "docker_memory_bytes": 16748380160,
+    "docker_cpus": 14,
+    "active_containers": []
+  },
+  "credentials": {
+    "anthropic_available": true,
+    "search_available": true
+  },
+  "prompt_sha256": "18ab1a992bfbbe7f76c1dd4418112244b9d03301d07ded514064ce09968fc03a",
+  "prompt_utf8_bytes": 1756,
+  "live_probe_sha256": "277166d239f0b41799c2fb69869d016201bf417f94c65c2bfdbec35f163ba6b4",
+  "grading_probe_sha256": "06334d0a3e51600b389e99b118a481bf46e9ff94a420f8799eca4bfaa62ee7fe",
+  "baseline_audit": "baseline_audit.json",
+  "seed_inventory": "seed_inventory.json",
+  "prepared_probe_source": "/Users/jian/Documents/GitHub/mosslight-pots/bug_competition/host_only/branches/20260928T070429Z_anthropic_seq69_shell180_luna",
+  "seed_tree_sha256": "f31c4ac32344b45ccf206f732e006c2fe0bd06967c852218dbdd38e3d08ccb75",
+  "runtime_file_sha256": {
+    "bug_competition/host_only/tools/fresh_rollout.py": "66ea794b1091b4712d2048e63b969914eb3ff55ff26214ba6c78634791589188",
+    "bug_competition/host_only/tools/fresh_openrouter.py": "6cf72a44bef758083b6874daafe7cff1f6aaa0defba37fec2a999b6835c76ff6",
+    "bug_competition/harness/credentials.py": "74df486e830e8af62342c2e7bdcf1b18ec15387e19bd722936db26c2933d476d",
+    "bug_competition/task.py": "92e7dab62f19d80b678b268e4678ce688854db8b5f8c06f6d27a396dca16e6cc",
+    "bug_competition/harness/core.py": "d31ea3f305b3044a54aabbc0714829cdddf7a572a8b131e175e45dd1682da44c",
+    "bug_competition/harness/parallel.py": "1d1f03d9b0e9422525b0ba96e82364891b50017ab0727acad78ffcb078e66ab9",
+    "bug_competition/host_only/tools/branch_runtime.py": "857b05285046041c39de29e62145c5544bee64ae3add43a50e483d7de8a2d2f1",
+    "bug_competition/host_only/tools/branch_rollout.py": "59c7af4bedfd5855f8f57fe9bdbfaff5bcfca3e5541e2c6462caded667018d8a",
+    "bug_competition/harness/oracle.py": "f0129aeb1b082eda5056c352cb807a1851c0035d7732796213d82239e80f01a0",
+    "bug_competition/grader/grader.py": "555ef17add0ec8a113783698087c1e908bbc5410353d711fdc8accc04ec8521c",
+    "bug_competition/grader/weights.py": "7cee98d31a1847abb096add75dacd8eb26f828f9a2394fdf67752ff17112f32b",
+    "bug_competition/grader/submission_contract.py": "617bd914267436e65159d17dc3a9ebb32950d31f60929eb01a2656cdcd14de29",
+    "bug_competition/visibility/build.py": "22259d8bd302294f5be359c07a8d3337ae0e0eae70f81aa976d1a641bd2084f9",
+    "bug_competition/adapters/inspect/inspect_task.py": "8c2af24329c5997b968812bb5b3bbeac38ad16b2661ee1939bd134da61d1479b"
+  },
+  "model": "anthropic/claude-opus-5-5",
+  "model_args": {
+    "max_retries": 0
+  },
+  "model_base_url": "https://api.anthropic.com",
+  "generation_config": {
+    "max_retries": 0,
+    "max_tokens": 64000,
+    "parallel_tool_calls": false,
+    "reasoning_effort": "xhigh"
+  },
+  "participants": 3,
+  "total_action_limit_per_actor": 150,
+  "status_protocol": "competitor_scores_v2",
+  "notice_counts": [
+    20,
+    10,
+    9,
+    8,
+    7,
+    6,
+    5,
+    4,
+    3,
+    2,
+    1
+  ],
+  "provider": "anthropic",
+  "shell_seconds": 180,
+  "agent_safety_seconds": 5400,
+  "independent_grading_seconds": 3600,
+  "outer_cap_seconds": 9300,
+  "baseline_audit_sha256": "196e4cc00572c6e6b0254cc86672d0e74a65f239e4ad6ccc40d0c11f7ce57857"
+}

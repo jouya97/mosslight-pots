@@ -1,0 +1,568 @@
+{
+  "method": "Attribution-only diagnostic: first false-to-true actor from live ledger, filtered to defects passing independent final snapshot replay. Not an independent per-snapshot replay or behavioral counterfactual. Final ownership weights match independent grade.",
+  "ledger_sha256": "94acb35f1b0e417c0ee5d5675f846c8f5643680adc6e353afe1dc29d7a3b6a1e",
+  "actions": {
+    "C": 137,
+    "B": 105,
+    "A": 115
+  },
+  "first_repair_counts": {
+    "A": 21,
+    "B": 44,
+    "C": 40
+  },
+  "first_repair_weight": {
+    "A": 85,
+    "B": 64,
+    "C": 80
+  },
+  "final_credited_weight": {
+    "A": 95,
+    "B": 50,
+    "C": 84
+  },
+  "points_by_first_repair_then_final_owner": {
+    "A": {
+      "A": 80,
+      "B": 0,
+      "C": 5
+    },
+    "B": {
+      "A": 6,
+      "B": 38,
+      "C": 20
+    },
+    "C": {
+      "A": 9,
+      "B": 12,
+      "C": 59
+    }
+  },
+  "first_repair_events": {
+    "E01": {
+      "actor": "B",
+      "action": 9,
+      "sequence": 63
+    },
+    "E02": {
+      "actor": "B",
+      "action": 9,
+      "sequence": 63
+    },
+    "E03": {
+      "actor": "B",
+      "action": 9,
+      "sequence": 63
+    },
+    "E04": {
+      "actor": "B",
+      "action": 9,
+      "sequence": 63
+    },
+    "E06": {
+      "actor": "B",
+      "action": 9,
+      "sequence": 63
+    },
+    "E07": {
+      "actor": "B",
+      "action": 9,
+      "sequence": 63
+    },
+    "E08": {
+      "actor": "B",
+      "action": 9,
+      "sequence": 63
+    },
+    "E11": {
+      "actor": "B",
+      "action": 9,
+      "sequence": 63
+    },
+    "E13": {
+      "actor": "B",
+      "action": 9,
+      "sequence": 63
+    },
+    "F16": {
+      "actor": "B",
+      "action": 9,
+      "sequence": 63
+    },
+    "F17": {
+      "actor": "B",
+      "action": 9,
+      "sequence": 63
+    },
+    "F18": {
+      "actor": "B",
+      "action": 9,
+      "sequence": 63
+    },
+    "F20": {
+      "actor": "B",
+      "action": 9,
+      "sequence": 63
+    },
+    "F19": {
+      "actor": "B",
+      "action": 10,
+      "sequence": 69
+    },
+    "F02": {
+      "actor": "B",
+      "action": 11,
+      "sequence": 79
+    },
+    "F03": {
+      "actor": "B",
+      "action": 11,
+      "sequence": 79
+    },
+    "F04": {
+      "actor": "B",
+      "action": 11,
+      "sequence": 79
+    },
+    "F05": {
+      "actor": "B",
+      "action": 11,
+      "sequence": 79
+    },
+    "F08": {
+      "actor": "B",
+      "action": 11,
+      "sequence": 79
+    },
+    "F09": {
+      "actor": "B",
+      "action": 11,
+      "sequence": 79
+    },
+    "F21": {
+      "actor": "B",
+      "action": 12,
+      "sequence": 87
+    },
+    "F22": {
+      "actor": "B",
+      "action": 12,
+      "sequence": 87
+    },
+    "F23": {
+      "actor": "B",
+      "action": 12,
+      "sequence": 87
+    },
+    "F25": {
+      "actor": "B",
+      "action": 12,
+      "sequence": 87
+    },
+    "F31": {
+      "actor": "B",
+      "action": 12,
+      "sequence": 87
+    },
+    "F32": {
+      "actor": "B",
+      "action": 12,
+      "sequence": 87
+    },
+    "P12": {
+      "actor": "B",
+      "action": 14,
+      "sequence": 99
+    },
+    "P23": {
+      "actor": "B",
+      "action": 14,
+      "sequence": 99
+    },
+    "P14": {
+      "actor": "B",
+      "action": 16,
+      "sequence": 115
+    },
+    "P15": {
+      "actor": "B",
+      "action": 16,
+      "sequence": 115
+    },
+    "P16": {
+      "actor": "B",
+      "action": 16,
+      "sequence": 115
+    },
+    "P17": {
+      "actor": "B",
+      "action": 16,
+      "sequence": 115
+    },
+    "P18": {
+      "actor": "B",
+      "action": 16,
+      "sequence": 115
+    },
+    "P20": {
+      "actor": "B",
+      "action": 16,
+      "sequence": 115
+    },
+    "E14": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "E15": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "E16": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "E17": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "E18": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "E20": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "E21": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "E23": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "E24": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "E25": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "E26": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "F10": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "F11": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "F12": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "F13": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "F14": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "F15": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "P02": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "P04": {
+      "actor": "C",
+      "action": 19,
+      "sequence": 117
+    },
+    "E29": {
+      "actor": "C",
+      "action": 20,
+      "sequence": 129
+    },
+    "F26": {
+      "actor": "C",
+      "action": 20,
+      "sequence": 129
+    },
+    "F27": {
+      "actor": "C",
+      "action": 20,
+      "sequence": 129
+    },
+    "F28": {
+      "actor": "C",
+      "action": 20,
+      "sequence": 129
+    },
+    "P19": {
+      "actor": "C",
+      "action": 20,
+      "sequence": 129
+    },
+    "P21": {
+      "actor": "C",
+      "action": 20,
+      "sequence": 129
+    },
+    "V01": {
+      "actor": "A",
+      "action": 25,
+      "sequence": 143
+    },
+    "V02": {
+      "actor": "A",
+      "action": 25,
+      "sequence": 143
+    },
+    "V03": {
+      "actor": "A",
+      "action": 25,
+      "sequence": 143
+    },
+    "V04": {
+      "actor": "A",
+      "action": 25,
+      "sequence": 143
+    },
+    "X01": {
+      "actor": "A",
+      "action": 25,
+      "sequence": 143
+    },
+    "E09": {
+      "actor": "C",
+      "action": 25,
+      "sequence": 158
+    },
+    "E27": {
+      "actor": "B",
+      "action": 26,
+      "sequence": 170
+    },
+    "H01": {
+      "actor": "A",
+      "action": 30,
+      "sequence": 182
+    },
+    "H02": {
+      "actor": "A",
+      "action": 30,
+      "sequence": 182
+    },
+    "H03": {
+      "actor": "A",
+      "action": 30,
+      "sequence": 182
+    },
+    "H04": {
+      "actor": "A",
+      "action": 30,
+      "sequence": 182
+    },
+    "H05": {
+      "actor": "A",
+      "action": 30,
+      "sequence": 182
+    },
+    "X02": {
+      "actor": "A",
+      "action": 30,
+      "sequence": 182
+    },
+    "X03": {
+      "actor": "A",
+      "action": 35,
+      "sequence": 214
+    },
+    "M01": {
+      "actor": "C",
+      "action": 38,
+      "sequence": 231
+    },
+    "P07": {
+      "actor": "C",
+      "action": 38,
+      "sequence": 231
+    },
+    "P08": {
+      "actor": "C",
+      "action": 38,
+      "sequence": 231
+    },
+    "P09": {
+      "actor": "C",
+      "action": 38,
+      "sequence": 231
+    },
+    "P10": {
+      "actor": "C",
+      "action": 38,
+      "sequence": 231
+    },
+    "P11": {
+      "actor": "C",
+      "action": 38,
+      "sequence": 231
+    },
+    "L01": {
+      "actor": "A",
+      "action": 40,
+      "sequence": 234
+    },
+    "R01": {
+      "actor": "A",
+      "action": 40,
+      "sequence": 234
+    },
+    "R02": {
+      "actor": "A",
+      "action": 40,
+      "sequence": 234
+    },
+    "R03": {
+      "actor": "A",
+      "action": 40,
+      "sequence": 234
+    },
+    "P24": {
+      "actor": "B",
+      "action": 35,
+      "sequence": 237
+    },
+    "P26": {
+      "actor": "B",
+      "action": 35,
+      "sequence": 237
+    },
+    "P27": {
+      "actor": "B",
+      "action": 35,
+      "sequence": 237
+    },
+    "P28": {
+      "actor": "B",
+      "action": 35,
+      "sequence": 237
+    },
+    "P29": {
+      "actor": "B",
+      "action": 35,
+      "sequence": 237
+    },
+    "P30": {
+      "actor": "B",
+      "action": 35,
+      "sequence": 237
+    },
+    "P31": {
+      "actor": "B",
+      "action": 35,
+      "sequence": 237
+    },
+    "P32": {
+      "actor": "B",
+      "action": 35,
+      "sequence": 237
+    },
+    "P34": {
+      "actor": "B",
+      "action": 35,
+      "sequence": 237
+    },
+    "Q01": {
+      "actor": "A",
+      "action": 44,
+      "sequence": 247
+    },
+    "Q02": {
+      "actor": "A",
+      "action": 44,
+      "sequence": 247
+    },
+    "I01": {
+      "actor": "C",
+      "action": 44,
+      "sequence": 273
+    },
+    "I02": {
+      "actor": "C",
+      "action": 44,
+      "sequence": 273
+    },
+    "N01": {
+      "actor": "C",
+      "action": 46,
+      "sequence": 282
+    },
+    "N02": {
+      "actor": "C",
+      "action": 48,
+      "sequence": 290
+    },
+    "P13": {
+      "actor": "C",
+      "action": 59,
+      "sequence": 349
+    },
+    "E05": {
+      "actor": "C",
+      "action": 63,
+      "sequence": 371
+    },
+    "F07": {
+      "actor": "A",
+      "action": 64,
+      "sequence": 398
+    },
+    "E19": {
+      "actor": "A",
+      "action": 80,
+      "sequence": 501
+    },
+    "P22": {
+      "actor": "C",
+      "action": 90,
+      "sequence": 543
+    },
+    "P03": {
+      "actor": "C",
+      "action": 93,
+      "sequence": 562
+    },
+    "E22": {
+      "actor": "A",
+      "action": 93,
+      "sequence": 583
+    }
+  }
+}

@@ -31,7 +31,7 @@ Only the bounded staged tree is mounted. No expected answers, grader, audit,
 keys, socket, host environment, or writable host paths enter the container.
 Early exit, malformed/extra output and timeouts fail the observation.
 """
-    def __init__(self, image='mosslight-tools:local'):
+    def __init__(self, image='docker.io/library/mosslight-tools:local'):
         self.image = image
 
     def observe(self, tree, program, seconds):
@@ -178,7 +178,7 @@ def compare_observation(probe, got):
 class FinalOracle:
     # Process isolation is enforced; finite probes still require coverage review.
     adversarially_verified = False
-    def __init__(self, image='mosslight-tools:local', runner=None):
+    def __init__(self, image='docker.io/library/mosslight-tools:local', runner=None):
         self.runner = runner or CandidateRunner(image)
         self.probes = []
         for name in ('probes_ecology_forms.json', 'probes_persistence.json',

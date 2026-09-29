@@ -1,0 +1,24 @@
+--- 46/mosslight/field_calibration.py
++++ 47/mosslight/field_calibration.py
+@@ -6,10 +6,19 @@
+ 
+ 
+ def estimate(readings, at):
+-    values = [(float(row['timestamp']), float(row['moisture'])) for row in readings]
++    if not isinstance(readings, list) or any(not isinstance(row, dict) for row in readings):
++        raise ValueError('Supply a list of timestamped moisture readings')
++    numbers = [row.get('timestamp') for row in readings] + [row.get('moisture') for row in readings] + [at]
++    if any(type(value) not in (int, float) for value in numbers):
++        raise ValueError('Supply finite timestamps and moisture percentages')
++    raw = [(float(row['timestamp']), float(row['moisture'])) for row in readings]
+     at = float(at)
+-    if not values or not math.isfinite(at) or any(not math.isfinite(t) or not math.isfinite(y) or not 0 <= y <= 100 for t, y in values):
++    if not raw or not math.isfinite(at) or any(not math.isfinite(t) or not math.isfinite(y) or not 0 <= y <= 100 for t, y in raw):
+         raise ValueError('Supply finite timestamps and moisture percentages')
++    grouped = {}
++    for t, y in raw:
++        grouped.setdefault(t, []).append(y)
++    values = [(t, math.fsum(ys)/len(ys)) for t, ys in grouped.items()]
+     origin = values[0][0]
+     ys = [y for _, y in values]
+     center = math.fsum(t - origin for t, _ in values)/len(values)

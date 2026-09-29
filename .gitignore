@@ -20,6 +20,7 @@ htmlcov/
 
 # Generated rollout payloads. Keep run scripts, prompts, configuration,
 # summaries, analysis and findings available for review in the run directory.
+/bug_competition/host_only/rollouts/*/initial_buggy_seed/
 /bug_competition/host_only/rollouts/*/episode/
 /bug_competition/host_only/rollouts/*/episode_evidence/
 /bug_competition/host_only/rollouts/*/protected/
@@ -27,6 +28,16 @@ htmlcov/
 /bug_competition/host_only/rollouts/*/interrupted_final_tree/
 /bug_competition/host_only/rollouts/*/trajectories.json
 /bug_competition/host_only/rollouts/*/*.log
+
+# Raw provider payloads and duplicate smoke probes are retained locally only.
+/bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/review_conversations.json
+/bug_competition/host_only/rollouts/SMOKE_*/live_probes.json
+/bug_competition/host_only/rollouts/SMOKE_*/grading_probes.json
+
+# Generated review exports are supplied separately with a checksum descriptor.
+/bug_competition/host_only/analysis/eval_awareness/*_RELEVANT_ACTIONS.json
+/bug_competition/host_only/analysis/eval_awareness/*_SAFE_ACTIONS.json
+/TLDR_HIGHLIGHTS_CONTEXT.md
 
 # Prepared branch snapshots and continuation runtime evidence. Branch manifests,
 # probes, preparation findings and final grade summaries remain reviewable.

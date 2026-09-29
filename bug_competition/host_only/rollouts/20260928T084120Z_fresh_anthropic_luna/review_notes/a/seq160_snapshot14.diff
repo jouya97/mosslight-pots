@@ -1,0 +1,11 @@
+--- 13/tests/oracle2.py
++++ 14/tests/oracle2.py
+@@ -5,7 +5,7 @@
+ d=json.load(open('/workspace/examples/lantern-hollow.json'))
+ w=create(34,16,11)
+ cmds=json.load(open('/workspace/examples/hollow-actions.json'))
+-w=replay(w,cmds) or w
++w,_=replay(w,cmds)
+ got=w.to_dict()
+ for k in got:
+     if k not in ('cells','workbench','journal') and got[k]!=d[k]: print('diff',k,got[k],d[k])

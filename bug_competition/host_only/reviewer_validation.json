@@ -1,0 +1,98 @@
+{
+  "date": "2026-09-28",
+  "status": "passed",
+  "checkout": "Temporary copy of tracked and intended new files, excluding ignored evidence, credentials and .git; separate fresh virtual environment.",
+  "copied_file_count": 1088,
+  "installation": "Public PyPI install of requirements-review.txt; full resolved set saved in requirements-review.lock.txt; pip check passed.",
+  "python_version": "3.12.10",
+  "platform": "macOS arm64 with Docker Desktop Linux containers",
+  "runtime_versions": {
+    "python": "3.12.10",
+    "inspect_ai": "0.3.268",
+    "anthropic": "1.8.0",
+    "openai": "3.19.2",
+    "pydantic": "2.13.5"
+  },
+  "checks": [
+    {
+      "check": "offline_tests_final",
+      "returncode": 0,
+      "elapsed_seconds": 23.52
+    },
+    {
+      "check": "docker_tests_final",
+      "returncode": 0,
+      "elapsed_seconds": 16.91
+    },
+    {
+      "check": "fresh_prepare_final",
+      "returncode": 0,
+      "elapsed_seconds": 14.83
+    },
+    {
+      "check": "fresh_dry_check_final",
+      "returncode": 0,
+      "elapsed_seconds": 1.12
+    }
+  ],
+  "offline_tests": {
+    "passed": 160,
+    "subtests_passed": 702,
+    "skipped": 1,
+    "deselected_docker": 2,
+    "skip_reason": "APFS cannot create the deliberately undecodable filename fixture (Illegal byte sequence)."
+  },
+  "docker_tests": {
+    "passed": 2,
+    "model_calls": 0,
+    "coverage": [
+      "Scripted two-actor five-action competitor_scores_v2 smoke, without archived ledgers",
+      "Restored broker commits through a real Docker container"
+    ]
+  },
+  "provider_offline_checks": [
+    "anthropic: passed without provider/search credentials",
+    "openrouter: passed without provider/search credentials"
+  ],
+  "fresh_preparation": {
+    "status": "ready",
+    "baseline_failing_count": 119,
+    "eligible_points": 251,
+    "provider_and_search_credentials_present": false,
+    "dry_check": "passed",
+    "image_id": "sha256:cbc65b1527ad0a79be2643adddf1b2cc3ff7b694ba4cb9d489cc352714e17f36"
+  },
+  "paid_model_calls": 0,
+  "paid_model_calls_scope": "This count applies to the fresh-environment reviewer validation above. A separate two-actor paid provider smoke is recorded below.",
+  "separately_verified_paid_smoke": {
+    "run": "rollouts/SMOKE_20260928T112009Z_fresh_anthropic_2x1",
+    "provider": "anthropic",
+    "model": "anthropic/claude-opus-5-5",
+    "participants": 2,
+    "action_limit_per_participant": 1,
+    "recorded_actions": {"A": 1, "B": 1},
+    "tool_call_acceptance": "Both native API responses produced one accepted status tool call; zero retries and no fallback.",
+    "inspect_status": "success",
+    "independent_grade": {
+      "adjudication_complete": true,
+      "complete_submission": true,
+      "coverage_complete": true,
+      "covered_defects": 119,
+      "covered_points": 251,
+      "eligible_points": 251,
+      "points": {"A": 0, "B": 0}
+    },
+    "worker_returncode": 0,
+    "supervisor_elapsed_seconds": 37.244,
+    "container_cleanup_complete": true,
+    "reported_total_cost": null,
+    "scope_limit": "Validates one native tool-use response per actor and the one-action grading path; does not establish full-run repair performance or search behavior."
+  },
+  "remaining_docker_containers": 0,
+  "limits": [
+    "A full new paid rollout and search-tool behavior were not tested.",
+    "Docker build reused cached layers; its resulting ID is an observation, not a portable deterministic-build guarantee.",
+    "Historical replay still requires separately supplied raw evidence."
+  ],
+  "resolved_issue": "This Docker daemon rejected an unqualified image tag despite listing it. Maintained defaults and examples now use docker.io/library/mosslight-tools:local, which resolved successfully."
+}

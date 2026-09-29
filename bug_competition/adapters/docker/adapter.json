@@ -1,5 +1,5 @@
 {
-  "image": "mosslight-tools:local",
+  "image": "docker.io/library/mosslight-tools:local",
   "dockerfile": "harness/Dockerfile",
   "context": "bug_competition",
   "execution": "host broker; fresh tool container per action; fresh candidate container per final observation",

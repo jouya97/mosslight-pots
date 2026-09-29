@@ -1,0 +1,39 @@
+--- 52/tests/t_hist.py
++++ 53/tests/t_hist.py
+@@ -0,0 +1,36 @@
++import sys, os, tempfile, json; sys.path.insert(0,'/workspace')
++from mosslight import create
++from mosslight.history import HistoryStore, HistoryConflict
++d=tempfile.mkdtemp(); h=HistoryStore(os.path.join(d,'h.sqlite'))
++w=create(34,8,6)
++b=h.create(w)['branch']
++s=h.append(b,{"op":"note","args":{"content":"A"}}); eA=s['events'][-1]['id']
++s=h.append(b,{"op":"note","args":{"content":"B"}}); eB=s['events'][-1]['id']
++s=h.append(b,{"op":"edit_note","args":{"ident":2,"content":"B2"}}); eE=s['events'][-1]['id']
++print('append keys', 'event' in s, [n['text'] for n in s['world']['workbench']['notes']])
++c=h.correct(b,{eA:None})
++print('correct', c['status'], [ (n['id'],n['text']) for n in c['world']['workbench']['notes']])
++c2=h.correct(b,{eA:{"op":"task","args":{"content":"t","due":1}}})
++print('correct2', c2['status'], [ (n['id'],n['text']) for n in c2['world']['workbench']['notes']], [t['id'] for t in c2['world']['workbench']['tasks']])
++c3=h.correct(b,{eB:None})
++print('correct3', c3['status'], c3['conflicts'])
++try:
++    h.append(c3['branch'],{"op":"note","args":{"content":"x"}})
++except HistoryConflict as e: print('append on conflicted', e.details['kind'])
++f=h.fork(b,'f')['branch']
++h.append(b,{"op":"note","args":{"content":"P"}})
++h.append(f,{"op":"note","args":{"content":"F"}})
++r=h.rebase(f,b)
++print('rebase', r['status'], [n['text'] for n in r['world']['workbench']['notes']], r['origin']['operation'])
++# cherry pick
++f2=h.fork(b,'f2')['branch']
++s=h.append(f2,{"op":"note","args":{"content":"Q"}}); eQ=s['events'][-1]['id']
++s=h.append(f2,{"op":"edit_note","args":{"ident":s['world']['workbench']['notes'][-1]['id'],"content":"Q2"}}); eQ2=s['events'][-1]['id']
++p=h.cherry_pick(f2,b,[eQ2])
++print('pick missing obj', p['status'], p['conflicts'])
++p=h.cherry_pick(f2,b,[eQ,eQ2])
++print('pick', p['status'], [n['text'] for n in p['world']['workbench']['notes']])
++p2=h.cherry_pick(f2,p['branch'],[eQ])
++print('pick again', len(p2['events'])==len(p['events']))
++print('verify', h.verify(b)['matches'])
++print(h.references(b)[:2])

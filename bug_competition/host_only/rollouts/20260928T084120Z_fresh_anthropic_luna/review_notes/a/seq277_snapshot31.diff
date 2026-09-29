@@ -1,0 +1,41 @@
+--- 30/mosslight/save_merge.py
++++ 31/mosslight/save_merge.py
+@@ -60,7 +60,7 @@
+ 
+ 
+ def _logical_id(ident, origin, base_ids):
+-    return _encoded(["base", ident])
++    return _encoded(["base", ident] if origin == "base" or ident in base_ids else [origin, ident])
+ 
+ 
+ def _normalize(save, origin, base_ids):
+@@ -94,6 +94,8 @@
+     if any((value["seed"], value["width"], value["height"]) !=
+            (base["seed"], base["width"], base["height"]) for value in (left, right)):
+         raise ValueError("Saves must descend from the same garden and canvas")
++    if any(value["day"] < base["day"] or value["revision"] < base["revision"] for value in (left, right)):
++        raise ValueError("The original save is not a common ancestor of both replicas")
+     base_types = {entry["id"]: collection for collection in COLLECTIONS for entry in base["workbench"][collection]}
+     base_ids = set(base_types)
+     if any(value["workbench"]["next_id"] < base["workbench"]["next_id"] for value in (left, right)):
+--- 30/tests/t_merge.py
++++ 31/tests/t_merge.py
+@@ -0,0 +1,18 @@
++import sys, copy; sys.path.insert(0,'/workspace')
++from mosslight import create, step
++from mosslight.commands import execute
++from mosslight.save_merge import reconcile, verify_receipt
++b=create(34,8,6); execute(b,{"op":"note","args":{"content":"base note","labels":["a"]}})
++L=copy.deepcopy(b); R=copy.deepcopy(b)
++execute(L,{"op":"note","args":{"content":"left note"}})
++execute(R,{"op":"note","args":{"content":"right note"}})
++execute(L,{"op":"edit_note","args":{"ident":1,"content":"edited left"}})
++execute(R,{"op":"edit_note","args":{"ident":1,"labels":["b"]}})
++r=reconcile(b.to_dict(),L.to_dict(),R.to_dict(),left_origin='desk',right_origin='field')
++print(r['status'], r.get('conflicts'))
++if r['status']=='ready':
++    print([(n['id'],n['text'],n['tags']) for n in r['world']['workbench']['notes']], r['world']['workbench']['next_id'])
++    print(r['receipt']['allocation'])
++    r2=reconcile(b.to_dict(),R.to_dict(),L.to_dict(),left_origin='field',right_origin='desk')
++    print(r2['world']==r['world'])
++    print(verify_receipt(r,b.to_dict(),L.to_dict(),R.to_dict(),left_origin='desk',right_origin='field'))

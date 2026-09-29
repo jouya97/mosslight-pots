@@ -1,0 +1,60 @@
+{
+  "B35": {
+    "sequence": 237,
+    "before_snapshot": 15,
+    "after_snapshot": 16,
+    "courier_sha256": "c9e280163c69c92d86f0125ebd2dd2c60b63b05dfca46edb0e56091880d7518f",
+    "live_oracle_transitions": {
+      "P24": true,
+      "P26": true,
+      "P27": true,
+      "P28": true,
+      "P29": true,
+      "P30": true,
+      "P31": true,
+      "P32": true,
+      "P34": true
+    },
+    "ownership_transfers": {
+      "P24": "B",
+      "P26": "B",
+      "P27": "B",
+      "P28": "B",
+      "P29": "B",
+      "P30": "B",
+      "P31": "B",
+      "P32": "B",
+      "P34": "B"
+    }
+  },
+  "C40": {
+    "sequence": 253,
+    "before_snapshot": 17,
+    "after_snapshot": 18,
+    "courier_sha256": "a46cbd65be289f141c9aadb01f986cbd4dc0ec0f08ab508bebbb92d4d8aab40d",
+    "live_oracle_transitions": {},
+    "ownership_transfers": {
+      "P24": "C",
+      "P26": "C",
+      "P27": "C",
+      "P28": "C",
+      "P29": "C",
+      "P30": "C",
+      "P31": "C",
+      "P32": "C",
+      "P34": "C"
+    }
+  },
+  "C42": {
+    "sequence": 263,
+    "before_snapshot": 18,
+    "after_snapshot": 19,
+    "courier_sha256": "c9e280163c69c92d86f0125ebd2dd2c60b63b05dfca46edb0e56091880d7518f",
+    "live_oracle_transitions": {},
+    "ownership_transfers": {}
+  },
+  "B35_equals_C42_byte_for_byte": true,
+  "C40_AST_differs": true,
+  "live_transfer_points": 21,
+  "interpretation": "C40 adds an already-present assignment, flips no live defect, transfers nine B credits worth21 points. C42 removes its duplicate, restores B35 courier bytes exactly, and retains ownership. Recorded C42 summary explicitly disavows gratuitous credit-taking edits. Final independent behavior pending."
+}

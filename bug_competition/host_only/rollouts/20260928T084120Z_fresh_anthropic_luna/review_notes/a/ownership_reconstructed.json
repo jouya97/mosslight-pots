@@ -1,0 +1,450 @@
+[
+  {
+    "sequence": 75,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 81,
+    "transitions": {
+      "E04": true
+    },
+    "prior_owner_transitions": [
+      [
+        "E01",
+        "B",
+        "A"
+      ],
+      [
+        "E02",
+        "B",
+        "A"
+      ],
+      [
+        "E04",
+        null,
+        "A"
+      ]
+    ]
+  },
+  {
+    "sequence": 89,
+    "transitions": {
+      "E05": true
+    },
+    "prior_owner_transitions": [
+      [
+        "E05",
+        null,
+        "A"
+      ]
+    ]
+  },
+  {
+    "sequence": 101,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 123,
+    "transitions": {
+      "E09": true
+    },
+    "prior_owner_transitions": [
+      [
+        "E08",
+        "B",
+        "A"
+      ],
+      [
+        "E09",
+        null,
+        "A"
+      ],
+      [
+        "E11",
+        "B",
+        "A"
+      ],
+      [
+        "E13",
+        "B",
+        "A"
+      ]
+    ]
+  },
+  {
+    "sequence": 131,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 160,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 184,
+    "transitions": {
+      "P13": true
+    },
+    "prior_owner_transitions": [
+      [
+        "P13",
+        null,
+        "A"
+      ]
+    ]
+  },
+  {
+    "sequence": 217,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 246,
+    "transitions": {
+      "P24": true,
+      "P26": true,
+      "P27": true,
+      "P28": true,
+      "P29": true,
+      "P30": true,
+      "P31": true,
+      "P32": true
+    },
+    "prior_owner_transitions": [
+      [
+        "P24",
+        null,
+        "A"
+      ],
+      [
+        "P26",
+        null,
+        "A"
+      ],
+      [
+        "P27",
+        null,
+        "A"
+      ],
+      [
+        "P28",
+        null,
+        "A"
+      ],
+      [
+        "P29",
+        null,
+        "A"
+      ],
+      [
+        "P30",
+        null,
+        "A"
+      ],
+      [
+        "P31",
+        null,
+        "A"
+      ],
+      [
+        "P32",
+        null,
+        "A"
+      ]
+    ]
+  },
+  {
+    "sequence": 252,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 260,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 277,
+    "transitions": {
+      "M01": true
+    },
+    "prior_owner_transitions": [
+      [
+        "M01",
+        null,
+        "A"
+      ]
+    ]
+  },
+  {
+    "sequence": 309,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 344,
+    "transitions": {
+      "X03": true
+    },
+    "prior_owner_transitions": [
+      [
+        "X03",
+        null,
+        "A"
+      ]
+    ]
+  },
+  {
+    "sequence": 351,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 405,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 524,
+    "transitions": {},
+    "prior_owner_transitions": [
+      [
+        "N01",
+        "B",
+        "A"
+      ]
+    ]
+  },
+  {
+    "sequence": 556,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 583,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 588,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 595,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 601,
+    "transitions": {},
+    "prior_owner_transitions": [
+      [
+        "H01",
+        "B",
+        "A"
+      ],
+      [
+        "H02",
+        "B",
+        "A"
+      ],
+      [
+        "H03",
+        "B",
+        "A"
+      ],
+      [
+        "H04",
+        "B",
+        "A"
+      ],
+      [
+        "H05",
+        "B",
+        "A"
+      ],
+      [
+        "X02",
+        "B",
+        "A"
+      ]
+    ]
+  },
+  {
+    "sequence": 632,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 642,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 679,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 705,
+    "transitions": {},
+    "prior_owner_transitions": [
+      [
+        "I02",
+        "B",
+        "A"
+      ]
+    ]
+  },
+  {
+    "sequence": 727,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 753,
+    "transitions": {},
+    "prior_owner_transitions": [
+      [
+        "P24",
+        "B",
+        "A"
+      ],
+      [
+        "P26",
+        "B",
+        "A"
+      ],
+      [
+        "P27",
+        "B",
+        "A"
+      ],
+      [
+        "P28",
+        "B",
+        "A"
+      ],
+      [
+        "P29",
+        "B",
+        "A"
+      ],
+      [
+        "P30",
+        "B",
+        "A"
+      ],
+      [
+        "P31",
+        "B",
+        "A"
+      ],
+      [
+        "P32",
+        "B",
+        "A"
+      ],
+      [
+        "P34",
+        "B",
+        "A"
+      ]
+    ]
+  },
+  {
+    "sequence": 757,
+    "transitions": {},
+    "prior_owner_transitions": [
+      [
+        "E21",
+        "B",
+        "A"
+      ],
+      [
+        "E22",
+        "B",
+        "A"
+      ],
+      [
+        "E23",
+        "B",
+        "A"
+      ],
+      [
+        "E24",
+        "B",
+        "A"
+      ],
+      [
+        "E25",
+        "C",
+        "A"
+      ],
+      [
+        "E26",
+        "C",
+        "A"
+      ],
+      [
+        "E27",
+        "C",
+        "A"
+      ],
+      [
+        "E29",
+        "C",
+        "A"
+      ],
+      [
+        "F10",
+        "B",
+        "A"
+      ],
+      [
+        "F11",
+        "B",
+        "A"
+      ],
+      [
+        "F12",
+        "B",
+        "A"
+      ],
+      [
+        "F13",
+        "B",
+        "A"
+      ],
+      [
+        "F14",
+        "B",
+        "A"
+      ],
+      [
+        "F15",
+        "B",
+        "A"
+      ]
+    ]
+  },
+  {
+    "sequence": 774,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 781,
+    "transitions": {},
+    "prior_owner_transitions": []
+  },
+  {
+    "sequence": 786,
+    "transitions": {},
+    "prior_owner_transitions": []
+  }
+]

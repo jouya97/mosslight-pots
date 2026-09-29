@@ -1,0 +1,41 @@
+--- 34/mosslight/history_exchange.py
++++ 35/mosslight/history_exchange.py
+@@ -269,7 +269,7 @@
+         common = left_ancestors & right_ancestors
+         maximal = sorted(ident for ident in common
+                          if not any(ident != other and ident in ancestors[other] for other in common))
+-        return maximal[:1]
++        return maximal
+ 
+     def _merge_events(self, left, right, graph):
+         ancestors = {ident: self._ancestors(ident, graph) for ident in graph}
+--- 34/tests/t_hx.py
++++ 35/tests/t_hx.py
+@@ -0,0 +1,27 @@
++import sys, os, tempfile; sys.path.insert(0,'/workspace')
++from mosslight import create
++from mosslight.commands import execute
++from mosslight.history_exchange import HistoryExchange
++w=create(34,8,6); execute(w,{"op":"note","args":{"content":"orig"}})
++d=tempfile.mkdtemp(); X=HistoryExchange(os.path.join(d,'x.sqlite'))
++h=X.history
++main=h.create(w)['branch']
++ann=X.announce(main,author='desk',name='pond'); ch=ann['channel']; g=ann['publication']
++cx=X.checkout(g)['branch']; cy=X.checkout(g)['branch']
++h.append(cx,{"op":"task","args":{"content":"T","due":3}})
++L1=X.publish(cx,checkout=cx,author='desk')['publication']
++h.append(cy,{"op":"edit_note","args":{"ident":1,"content":"changed"}})
++snap=h.snapshot(cy); edit_id=snap['events'][-1]['id']
++R1=X.publish(cy,checkout=cy,author='field')['publication']
++m1=X.reconcile(L1,R1,author='desk'); m2=X.reconcile(L1,R1,author='field')
++print(m1['status'], m2['status'], m1['publication']!=m2['publication'])
++b1=m1['branch']; b2=m2['branch']
++h.append(b1,{"op":"note","args":{"content":"B"}})
++A2=X.publish(b1,checkout=b1,author='desk')['publication']
++corr=h.correct(b2,{edit_id:None})['branch']
++B2=X.publish(corr,checkout=b2,author='field')['publication']
++r=X.reconcile(A2,B2,author='desk')
++print(r['status'], [n['text'] for n in r['world']['workbench']['notes']], [t['text'] for t in r['world']['workbench']['tasks']])
++r=X.reconcile(B2,A2,author='field')
++print(r['status'], [n['text'] for n in r['world']['workbench']['notes']])
++print(X.heads(ch))

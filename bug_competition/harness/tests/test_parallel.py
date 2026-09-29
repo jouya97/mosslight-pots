@@ -22,7 +22,7 @@ def shell(command):
 
 class ParallelTests(unittest.TestCase):
     def make(self, root, executor, oracle=None, value='broken', turn_limit=2, seconds=10, agents=('A','B'),
-             modes=None):
+             modes=None, shell_seconds=180):
         tree = root / 'shared'
         tree.mkdir()
         (tree / 'value').write_text(value)
@@ -33,7 +33,7 @@ class ParallelTests(unittest.TestCase):
             oracle = lambda tree, seconds: {'bug':(tree / 'value').read_text().startswith('fixed')}
         oracle.adversarially_verified = True
         competition = ParallelCompetition(tree, root / 'protected', executor, oracle,
-            {name:ScriptedAgent([]) for name in agents}, relevance={'bug':{'value'}})
+            {name:ScriptedAgent([]) for name in agents}, relevance={'bug':{'value'}}, shell_seconds=shell_seconds)
         competition.begin(seconds, turn_limit=turn_limit)
         return competition
 
@@ -69,10 +69,10 @@ class ParallelTests(unittest.TestCase):
                              'notice':'[Notice: 2 actions remaining.]'})
             timed_out = c.act('B', shell('hang'))
             # The per-action limit, not the remaining agent-time budget, bounded the command.
-            self.assertEqual(seconds_seen[1], 30)
+            self.assertEqual(seconds_seen[1], 180)
             # Nothing committed; the countdown still attaches.
             self.assertEqual(timed_out, {'exit_code':124, 'output':'partial output', 'truncated':False,
-                                         'error':'Command timed out after 30 seconds.',
+                                         'error':'Command timed out after 180 seconds.',
                                          'notice':'[Notice: 2 actions remaining.]'})
             self.assertFalse(c.stopping)
             self.assertEqual((c.tree / 'value').read_text(), 'broken-A')
@@ -90,7 +90,7 @@ class ParallelTests(unittest.TestCase):
             done = [r for r in records if r['type'] == 'action_completed']
             self.assertEqual([r['agent'] for r in done], ['A', 'B', 'B', 'A'])
             self.assertEqual(done[1]['observation'], timed_out)
-            self.assertEqual(done[1]['rejection'], {'reason':'timeout', 'seconds':30})
+            self.assertEqual(done[1]['rejection'], {'reason':'timeout', 'seconds':180})
             self.assertEqual(done[1]['changed_paths'], [])
             self.assertEqual(done[1]['before'], done[1]['after'])
             self.assertFalse(any(r['type'] in ('error', 'action_discarded') for r in records))
@@ -108,6 +108,32 @@ class ParallelTests(unittest.TestCase):
             result = c.finish()
             self.assertEqual(result['stop_reason'], 'safety_deadline')
             self.assertEqual(result['turns_used'], {'A':0, 'B':0})
+
+    def test_configured_shell_limit_is_recorded_and_global_budget_caps_it(self):
+        limits = []
+        class Executor:
+            secure = False
+            def close(self): pass
+            def shell(self, tree, command, seconds):
+                limits.append(seconds)
+                raise CommandTimeout('command deadline')
+        with tempfile.TemporaryDirectory() as folder:
+            c = self.make(Path(folder), Executor(), seconds=3600, shell_seconds=75)
+            result = c.act('A', shell('hang'))
+            self.assertEqual(limits, [75])
+            self.assertEqual(result['error'], 'Command timed out after 75 seconds.')
+            self.assertFalse(c.stopping)
+            c.deadline = __import__('time').monotonic() + 8
+            with self.assertRaises(TimeoutError):
+                c.act('B', shell('hang'))
+            self.assertLessEqual(limits[-1], 8)
+            self.assertEqual(c.finish()['stop_reason'], 'safety_deadline')
+
+    def test_shell_limit_must_be_finite_and_positive(self):
+        for value in (0, -1, float('nan'), float('inf'), True, '180'):
+            with self.subTest(value=value), tempfile.TemporaryDirectory() as folder:
+                with self.assertRaisesRegex(ValueError, 'shell_seconds'):
+                    self.make(Path(folder), object(), shell_seconds=value)
 
     def test_invalid_workspace_entries_reject_only_that_action(self):
         def fifo(tree):
@@ -826,6 +852,24 @@ class ParallelTests(unittest.TestCase):
             self.assertEqual((c.tree / 'value').read_text(), 'fixed')
             self.assertEqual(len(list((c.protected / 'snapshots').iterdir())), 2)
 
+    def test_default_shell_budget_reaches_docker_process_with_separate_setup_cleanup_caps(self):
+        calls = []
+        def fake(command, seconds, **kwargs):
+            calls.append((command, seconds))
+            return {'exit_code': 0, 'output': 'ok', 'truncated': False}
+        with patch('bug_competition.harness.core.process', side_effect=fake), \
+             tempfile.TemporaryDirectory() as folder:
+            executor = DockerShell()
+            competition = self.make(Path(folder), executor, seconds=3600)
+            observation = competition.act('A', shell('printf ok'))
+            competition.finish()
+        self.assertEqual(observation['exit_code'], 0)
+        self.assertEqual([command[:2] for command, _ in calls],
+                         [['docker', 'info'], ['docker', 'image'], ['docker', 'run'], ['docker', 'rm']])
+        self.assertEqual([seconds for _, seconds in calls], [10, 10, 180, 5])
+        self.assertEqual(calls[2][0][-3:], ['sh', '-c', 'printf ok'])
+        self.assertFalse(executor.active)
+
     def test_cleanup_failure_refuses_to_commit_and_retains_container_for_retry(self):
         commands = []
         def fake(command, seconds, **kwargs):
@@ -837,6 +881,18 @@ class ParallelTests(unittest.TestCase):
                 executor.shell(Path('/tmp/workspace'), 'true', 3)
             self.assertEqual(len(executor.active), 1)
             self.assertNotIn('--rm', commands[2])
+
+    def test_cleanup_timeout_is_fatal_and_distinct_from_action_timeout(self):
+        def fake(command, seconds, **kwargs):
+            if command[:3] == ['docker', 'rm', '-f']:
+                raise CommandTimeout('command deadline')
+            return {'exit_code': 0, 'output': ''}
+        with patch('bug_competition.harness.core.process', side_effect=fake):
+            executor = DockerShell()
+            with self.assertRaisesRegex(RuntimeError, 'tool container cleanup timed out') as caught:
+                executor.shell(Path('/tmp/workspace'), 'true', 180)
+            self.assertIsInstance(caught.exception.__cause__, CommandTimeout)
+            self.assertEqual(len(executor.active), 1)
 
     def test_failed_completion_audit_rolls_back_publication(self):
         class Executor:

@@ -1,0 +1,34 @@
+--- 62/tests/t_courier_fuzz.py
++++ 63/tests/t_courier_fuzz.py
+@@ -0,0 +1,31 @@
++import sys, copy, random, itertools; sys.path.insert(0,'/workspace')
++from mosslight.courier import *
++def obs(p): return observations(p)
++bad=0
++for trial in range(300):
++    rng=random.Random(trial)
++    peers=['a','b','c']
++    packets={p:new_packet(p) for p in peers}
++    recs=['r1','r2','r3']
++    for step in range(12):
++        p=rng.choice(peers); op=rng.random()
++        if op<0.45: put(packets[p], rng.choice(recs), {'text':rng.choice(['x','y','z','X'])})
++        elif op<0.55: remove(packets[p], rng.choice(recs))
++        elif op<0.8:
++            q=rng.choice(peers)
++            src=packets[q]
++            r=rng.random()
++            if r<0.3: src=project(src,[rng.choice(recs)])
++            elif r<0.5: src=checkpoint(src)
++            m=merge(packets[p], src); packets[p]=m
++        else:
++            packets[p]=checkpoint(packets[p])
++    a,b,c=packets['a'],packets['b'],packets['c']
++    ref=obs(merge(merge(a,b),c))
++    others=[obs(merge(a,merge(b,c))), obs(merge(merge(c,a),b)), obs(merge(checkpoint(merge(b,a)),c)),
++            obs(merge(merge(checkpoint(a),checkpoint(b)),checkpoint(c))), obs(merge(merge(a,b),merge(c,a)))]
++    for i,o in enumerate(others):
++        if o!=ref:
++            bad+=1
++            if bad<4: print('trial',trial,'variant',i); print(ref); print(o)
++print('bad',bad)

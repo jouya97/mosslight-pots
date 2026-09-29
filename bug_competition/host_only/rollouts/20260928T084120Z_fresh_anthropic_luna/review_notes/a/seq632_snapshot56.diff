@@ -1,0 +1,34 @@
+--- 55/tests/t_merge.py
++++ 56/tests/t_merge.py
+@@ -16,3 +16,31 @@
+     r2=reconcile(b.to_dict(),R.to_dict(),L.to_dict(),left_origin='field',right_origin='desk')
+     print(r2['world']==r['world'])
+     print(verify_receipt(r,b.to_dict(),L.to_dict(),R.to_dict(),left_origin='desk',right_origin='field'))
++# conflict: both edit same note text differently
++L2=copy.deepcopy(b); R2=copy.deepcopy(b)
++execute(L2,{"op":"edit_note","args":{"ident":1,"content":"L"}})
++execute(R2,{"op":"edit_note","args":{"ident":1,"content":"R"}})
++r=reconcile(b.to_dict(),L2.to_dict(),R2.to_dict(),left_origin='desk',right_origin='field')
++print(r['status'], [c['path'] for c in r['conflicts']])
++res={r['conflicts'][0]['path']:{"choose":"right"}}
++r2=reconcile(b.to_dict(),L2.to_dict(),R2.to_dict(),left_origin='desk',right_origin='field',resolutions=res)
++print(r2['status'], [n['text'] for n in r2['world']['workbench']['notes']])
++print(verify_receipt(r2,b.to_dict(),L2.to_dict(),R2.to_dict(),left_origin='desk',right_origin='field'))
++# ecology conflict
++L3=copy.deepcopy(b); R3=copy.deepcopy(b); step(L3,1); execute(R3,{"op":"tend","args":{"x":0,"y":0,"action":"water"}})
++execute(L3,{"op":"note","args":{"content":"from left"}})
++r=reconcile(b.to_dict(),L3.to_dict(),R3.to_dict(),left_origin='desk',right_origin='field')
++print(r['status'], [c['path'] for c in r['conflicts']])
++r=reconcile(b.to_dict(),L3.to_dict(),R3.to_dict(),left_origin='desk',right_origin='field',resolutions={"/ecology":{"choose":"right"}})
++print(r['status'], r['world']['day'], [n['text'] for n in r['world']['workbench']['notes']])
++# delete vs edit
++L4=copy.deepcopy(b); R4=copy.deepcopy(b)
++execute(L4,{"op":"delete_entry","args":{"collection":"notes","ident":1}})
++execute(R4,{"op":"edit_note","args":{"ident":1,"content":"kept"}})
++r=reconcile(b.to_dict(),L4.to_dict(),R4.to_dict(),left_origin='desk',right_origin='field')
++print(r['status'], [c['path'] for c in r['conflicts']])
++# incompatible: same bed name
++L5=copy.deepcopy(b); R5=copy.deepcopy(b)
++execute(L5,{"op":"bed","args":{"name":"Bed","tiles":[[0,0]]}}); execute(R5,{"op":"bed","args":{"name":"bed","tiles":[[1,1]]}})
++r=reconcile(b.to_dict(),L5.to_dict(),R5.to_dict(),left_origin='desk',right_origin='field')
++print(r['status'], r.get('reason'))

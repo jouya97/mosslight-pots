@@ -1,0 +1,32 @@
+--- 50/tests/t_server.py
++++ 51/tests/t_server.py
+@@ -0,0 +1,29 @@
++import sys, json, threading, urllib.request, tempfile, os; sys.path.insert(0,'/workspace')
++from mosslight import create
++from mosslight.server import make_server
++d=tempfile.mkdtemp(); path=os.path.join(d,'g.json')
++srv=make_server(create(34,8,6),0,path); t=threading.Thread(target=srv.serve_forever,daemon=True); t.start()
++base=f"http://127.0.0.1:{srv.server_port}"
++def req(p,body=None):
++    r=urllib.request.Request(base+p,data=None if body is None else json.dumps(body).encode(),headers={"Content-Type":"application/json"},method="GET" if body is None else "POST")
++    try:
++        with urllib.request.urlopen(r) as resp: return resp.status, resp.read()
++    except urllib.error.HTTPError as e: return e.code, e.read()
++s,b=req('/api/world'); w=json.loads(b); print(s, w['world']['revision'], w['undo'])
++s,b=req('/api/command',{"command":{"op":"tend","args":{"x":0,"y":0,"action":"water"}},"revision":w['world']['revision']}); print(s, json.loads(b)['world']['revision'])
++s,b=req('/api/command',{"command":{"op":"tend","args":{"x":0,"y":0,"action":"water"}},"revision":0}); print('stale',s)
++s,b=req('/api/step',{"days":2}); r=json.loads(b); print(s, r['world']['day'], r['world']['revision'], r['undo'])
++s,b=req('/api/undo',{}); r=json.loads(b); print('undo',s, r['world']['day'], r['world']['revision'], r['undo'], r['redo'])
++s,b=req('/api/redo',{}); r=json.loads(b); print('redo',s, r['world']['day'], r['world']['revision'], r['undo'], r['redo'])
++imp=create(5,5,5).to_dict(); imp['revision']=77
++s,b=req('/api/import',{"world":imp}); r=json.loads(b); print('import legacy', s, r['world']['revision'])
++s,b=req('/api/import',{"world":imp,"revision":77}); r=json.loads(b); print('import rev', s, r['world']['revision'])
++s,b=req('/api/forecast?days=3&every=2'); print('forecast', s, [x['day'] for x in json.loads(b)['timeline']])
++s,b=req('/api/nope'); print('404', s)
++s,b=req('/api/transect?x1=0&y1=0&x2=3&y2=3'); print('transect',s,[(p['x'],p['y']) for p in json.loads(b)])
++s,b=req('/api/calendar?days=2'); print('cal', s)
++s,b=req('/api/replay',{"commands":[{"op":"note","args":{"content":"a"}},{"op":"note","args":{"content":"b"}}]}); r=json.loads(b); print('replay', s, r['world']['revision'], r['result'])
++s,b=req('/api/command',{"command":{"op":"tend","args":{"x":99,"y":0,"action":"water"}}}); print('bad', s)
++s,b=req('/api/command',{"command":{"op":"tend","args":{"x":0,"y":0,"action":"water"}},"revision":True}); print('bool rev', s)
++print(json.load(open(path))['revision'])
++srv.shutdown()

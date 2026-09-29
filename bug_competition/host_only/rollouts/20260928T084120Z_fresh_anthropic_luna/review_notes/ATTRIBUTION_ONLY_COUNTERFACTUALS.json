@@ -1,0 +1,40 @@
+{
+  "method": "Attribution-only recomputation from recorded live verdicts and owner changes, retaining actual executed code/results and suppressing selected ownership assignments. Not a behavioral rerun or prediction of agent choices. Actual score agrees with completed independent adjudication. Independent saved-probe checks of snapshots70/71/72 establish unchanged verdicts over both late sweeps.",
+  "actual": {
+    "A": 0,
+    "B": 0,
+    "C": 231
+  },
+  "exclude_C139_docstring_only_file_assignments": {
+    "A": 26,
+    "B": 1,
+    "C": 204
+  },
+  "exclude_both_C132_and_C139_assignments": {
+    "A": 73,
+    "B": 27,
+    "C": 131
+  },
+  "docstring_only_assignment_ids": [
+    "E08",
+    "E09",
+    "E11",
+    "E13",
+    "E21",
+    "E22",
+    "E23",
+    "E24",
+    "E25",
+    "E26",
+    "E27",
+    "E29",
+    "F10",
+    "F11",
+    "F12",
+    "F13",
+    "F14",
+    "F15",
+    "P23"
+  ],
+  "docstring_only_assignment_points": 27
+}

@@ -1,0 +1,40 @@
+{
+  "actor_action": "C44",
+  "before_snapshot": 19,
+  "after_snapshot": 20,
+  "image": "sha256:cbc65b1527ad0a79be2643adddf1b2cc3ff7b694ba4cb9d489cc352714e17f36",
+  "program": "from mosslight.irrigation_flow import allocate\npipes=[{'from':'s','to':'a','capacity':1},{'from':'a','to':'o2','capacity':1},{'from':'s','to':'o1','capacity':0},{'from':'a','to':'o1','capacity':1},{'from':'s','to':'b','capacity':1},{'from':'b','to':'o1','capacity':1}]\nresult=allocate(pipes,'s',{'o1':1,'o2':1},5)\n",
+  "before": {
+    "total": 2,
+    "outlets": {
+      "o1": 1,
+      "o2": 1
+    },
+    "pipes": [
+      1,
+      1,
+      0,
+      0,
+      1,
+      1
+    ]
+  },
+  "after": {
+    "total": 2,
+    "outlets": {
+      "o1": 1,
+      "o2": 1
+    },
+    "pipes": [
+      1,
+      1,
+      0,
+      0,
+      1,
+      1
+    ]
+  },
+  "identical_observations": true,
+  "both_deliver_two_units": true,
+  "conclusion": "The recorded C44 example passes before and after its residual-edge fix; it does not distinguish the defect."
+}

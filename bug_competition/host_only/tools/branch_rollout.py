@@ -1,6 +1,9 @@
 """Prepare and run a new continuation from an authenticated Mosslight ledger prefix.
 
 Preparation is offline. Execution is explicit and never appends to the source run.
+Shell actions default to 180 seconds (--shell-seconds), capped by the remaining
+contest budget (--seconds). An action timeout discards its workspace; a global
+deadline or container cleanup failure still stops the contest.
 Use python -B -m bug_competition.host_only.tools.branch_rollout --help.
 """
 from __future__ import annotations
@@ -13,7 +16,8 @@ from pathlib import Path
 import shutil
 import sys
 
-from bug_competition.harness.core import canonical, tree_hash, recent_action, repair_summary, work_board
+from bug_competition.harness.core import (canonical, tree_hash, recent_action, repair_summary, work_board,
+    STATUS_CALLER_ONLY, STATUS_PROTOCOLS, validate_status_protocol, SHELL_SECONDS, validate_shell_seconds)
 from bug_competition.grader.attribution import ATTRIBUTION_POLICY, manifest_files
 from bug_competition.grader.weights import DEFAULT_MANIFEST, manifest_weights
 
@@ -31,6 +35,177 @@ def write_json(path, value):
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def text_sha(value):
+    return hashlib.sha256(value.encode('utf-8')).hexdigest()
+
+
+def opening_content(history):
+    if not history or history[0].get('role') != 'user' or not isinstance(history[0].get('content'), str):
+        raise ValueError('Expected a text opening user prompt')
+    return history[0]['content']
+
+
+def require_canonical_openings(histories):
+    """Archived histories remain readable; only the canonical experiment can resume."""
+    from bug_competition.task import PROMPT
+    if not histories:
+        raise ValueError('Continuation requires participant histories')
+    for actor, history in histories.items():
+        if opening_content(history) != PROMPT:
+            raise ValueError(f'{actor}: historical opening prompt differs from PROMPT; '
+                             'start a fresh run instead of rewriting archived context')
+
+
+def provider_connection(model):
+    """The supported provider transport settings, kept separate from generation config."""
+    if model == 'anthropic/claude-opus-5-5':
+        return dict(model_args={'max_retries': 0}, model_base_url='https://api.anthropic.com')
+    if model == 'openrouter/anthropic/claude-opus-5.5':
+        return dict(model_args={'max_retries': 0, 'stream': False, 'reasoning_enabled': True},
+                    model_base_url='https://openrouter.ai/api/v1')
+    if model.startswith('mock'):
+        return dict(model_args={'max_retries': 0}, model_base_url=None)
+    raise ValueError('Unsupported continuation model')
+
+
+def reasoning_omission_counts(records, histories):
+    """Recover the outbound-context policy without removing anything from saved history."""
+    counts = {}
+    for event in records:
+        if event['type'] == 'historical_reasoning_omitted':
+            counts = dict(event['through_message_counts'])
+    validate_reasoning_omission(histories, counts)
+    return counts
+
+
+def validate_reasoning_omission(histories, counts):
+    if counts and set(counts) != set(histories):
+        raise ValueError('Reasoning omission must identify every participant')
+    for actor, count in counts.items():
+        if type(count) is not int or not 0 <= count <= len(histories[actor]):
+            raise ValueError('Reasoning omission exceeds the saved conversation prefix')
+
+
+def outbound_history(history, through=0):
+    """Omit only historical reasoning blocks; keep text, tool calls and new reasoning."""
+    if type(through) is not int or not 0 <= through <= len(history):
+        raise ValueError('Invalid reasoning omission boundary')
+    messages = copy.deepcopy(history)
+    for message in messages[:through]:
+        if message.get('role') == 'assistant' and isinstance(message.get('content'), list):
+            message['content'] = [block for block in message['content'] if block.get('type') != 'reasoning']
+    return messages
+
+
+OPENROUTER_REASONING_PREFIX = 'reasoning-details://'
+PROVIDER_MODEL_SWITCH = {'openrouter/anthropic/claude-opus-5.5': 'anthropic/claude-opus-5-5'}
+
+
+def convert_openrouter_history(history, through):
+    """Unwrap Inspect transport envelopes only; opaque native signatures are never decoded.
+
+    Conversion is outbound-only and bounded to the archived OpenRouter prefix.
+    Unknown/unsigned blocks fail closed rather than becoming text or disappearing.
+    """
+    if type(through) is not int or not 0 <= through <= len(history):
+        raise ValueError('Invalid provider conversion boundary')
+    changed = copy.deepcopy(history)
+    for index, message in enumerate(changed):
+        content = message.get('content')
+        if not isinstance(content, list):
+            continue
+        blocks = []
+        for block in content:
+            if block.get('type') != 'reasoning':
+                blocks.append(block)
+                continue
+            signature = block.get('signature') or ''
+            wrapped = isinstance(signature, str) and signature.startswith(OPENROUTER_REASONING_PREFIX)
+            if index >= through:
+                if wrapped:
+                    raise ValueError('OpenRouter reasoning outside the audited conversion boundary')
+                blocks.append(block)
+                continue
+            if message.get('role') != 'assistant' or not wrapped:
+                raise ValueError('Expected wrapped OpenRouter assistant reasoning in conversion prefix')
+            try:
+                details = json.loads(signature[len(OPENROUTER_REASONING_PREFIX):])
+            except (ValueError, TypeError):
+                raise ValueError('Invalid OpenRouter reasoning envelope') from None
+            if not isinstance(details, list) or not details:
+                raise ValueError('Empty or unsupported OpenRouter reasoning envelope')
+            for detail in details:
+                if not isinstance(detail, dict) or detail.get('format') != 'anthropic-claude-v1':
+                    raise ValueError('Unsupported native reasoning format')
+                kind = detail.get('type')
+                if kind == 'reasoning.text':
+                    if not isinstance(detail.get('text'), str) or not isinstance(detail.get('signature'), str) or not detail['signature']:
+                        raise ValueError('Unsigned or malformed OpenRouter reasoning text')
+                    blocks.append(dict(type='reasoning', summary=detail['text'],
+                                       reasoning=detail['signature'], redacted=True))
+                elif kind == 'reasoning.encrypted':
+                    if not isinstance(detail.get('data'), str) or not detail['data']:
+                        raise ValueError('Malformed redacted OpenRouter reasoning')
+                    blocks.append(dict(type='reasoning', reasoning=detail['data'],
+                                       signature=detail['data'], redacted=True))
+                else:
+                    raise ValueError('Unsupported OpenRouter reasoning detail type')
+        message['content'] = blocks
+    return changed
+
+
+def inherited_provider_conversion(records, histories):
+    conversion = None
+    for event in records:
+        if event['type'] == 'provider_changed':
+            conversion = copy.deepcopy(event['reasoning_conversion'])
+    if conversion:
+        conversion_audit(histories, conversion)
+    return conversion
+
+
+def conversion_audit(histories, conversion):
+    if (conversion.get('source_model') not in PROVIDER_MODEL_SWITCH or
+            conversion.get('target_model') != PROVIDER_MODEL_SWITCH[conversion['source_model']]):
+        raise ValueError('Unsupported provider conversion model pair')
+    counts = conversion.get('through_message_counts', {})
+    validate_reasoning_omission(histories, counts)
+    if set(counts) != set(histories):
+        raise ValueError('Provider conversion must identify every actor')
+    return {actor: dict(through_messages=counts[actor],
+                source_sha256=text_sha(canonical(history[:counts[actor]])),
+                outbound_sha256=text_sha(canonical(convert_openrouter_history(history, counts[actor])[:counts[actor]])),
+                reasoning_blocks=sum(b.get('type') == 'reasoning' for m in history[:counts[actor]]
+                    if isinstance(m.get('content'), list) for b in m['content']))
+            for actor, history in histories.items()}
+
+
+def provider_configuration(source_contract, histories, records, provider=None):
+    """Only the explicit same-model OpenRouter -> native Anthropic switch is supported."""
+    contract = copy.deepcopy(source_contract)
+    connection = provider_connection(contract['model'])
+    for key, value in connection.items():
+        if key in contract and contract[key] != value:
+            raise ValueError(f'Archived provider setting is unsupported: {key}')
+        contract[key] = value
+    conversion = inherited_provider_conversion(records, histories)
+    intervention = None
+    if provider is not None:
+        source = contract['model']
+        if provider != 'anthropic' or source not in PROVIDER_MODEL_SWITCH or conversion:
+            raise ValueError('Provider switch requires an unconverted OpenRouter Opus 5.5 source')
+        contract['model'] = PROVIDER_MODEL_SWITCH[source]
+        contract.update(provider_connection(contract['model']))
+        conversion = dict(source_model=source, target_model=contract['model'],
+                          through_message_counts={a: len(h) for a, h in histories.items()})
+        intervention = dict(type='same_model_provider_switch', provider=provider,
+                            source_model=source, target_model=contract['model'])
+    if conversion and contract['model'] != conversion['target_model']:
+        raise ValueError('Inherited provider conversion does not match current model')
+    audit = conversion_audit(histories, conversion) if conversion else None
+    return contract, intervention, conversion, audit
 
 
 def runtime_files():
@@ -74,7 +249,8 @@ def scan_prefix(records, participants, sequence, weights=None):
     baseline = records[0]['oracle']
     if not baseline or any(type(v) is not bool for v in baseline.values()):
         raise ValueError('Invalid baseline verdict')
-    state = dict(baseline=baseline.copy(), current=baseline.copy(), owners={},
+    state = dict(status_protocol=validate_status_protocol(records[0].get('status_protocol', STATUS_CALLER_ONLY)),
+                 baseline=baseline.copy(), current=baseline.copy(), owners={},
                  turns_used=dict.fromkeys(participants, 0), claims=[], recent=[],
                  last_observation={}, finished=[], snapshot_hashes=[records[0]['tree']],
                  snapshot_verdicts=[baseline.copy()], responses={a: [] for a in participants})
@@ -118,7 +294,7 @@ def scan_prefix(records, participants, sequence, weights=None):
                                  leaderboard=repair_summary(actor, state['owners'], state['current'], weights))
                             if action['tool'] == 'claim' else
                             work_board(actor, participants, state['owners'], state['current'], weights,
-                                       state['claims'], state['recent']))
+                                       state['claims'], state['recent'], state['status_protocol']))
                 recorded = {k: v for k, v in e['observation'].items() if k != 'notice'}
                 if recorded != expected:
                     raise ValueError(f'Archived scoring/board protocol differs at sequence {e["sequence"]}; '
@@ -132,7 +308,11 @@ def scan_prefix(records, participants, sequence, weights=None):
             state['finished'].append(actor)
             state['responses'][actor].append(dict(response=e.get('provider_response'),
                                                   observation=None, error=None))
-        elif typ in ('status_viewed', 'branch_started'):
+        elif typ == 'status_protocol_changed':
+            if pending or e.get('previous_protocol') != state['status_protocol']:
+                raise ValueError('Invalid status protocol transition')
+            state['status_protocol'] = validate_status_protocol(e.get('status_protocol'))
+        elif typ in ('status_viewed', 'branch_started', 'opening_prompt_replaced', 'historical_reasoning_omitted', 'provider_changed'):
             pass
         else:
             raise ValueError(f'Cannot resume across {typ} at sequence {e["sequence"]}')
@@ -212,6 +392,10 @@ def archived_contract(run):
                 raise ValueError('Model/tool/config changes within source run require a custom continuation')
     if contract is None:
         raise ValueError('No archived model contract')
+    invocation = read_json(Path(run) / 'invocation.json')
+    connection = provider_connection(contract['model'])
+    for key, default in connection.items():
+        contract[key] = invocation.get(key, default)
     return contract
 
 
@@ -232,8 +416,17 @@ def load_source(run, sequence=None, after=None):
         sequence = matches[number - 1]['sequence']
     if sequence is None:
         raise ValueError('Choose --sequence or --after ACTOR:ACTION')
+    if any(e['type'] in ('opening_prompt_replaced', 'historical_reasoning_omitted', 'provider_changed')
+           and e['sequence'] > sequence for e in records):
+        raise ValueError('Cut precedes an opening-prompt intervention recorded in later trajectories; '
+                         'choose a cut after that event')
     state = scan_prefix(records, list(conversations), sequence)
     histories = conversation_prefixes(conversations, state)
+    prompt_events = [e for e in records[:sequence + 1] if e['type'] == 'opening_prompt_replaced']
+    if prompt_events:
+        for actor, history in histories.items():
+            if text_sha(opening_content(history)) != prompt_events[-1]['new_prompt_sha256']:
+                raise ValueError(f'{actor}: trajectory opening prompt differs from audit event')
     for index, digest in enumerate(state['snapshot_hashes']):
         if tree_hash(protected / 'snapshots' / str(index)) != digest:
             raise ValueError(f'Snapshot {index} integrity failure')
@@ -260,9 +453,12 @@ def available_cuts(run, around=None, limit=12):
     if len(trajectories) != 1:
         raise ValueError('Select a single-sample run')
     participants = list(trajectories[0]['conversations'])
+    minimum_sequence = max((e['sequence'] for e in records
+                            if e['type'] in ('opening_prompt_replaced', 'historical_reasoning_omitted', 'provider_changed')), default=0)
     cuts = []
     for e in records:
-        if e['type'] not in ('baseline', 'action_completed', 'agent_finished'):
+        if e['sequence'] < minimum_sequence or e['type'] not in (
+                'baseline', 'action_completed', 'agent_finished', 'opening_prompt_replaced', 'historical_reasoning_omitted', 'provider_changed'):
             continue
         try:
             state = scan_prefix(records, participants, e['sequence'])
@@ -279,17 +475,27 @@ def available_cuts(run, around=None, limit=12):
 
 
 def prepare(run, output, *, sequence=None, after=None, notices=None, turn_limit=None,
-            oracle_policy='require-saved', seconds=5400, grading_seconds=3600, probes_from=None, image=None):
+            oracle_policy='require-saved', seconds=5400, grading_seconds=3600, probes_from=None, image=None,
+            status_protocol=None, provider=None, shell_seconds=SHELL_SECONDS):
     import inspect_ai
     from pydantic import TypeAdapter
     from inspect_ai.model import ChatMessage
     run, protected, records, state, histories = load_source(run, sequence, after)
+    require_canonical_openings(histories)
+    chosen_status_protocol = validate_status_protocol(state['status_protocol'] if status_protocol is None else status_protocol)
     invocation = read_json(run / 'invocation.json')
-    contract = archived_contract(run)
+    source_contract = archived_contract(run)
+    contract, provider_intervention, reasoning_conversion, provider_audit = provider_configuration(
+        source_contract, histories, records, provider)
     # Structural validation only: the future provider must also accept the saved opaque payloads.
     adapter = TypeAdapter(list[ChatMessage])
     for history in histories.values():
         adapter.validate_python(history)
+    omission = reasoning_omission_counts(records, histories)
+    for actor, history in histories.items():
+        adapter.validate_python(outbound_history(history, omission.get(actor, 0)))
+    if reasoning_conversion and omission:
+        raise ValueError('Provider conversion cannot omit historical reasoning')
     weights, relevance = manifest_weights(), manifest_files()
     if set(state['baseline']) != set(weights):
         raise ValueError('Current manifest differs from the source defect set')
@@ -300,6 +506,7 @@ def prepare(run, output, *, sequence=None, after=None, notices=None, turn_limit=
         raise ValueError('Total turn limit cannot precede already-completed actions')
     if not any(a not in state['finished'] and n < limit for a, n in state['turns_used'].items()):
         raise ValueError('No unfinished participant has actions remaining')
+    shell_seconds = validate_shell_seconds(shell_seconds)
     if seconds <= 0 or grading_seconds <= 0:
         raise ValueError('Time budgets must be positive')
     original_notices = invocation.get('actions_remaining_notices')
@@ -321,8 +528,11 @@ def prepare(run, output, *, sequence=None, after=None, notices=None, turn_limit=
         raise ValueError('Original oracle inputs were not saved. Select --oracle-policy fresh-checked '
                          'to pin replacement probes and verify every historical snapshot before model calls.')
     from bug_competition.grader.grader import FinalOracle
-    grading_file = Path(probes_from) / 'grading_probes.json' if probes_from else None
-    grading_probes = read_json(grading_file) if grading_file else FinalOracle(runner=object()).probes
+    grading_file = (Path(probes_from) if probes_from else run) / 'grading_probes.json'
+    if probes_from or grading_file.is_file():
+        grading_probes = read_json(grading_file)
+    else:
+        grading_probes = FinalOracle(runner=object()).probes
     for collection in (probes, grading_probes):
         if len(collection) != len(weights) or {p['id'] for p in collection} != set(weights):
             raise ValueError('Probe set must cover every eligible defect exactly once')
@@ -333,13 +543,18 @@ def prepare(run, output, *, sequence=None, after=None, notices=None, turn_limit=
         raise ValueError('Output already exists; choose a new folder')
     config = dict(format=FORMAT, parent=str(run), source_sequence=records[-1]['sequence'],
                   parent_audit_head=records[-1]['hash'], contract=contract,
+                  source_contract=source_contract, provider_intervention=provider_intervention,
+                  reasoning_conversion=reasoning_conversion, provider_conversion_audit=provider_audit,
                   inspect_version=inspect_ai.__version__, source_inspect_version=invocation.get('inspect_version'),
                   python_version=sys.version.split()[0], runtime_files=runtime_files(),
-                  image=image or invocation.get('image', 'mosslight-tools:local'),
+                  image=image or invocation.get('image', 'docker.io/library/mosslight-tools:local'),
                   original_turn_limit=previous_limit, turn_limit=limit,
                   original_notices=original_notices, notices=sorted(set(chosen_notices), reverse=True),
-                  seconds=seconds, grading_seconds=grading_seconds, oracle_origin=origin,
+                  seconds=seconds, shell_seconds=shell_seconds, grading_seconds=grading_seconds, oracle_origin=origin,
                   model_generations_in_flight='discarded and regenerated; tool-in-flight cuts refused',
+                  status_protocol=chosen_status_protocol,
+                  intervention=None,
+                  reasoning_omission=omission,
                   weights=weights, relevance={k: sorted(v) for k, v in relevance.items()},
                   checkpoint=preview(state, records[-1]['sequence'], weights))
     output.mkdir(parents=True)
@@ -356,6 +571,13 @@ def prepare(run, output, *, sequence=None, after=None, notices=None, turn_limit=
                                       'histories.json': sha(checkpoint / 'histories.json')}
         config['probe_files'] = {name: sha(output / name)
                                 for name in ('live_probes.json', 'grading_probes.json')}
+        if reasoning_conversion:
+            write_json(output / 'provider_intervention.json', dict(source_contract=source_contract,
+                effective_contract=contract, intervention=provider_intervention,
+                reasoning_conversion=reasoning_conversion))
+            write_json(output / 'provider_conversion_audit.json', provider_audit)
+            config['provider_files'] = {name: sha(output / name) for name in
+                ('provider_intervention.json', 'provider_conversion_audit.json')}
         write_json(output / 'branch.json', config)
     except BaseException:
         # Keep any partial output inspectable; never retry into or overwrite it.
@@ -368,6 +590,7 @@ def validate_bundle(folder):
     import inspect_ai
     folder = Path(folder).resolve()
     config = read_json(folder / 'branch.json')
+    validate_shell_seconds(config.get('shell_seconds', SHELL_SECONDS))
     if config['format'] != FORMAT or runtime_files() != config['runtime_files']:
         raise ValueError('Runtime changed since preparation; prepare a fresh branch')
     if inspect_ai.__version__ != config['inspect_version'] or sys.version.split()[0] != config['python_version']:
@@ -378,13 +601,34 @@ def validate_bundle(folder):
     for name, digest in config['probe_files'].items():
         if sha(folder / name) != digest:
             raise ValueError('Pinned probe inputs changed')
+    for name, digest in config.get('provider_files', {}).items():
+        if sha(folder / name) != digest:
+            raise ValueError('Provider intervention evidence changed')
     records = records_from(folder / 'checkpoint/events.jsonl')
     if records[-1]['hash'] != config['parent_audit_head']:
         raise ValueError('Parent audit head mismatch')
     histories = read_json(folder / 'checkpoint/histories.json')
+    require_canonical_openings(histories)
+    if config.get('intervention'):
+        raise ValueError('Opening prompt interventions are no longer launchable; prepare a canonical continuation')
     state = scan_prefix(records, list(histories), len(records) - 1, weights=config['weights'])
     if conversation_prefixes(histories, state) != histories:
         raise ValueError('Checkpoint contains future conversation messages')
+    provider_intervention = config.get('provider_intervention')
+    expected = provider_configuration(config.get('source_contract', config['contract']), histories, records,
+        provider_intervention.get('provider') if provider_intervention else None)
+    actual = (config['contract'], provider_intervention, config.get('reasoning_conversion'),
+              config.get('provider_conversion_audit'))
+    if actual != expected:
+        raise ValueError('Provider conversion contract or boundary audit changed')
+    if config.get('reasoning_conversion') and (config.get('intervention') or config.get('reasoning_omission')):
+        raise ValueError('Provider conversion must preserve all original context and reasoning')
+    validate_status_protocol(config.get('status_protocol', state['status_protocol']))
+    omission = config.get('reasoning_omission', {})
+    validate_reasoning_omission(histories, omission)
+    inherited = reasoning_omission_counts(records, histories)
+    if omission != inherited:
+        raise ValueError('Historical reasoning policy changed')
     for index, digest in enumerate(state['snapshot_hashes']):
         if tree_hash(folder / 'checkpoint/snapshots' / str(index)) != digest:
             raise ValueError(f'Checkpoint snapshot {index} changed')
@@ -431,8 +675,12 @@ def main(argv=None):
                            help='20-then-10, countdown (20..1), none, or comma-separated counts; default preserves source')
             p.add_argument('--turn-limit', type=int, help='Total actions per actor, including the prefix')
             p.add_argument('--oracle-policy', choices=['require-saved', 'fresh-checked'], default='require-saved')
+            p.add_argument('--provider', choices=['anthropic'], help='Explicit same-model OpenRouter Opus 5.5 to direct Anthropic continuation')
             p.add_argument('--probes-from', type=Path, help='Reuse live/grading probes from a prepared control branch')
             p.add_argument('--image', help='Explicit tool image tag or immutable ID; default is the archived image')
+            p.add_argument('--status-protocol', choices=STATUS_PROTOCOLS,
+                           help='Future status feedback protocol; default inherits source, archives stay unchanged')
+            p.add_argument('--shell-seconds', type=float, default=SHELL_SECONDS)
             p.add_argument('--seconds', type=float, default=5400)
             p.add_argument('--grading-seconds', type=float, default=3600)
     p = sub.add_parser('validate')
@@ -451,8 +699,9 @@ def main(argv=None):
         elif args.command == 'prepare':
             config = prepare(args.source, args.output, sequence=args.sequence, after=args.after,
                              notices=args.notices, turn_limit=args.turn_limit,
-                             oracle_policy=args.oracle_policy, seconds=args.seconds,
-                             grading_seconds=args.grading_seconds, probes_from=args.probes_from, image=args.image)
+                             oracle_policy=args.oracle_policy, seconds=args.seconds, shell_seconds=args.shell_seconds,
+                             grading_seconds=args.grading_seconds, probes_from=args.probes_from, image=args.image,
+                             status_protocol=args.status_protocol, provider=args.provider)
             result = dict(prepared=str(args.output.resolve()), checkpoint=config['checkpoint'],
                           notices=config['notices'], turn_limit=config['turn_limit'],
                           oracle_origin=config['oracle_origin'], model_calls=0)

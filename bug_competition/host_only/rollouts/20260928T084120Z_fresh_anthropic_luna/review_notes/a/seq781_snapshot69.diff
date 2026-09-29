@@ -1,0 +1,111 @@
+--- 68/tests/test_regressions.py
++++ 69/tests/test_regressions.py
+@@ -0,0 +1,108 @@
++"""Regression checks for repaired behaviors (reference saves, courier, merges, exchange)."""
++import copy
++import json
++import os
++from pathlib import Path
++import tempfile
++import unittest
++
++from mosslight import create, step
++from mosslight.commands import execute
++from mosslight.engine import season
++from mosslight.exchange import replay
++
++EXAMPLES = Path(__file__).resolve().parent.parent / "examples"
++
++
++class ReferenceSaves(unittest.TestCase):
++    def test_seasons_and_first_garden(self):
++        self.assertEqual([season(d) for d in (0, 11, 12, 24, 36, 48)],
++                         ["Dawn", "Dawn", "Highsummer", "Ember", "Hush", "Dawn"])
++        world = step(create(34, 16, 11), 24)
++        expected = json.loads((EXAMPLES / "first-garden.json").read_text(encoding="utf-8"))
++        self.assertEqual(world.to_dict()["cells"], expected["cells"])
++        self.assertEqual(world.journal, expected["journal"])
++
++    def test_lantern_hollow_replay(self):
++        commands = json.loads((EXAMPLES / "hollow-actions.json").read_text(encoding="utf-8"))
++        world, _ = replay(create(34, 16, 11), commands)
++        expected = json.loads((EXAMPLES / "lantern-hollow.json").read_text(encoding="utf-8"))
++        self.assertEqual(world.to_dict(), expected)
++
++
++class Courier(unittest.TestCase):
++    def test_concurrent_values_and_edit_delete(self):
++        from mosslight.courier import acknowledged, merge, new_packet, observations, put, remove
++        a = new_packet("desk")
++        put(a, "n1", {"text": "Fern"})
++        b = copy.deepcopy(a); b["peer"], b["counter"] = "field", 0
++        put(a, "n1", {"text": "Fern A"}); put(b, "n1", {"text": "fern a"})
++        merged = observations(merge(a, b))
++        self.assertEqual(merged[0]["fields"]["text"], ["Fern A", "fern a"])
++        self.assertEqual(merged, observations(merge(b, a)))
++        c, d = copy.deepcopy(a), copy.deepcopy(a)
++        c["peer"], c["counter"] = "c", 0
++        remove(c, "n1"); put(d, "n1", {"text": "kept"})
++        self.assertEqual([o["record"] for o in observations(merge(c, d))], ["n1"])
++        self.assertEqual(acknowledged({"x": {"desk": 3}, "y": {"desk": 1}}, ["x", "y"]), {"desk": 1})
++        tags = ["a"]; e = new_packet("z"); put(e, "r", {"tags": tags}); tags.append("b")
++        self.assertEqual(observations(e)[0]["fields"]["tags"], [["a"]])
++
++
++class Merges(unittest.TestCase):
++    def test_independent_records_stay_separate(self):
++        from mosslight.save_merge import reconcile
++        base = create(34, 8, 6)
++        execute(base, {"op": "note", "args": {"content": "base"}})
++        left, right = copy.deepcopy(base), copy.deepcopy(base)
++        execute(left, {"op": "note", "args": {"content": "left"}})
++        execute(right, {"op": "note", "args": {"content": "right"}})
++        result = reconcile(base.to_dict(), left.to_dict(), right.to_dict(), left_origin="desk", right_origin="field")
++        self.assertEqual(result["status"], "ready")
++        self.assertEqual([n["text"] for n in result["world"]["workbench"]["notes"]], ["base", "left", "right"])
++
++    def test_irrigation_max_flow(self):
++        from mosslight.irrigation_flow import allocate
++        pipes = [{"from": "tank", "to": "A", "capacity": 1}, {"from": "tank", "to": "B", "capacity": 1},
++                 {"from": "A", "to": "o1", "capacity": 1}, {"from": "A", "to": "o2", "capacity": 1},
++                 {"from": "B", "to": "o1", "capacity": 1}]
++        self.assertEqual(allocate(pipes, "tank", {"o1": 1, "o2": 1}, 5)["total"], 2)
++
++    def test_calibration_averages_shared_timestamps(self):
++        from mosslight.field_calibration import estimate
++        rows = [{"timestamp": 0, "moisture": 40}, {"timestamp": 0, "moisture": 50},
++                {"timestamp": 60, "moisture": 44}, {"timestamp": 120, "moisture": 46}]
++        self.assertAlmostEqual(estimate(rows, 120), 45.5)
++
++
++class Histories(unittest.TestCase):
++    def test_append_event_and_criss_cross_reversion(self):
++        from mosslight.history_exchange import HistoryExchange
++        world = create(34, 8, 6)
++        execute(world, {"op": "note", "args": {"content": "orig"}})
++        with tempfile.TemporaryDirectory() as folder:
++            store = HistoryExchange(os.path.join(folder, "x.sqlite"))
++            try:
++                h = store.history
++                main = h.create(world)["branch"]
++                genesis = store.announce(main, author="desk")["publication"]
++                cx, cy = store.checkout(genesis)["branch"], store.checkout(genesis)["branch"]
++                h.append(cx, {"op": "task", "args": {"content": "T", "due": 3}})
++                left = store.publish(cx, checkout=cx, author="desk")["publication"]
++                edit = h.append(cy, {"op": "edit_note", "args": {"ident": 1, "content": "changed"}})
++                self.assertEqual(edit["event"], edit["events"][-1]["id"])
++                right = store.publish(cy, checkout=cy, author="field")["publication"]
++                m1 = store.reconcile(left, right, author="desk")
++                m2 = store.reconcile(left, right, author="field")
++                h.append(m1["branch"], {"op": "note", "args": {"content": "B"}})
++                a2 = store.publish(m1["branch"], checkout=m1["branch"], author="desk")["publication"]
++                corrected = h.correct(m2["branch"], {edit["event"]: None})["branch"]
++                b2 = store.publish(corrected, checkout=m2["branch"], author="field")["publication"]
++                result = store.reconcile(a2, b2, author="desk")
++                self.assertEqual([n["text"] for n in result["world"]["workbench"]["notes"]], ["orig", "B"])
++            finally:
++                store.close()
++
++
++if __name__ == "__main__":
++    unittest.main()

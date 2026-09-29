@@ -1,0 +1,34 @@
+--- 35/mosslight/history_exchange.py
++++ 36/mosslight/history_exchange.py
+@@ -368,10 +368,10 @@
+             result = store.announce(args.branch, author=args.author, name=args.name)
+         elif args.operation == "export":
+             parcel = store.export(args.channel, heads=args.heads)
+-            Path(args.output).write_text(json.dumps(parcel, ensure_ascii=False, indent=2) + "\n")
++            Path(args.output).write_text(json.dumps(parcel, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+             result = {"output": args.output, "checksum": parcel["checksum"]}
+         elif args.operation == "receive":
+-            result = store.receive(json.loads(Path(args.parcel).read_text()))
++            result = store.receive(json.loads(Path(args.parcel).read_text(encoding="utf-8")))
+         elif args.operation == "checkout":
+             result = store.checkout(args.publication, args.label)
+         elif args.operation == "publish":
+--- 35/tests/t_hx.py
++++ 36/tests/t_hx.py
+@@ -25,3 +25,16 @@
+ r=X.reconcile(B2,A2,author='field')
+ print(r['status'], [n['text'] for n in r['world']['workbench']['notes']])
+ print(X.heads(ch))
++Y=HistoryExchange(os.path.join(d,'y.sqlite'))
++old=X.export(ch, heads=[L1])
++new=X.export(ch)
++print(Y.receive(new)['heads']==sorted(X.heads(ch)))
++print(Y.receive(old)['heads']==sorted(X.heads(ch)))
++co=Y.checkout(A2)
++print([n['text'] for n in co['world']['workbench']['notes']])
++bad=X.export(ch); bad['body']['selected']=['zzz']
++import json
++from mosslight.history import _digest
++bad['checksum']=_digest(bad['body'])
++try: Y.receive(bad)
++except ValueError as e: print('rejected', e)

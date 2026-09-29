@@ -1,0 +1,231 @@
+[
+  {
+    "action": 21,
+    "sequence": 117,
+    "snapshot": 8,
+    "prior_owners": {
+      "P04": null,
+      "P08": null,
+      "P09": null,
+      "P10": null
+    },
+    "diffs": [
+      {
+        "path": "mosslight/model.py",
+        "ast_equal_without_docstrings": false,
+        "diff": "--- episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/7/mosslight/model.py\n+++ episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/8/mosslight/model.py\n@@ -85,7 +85,7 @@\n                 species = raw.get(\"species\")\n                 if species is not None and species not in SPECIES:\n                     raise ValueError(\"Unknown species\")\n-                if species is None and (values[3] and values[4]):\n+                if species is None and (values[3] or values[4]):\n                     raise ValueError(\"Empty cell cannot have age or vitality\")\n                 cells.append(Cell(values[0], values[1], values[2], species, values[3], values[4]))\n             journal = data.get(\"journal\", [])\n"
+      },
+      {
+        "path": "mosslight/state.py",
+        "ast_equal_without_docstrings": false,
+        "diff": "--- episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/7/mosslight/state.py\n+++ episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/8/mosslight/state.py\n@@ -54,7 +54,7 @@\n         for item in sequence(state[name], name, 500):\n             mapping(item, name)\n             ident = integer(item.get(\"id\"), \"Identifier\", 1)\n-            if ident in ids or ident > state[\"next_id\"]:\n+            if ident in ids or ident >= state[\"next_id\"]:\n                 raise ValueError(\"Identifiers must be unique and below next_id\")\n             ids.add(ident)\n             if name in (\"notes\", \"specimens\", \"tasks\"):\n@@ -129,7 +129,7 @@\n     for point in sequence(state[\"history\"], \"History\", 240):\n         mapping(point, \"History point\")\n         integer(point.get(\"day\"), \"History day\", 0, world.day)\n-        if point[\"day\"] < previous_day:\n+        if point[\"day\"] <= previous_day:\n             raise ValueError(\"History days must increase\")\n         previous_day = point[\"day\"]\n         for key in (\"occupied\", \"births\", \"losses\"):\n@@ -139,7 +139,7 @@\n             if type(value) not in (int, float) or not 0 <= value <= 100:\n                 raise ValueError(f\"Invalid history {key}\")\n     for cell, tile in zip(world.cells, tiles):\n-        if tile[\"terrain\"] == \"pond\" and cell.species is not None:\n+        if tile[\"terrain\"] in (\"pond\", \"stone\") and cell.species is not None:\n             raise ValueError(\"Ponds and stones cannot contain plants\")\n     return state\n \n"
+      }
+    ]
+  },
+  {
+    "action": 26,
+    "sequence": 143,
+    "snapshot": 13,
+    "prior_owners": {
+      "V01": null,
+      "V02": null,
+      "V03": null,
+      "V04": null,
+      "X01": null
+    },
+    "diffs": [
+      {
+        "path": "mosslight/campaigns.py",
+        "ast_equal_without_docstrings": false,
+        "diff": "--- episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/12/mosslight/campaigns.py\n+++ episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/13/mosslight/campaigns.py\n@@ -176,13 +176,11 @@\n         try:\n             cursor = self.db.execute(\"\"\"UPDATE branches SET state = ?, status = ?,\n                 owner = NULL, lease_until = NULL WHERE campaign = ? AND ordinal = ?\n-                AND (generation = ? OR owner != ?) AND status = 'running'\"\"\",\n+                AND generation = ? AND owner = ? AND status = 'running'\"\"\",\n                 (_json(state), status, claim[\"campaign\"], claim[\"ordinal\"],\n                  claim[\"generation\"], claim[\"owner\"]))\n             accepted = cursor.rowcount == 1\n             if accepted:\n-                self.db.execute(\"COMMIT\")\n-                self.db.execute(\"BEGIN IMMEDIATE\")\n                 self._checkpoint(claim[\"campaign\"], claim[\"ordinal\"], state)\n                 rows = self.db.execute(\"SELECT status FROM branches WHERE campaign = ?\", (claim[\"campaign\"],)).fetchall()\n                 if all(row[\"status\"] == \"complete\" for row in rows):\n@@ -241,7 +239,7 @@\n             if treatments is None:\n                 remaining = []\n                 for event in parent[\"branches\"][ordinal][\"events\"]:\n-                    if offset <= event[\"offset\"] <= offset + days:\n+                    if offset < event[\"offset\"] <= offset + days:\n                         remaining.append({\"offset\": event[\"offset\"] - offset,\n                                           \"command\": copy.deepcopy(event[\"command\"])})\n                 name = parent[\"branches\"][ordinal][\"name\"] + \" continuation\"\n@@ -272,7 +270,7 @@\n             removed = 0\n             for row in rows:\n                 key = (row[\"ordinal\"], row[\"offset\"])\n-                if row[\"offset\"] in (-1, 0, definition[\"days\"]) or row[\"offset\"] % keep_every == 0:\n+                if key in protected or row[\"offset\"] in (-1, 0, definition[\"days\"]) or row[\"offset\"] % keep_every == 0:\n                     continue\n                 self.db.execute(\"DELETE FROM checkpoints WHERE campaign = ? AND ordinal = ? AND offset = ?\",\n                                 (campaign, *key))\n"
+      },
+      {
+        "path": "mosslight/runtime.py",
+        "ast_equal_without_docstrings": false,
+        "diff": "--- episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/12/mosslight/runtime.py\n+++ episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/13/mosslight/runtime.py\n@@ -53,7 +53,7 @@\n \n \n def execution_version(definition):\n-    return CURRENT_VERSION\n+    return definition[\"runtime\"][\"id\"]\n \n \n def verify_runtime(recorded):\n"
+      }
+    ]
+  },
+  {
+    "action": 28,
+    "sequence": 154,
+    "snapshot": 16,
+    "prior_owners": {
+      "E08": "B",
+      "E09": null,
+      "E11": "B",
+      "E13": "B"
+    },
+    "diffs": [
+      {
+        "path": "mosslight/habitat.py",
+        "ast_equal_without_docstrings": false,
+        "diff": "--- episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/15/mosslight/habitat.py\n+++ episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/16/mosslight/habitat.py\n@@ -50,7 +50,7 @@\n     trait = TERRAINS[terrain]\n     evaporation = max(0, evaporation + trait[\"evaporation\"] - tile[\"mulch\"] // 20)\n     gain = rain + (trait[\"rain_bonus\"] if rain else 0)\n-    if tile[\"structure\"] == \"rain_barrel\":\n+    if tile[\"structure\"] == \"rain_barrel\" and rain:\n         gain += 6\n         from .semantics import barrel_adjustment\n         gain += barrel_adjustment(before)\n"
+      }
+    ]
+  },
+  {
+    "action": 34,
+    "sequence": 193,
+    "snapshot": 18,
+    "prior_owners": {
+      "H01": null,
+      "H02": null,
+      "H03": null,
+      "H04": null,
+      "H05": null,
+      "X02": null
+    },
+    "diffs": [
+      {
+        "path": "mosslight/history.py",
+        "ast_equal_without_docstrings": false,
+        "diff": "--- episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/17/mosslight/history.py\n+++ episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/18/mosslight/history.py\n@@ -119,7 +119,7 @@\n         if entity[\"collection\"] != collection:\n             raise HistoryConflict(\"reference-type\", \"The reference belongs to another collection\",\n                                   event=event[\"id\"], reference=ref)\n-        command[\"args\"][\"ident\"] = event[\"bindings\"].get(\"ident\", entity[\"id\"])\n+        command[\"args\"][\"ident\"] = entity[\"id\"]\n     return command\n \n \n@@ -133,7 +133,7 @@\n \n \n def _pick_identity(event):\n-    return _digest(event[\"command\"])\n+    return event[\"id\"]\n \n \n def _respect_shared_order(candidate, local, target):\n@@ -141,7 +141,7 @@\n     rank = {event[\"id\"]: index for index, event in enumerate(candidate)}\n     following = {ident: set() for ident in by_id}\n     incoming = {ident: 0 for ident in by_id}\n-    for sequence in (target,):\n+    for sequence in (local, target):\n         retained = [event[\"id\"] for event in sequence if event[\"id\"] in by_id]\n         for before, after in zip(retained, retained[1:]):\n             if after not in following[before]:\n@@ -262,7 +262,7 @@\n \n     @staticmethod\n     def _checkpoint_key(root, events):\n-        return _digest({\"root\": root[\"id\"], \"engine\": root[\"engine\"], \"events\": events[-1:]})\n+        return _digest({\"root\": root[\"id\"], \"engine\": root[\"engine\"], \"events\": events})\n \n     def _replay(self, root, events, *, use_cache=True):\n         if root[\"engine\"] != _version_info(root[\"engine\"][\"id\"]):\n@@ -404,7 +404,7 @@\n             if event[\"id\"] not in replacements:\n                 events.append(copy.deepcopy(event))\n             elif replacements[event[\"id\"]] is not None:\n-                before = original[\"result\"]\n+                before = self._replay(root, events)\n                 events.append(_event(replacements[event[\"id\"]], before, event[\"id\"]))\n         result = self._replay(root, events)\n         return self._new_branch(source, original[\"id\"], events, result, label, {\n@@ -443,7 +443,7 @@\n             raise ValueError(\"Rebase needs histories of the same imported garden\")\n         if source[\"base_revision\"] is None:\n             raise ValueError(\"Only a fork has a recorded base for rebasing\")\n-        base_revision = self._branch(source[\"parent\"])[\"head\"]\n+        base_revision = source[\"base_revision\"]\n         base = self._revision(base_revision)\n         local, destination = self._revision(source[\"head\"]), self._revision(target[\"head\"])\n         events = _rebase_events(base[\"events\"], local[\"events\"], destination[\"events\"])\n"
+      }
+    ]
+  },
+  {
+    "action": 38,
+    "sequence": 212,
+    "snapshot": 21,
+    "prior_owners": {
+      "X03": null
+    },
+    "diffs": [
+      {
+        "path": "mosslight/history_exchange.py",
+        "ast_equal_without_docstrings": false,
+        "diff": "--- episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/20/mosslight/history_exchange.py\n+++ episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/21/mosslight/history_exchange.py\n@@ -269,7 +269,7 @@\n         common = left_ancestors & right_ancestors\n         maximal = sorted(ident for ident in common\n                          if not any(ident != other and ident in ancestors[other] for other in common))\n-        return maximal[:1]\n+        return maximal\n \n     def _merge_events(self, left, right, graph):\n         ancestors = {ident: self._ancestors(ident, graph) for ident in graph}\n"
+      }
+    ]
+  },
+  {
+    "action": 44,
+    "sequence": 241,
+    "snapshot": 25,
+    "prior_owners": {
+      "Q01": null,
+      "Q02": null
+    },
+    "diffs": [
+      {
+        "path": "mosslight/studies.py",
+        "ast_equal_without_docstrings": false,
+        "diff": "--- episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/24/mosslight/studies.py\n+++ episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/25/mosslight/studies.py\n@@ -140,7 +140,7 @@\n         for replicate in cohort:\n             for treatment in [\"control\", *treatments]:\n                 if index:\n-                    parent = self.checkpoint(study, index - 1, replicate, \"control\")\n+                    parent = self.checkpoint(study, index - 1, replicate, treatment)\n                     state = copy.deepcopy(parent[\"state\"])\n                     anchor = {key: parent[key] for key in (\"study\", \"stage\", \"replicate\", \"treatment\", \"digest\")}\n                 else:\n@@ -257,7 +257,7 @@\n             return\n         stage = self._stage(study, index)\n         support = readiness(stage, self._job_statuses(study, index))\n-        if not support[\"common\"]:\n+        if not support[\"terminal\"]:\n             return\n         jobs = self._jobs(study, index)\n         preview = progress(stage, jobs, workspace[\"definition\"][\"metric\"])\n"
+      }
+    ]
+  },
+  {
+    "action": 59,
+    "sequence": 336,
+    "snapshot": 29,
+    "prior_owners": {
+      "E25": "B",
+      "E26": "B",
+      "E27": null,
+      "E29": "B",
+      "P12": "B",
+      "P13": null
+    },
+    "diffs": [
+      {
+        "path": "mosslight/commands.py",
+        "ast_equal_without_docstrings": false,
+        "diff": "--- episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/28/mosslight/commands.py\n+++ episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/29/mosslight/commands.py\n@@ -44,7 +44,7 @@\n     trial = World.from_dict(copy.deepcopy(world.to_dict()))\n     result = _dispatch(trial,command.get(\"op\"),args)\n     trial = World.from_dict(trial.to_dict())\n-    trial.revision = trial.revision+1\n+    trial.revision = world.revision+1\n     world.__dict__.update(trial.__dict__)\n     return copy.deepcopy(result)\n \n"
+      },
+      {
+        "path": "mosslight/planning.py",
+        "ast_equal_without_docstrings": false,
+        "diff": "--- episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/28/mosslight/planning.py\n+++ episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/29/mosslight/planning.py\n@@ -64,6 +64,7 @@\n         entry = find_entry(world, \"plans\", ident)\n         try:\n             tend_many(world, entry[\"tiles\"], entry[\"action\"])\n+            entry = find_entry(world, \"plans\", ident)\n             entry[\"remaining\"] -= 1\n             if entry[\"remaining\"] and entry[\"repeat\"]:\n                 entry[\"day\"] += entry[\"repeat\"]\n"
+      }
+    ]
+  },
+  {
+    "action": 69,
+    "sequence": 377,
+    "snapshot": 31,
+    "prior_owners": {
+      "E01": "B",
+      "E02": "B",
+      "E03": "B",
+      "E04": "B",
+      "E05": null,
+      "E06": "B",
+      "E07": "B",
+      "E30": "B"
+    },
+    "diffs": [
+      {
+        "path": "mosslight/engine.py",
+        "ast_equal_without_docstrings": false,
+        "diff": "--- episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/30/mosslight/engine.py\n+++ episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/31/mosslight/engine.py\n@@ -108,7 +108,7 @@\n             shade = effective_shade(world, i)\n             evaporation = 3 + (3 if season_name == \"Highsummer\" else 0) + max(0, 50 - shade) // 22\n             cell.moisture = water_balance(world, i, before.moisture, neighbor_mean, weather_gain, evaporation)\n-            cell.nutrients = clamp(before.nutrients + 1)\n+            cell.nutrients = clamp(before.nutrients + (0 if before.species else 1))\n             if before.species:\n                 desired_moisture, desired_shade, upkeep = PREFERENCES[before.species]\n                 comfort = 8 - abs(cell.moisture - desired_moisture) // 9 - abs(shade - desired_shade) // 13\n@@ -117,7 +117,7 @@\n                 if cell.nutrients < upkeep:\n                     comfort -= 7\n                 cell.vitality = clamp(before.vitality + comfort - 3)\n-                cell.nutrients = clamp(before.nutrients - upkeep + (2 if before.vitality < 25 else 0))\n+                cell.nutrients = clamp(before.nutrients - upkeep + (2 if cell.vitality < 25 else 0))\n                 cell.age = before.age + 1\n                 if cell.vitality == 0 or cell.age > SPECIES_GUIDE[before.species][\"lifespan\"]:\n                     cell.species, cell.age, cell.vitality = None, 0, 0\n"
+      }
+    ]
+  },
+  {
+    "action": 97,
+    "sequence": 579,
+    "snapshot": 42,
+    "prior_owners": {},
+    "diffs": []
+  },
+  {
+    "action": 105,
+    "sequence": 621,
+    "snapshot": 43,
+    "prior_owners": {
+      "P01": "B",
+      "P02": "B",
+      "P03": "B",
+      "P04": "B"
+    },
+    "diffs": [
+      {
+        "path": "mosslight/model.py",
+        "ast_equal_without_docstrings": false,
+        "diff": "--- episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/42/mosslight/model.py\n+++ episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/43/mosslight/model.py\n@@ -89,7 +89,7 @@\n                     raise ValueError(\"Empty cell cannot have age or vitality\")\n                 cells.append(Cell(values[0], values[1], values[2], species, values[3], values[4]))\n             journal = data.get(\"journal\", [])\n-            if not isinstance(journal, list) or len(journal) > 200 or any(\n+            if not isinstance(journal, list) or len(journal) > 100 or any(\n                 not isinstance(e, dict) or type(e.get(\"day\")) is not int or not isinstance(e.get(\"text\"), str)\n                 or len(e[\"text\"]) > 240 for e in journal\n             ):\n"
+      }
+    ]
+  },
+  {
+    "action": 110,
+    "sequence": 644,
+    "snapshot": 45,
+    "prior_owners": {
+      "F02": "A",
+      "F03": "A",
+      "F04": "A",
+      "F05": "A",
+      "F07": null,
+      "F08": "A",
+      "F09": "A"
+    },
+    "diffs": [
+      {
+        "path": "mosslight/analysis.py",
+        "ast_equal_without_docstrings": false,
+        "diff": "--- episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/44/mosslight/analysis.py\n+++ episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/45/mosslight/analysis.py\n@@ -88,7 +88,7 @@\n         result.append({\"size\": len(group), \"tiles\": [list(p) for p in group], \"perimeter\": perimeter,\n                        \"bounds\": [min(p[0] for p in group), min(p[1] for p in group),\n                                   max(p[0] for p in group), max(p[1] for p in group)]})\n-    return sorted(result, key=lambda p: (p[\"size\"], p[\"tiles\"][0][1], p[\"tiles\"][0][0]))\n+    return sorted(result, key=lambda p: (-p[\"size\"], p[\"tiles\"][0][1], p[\"tiles\"][0][0]))\n \n \n def transect(world, x1, y1, x2, y2):\n"
+      }
+    ]
+  },
+  {
+    "action": 130,
+    "sequence": 765,
+    "snapshot": 48,
+    "prior_owners": {
+      "H01": "B",
+      "H02": "B",
+      "H03": "B",
+      "H04": "B",
+      "H05": "B",
+      "X02": "B"
+    },
+    "diffs": [
+      {
+        "path": "mosslight/history.py",
+        "ast_equal_without_docstrings": false,
+        "diff": "--- episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/47/mosslight/history.py\n+++ episode_evidence/mosslight-branch-ab5c2faq/protected/snapshots/48/mosslight/history.py\n@@ -404,7 +404,7 @@\n             if event[\"id\"] not in replacements:\n                 events.append(copy.deepcopy(event))\n             elif replacements[event[\"id\"]] is not None:\n-                before = self._replay(root, events)\n+                before = self._replay(root, original[\"events\"][:index])\n                 events.append(_event(replacements[event[\"id\"]], before, event[\"id\"]))\n         result = self._replay(root, events)\n         return self._new_branch(source, original[\"id\"], events, result, label, {\n"
+      }
+    ]
+  }
+]

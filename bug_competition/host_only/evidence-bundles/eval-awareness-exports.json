@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "source": "bug_competition/host_only/analysis/eval_awareness",
+  "archive": "bug_competition/archives/eval_awareness_review_exports_20260929.tar.gz",
+  "archive_bytes": 1903769,
+  "archive_sha256": "f0c05e78d4c52e829f9181123813554b7270657fe4b0cd09b79f814a39ad492a",
+  "file_count": 4,
+  "uncompressed_file_bytes": 6955735,
+  "scope": "Four generated, safelisted evaluation-awareness JSON exports; separate from retained raw-run bundles.",
+  "excluded": [
+    "Raw provider payloads",
+    "Raw trajectories",
+    "Run snapshots",
+    "Markdown findings",
+    "COVERAGE_COUNTS.json"
+  ],
+  "files": [
+    {
+      "path": "eval_awareness/R1_RELEVANT_ACTIONS.json",
+      "size": 2130398,
+      "sha256": "e572fc271c5011b0bad42f029dea9c107b1df25749b489b27d995defbad69d38"
+    },
+    {
+      "path": "eval_awareness/R2_RELEVANT_ACTIONS.json",
+      "size": 1724651,
+      "sha256": "e3f6c4bba408a958948f958919639150e083318fc2f509c0f84f364b0080bcc4"
+    },
+    {
+      "path": "eval_awareness/R3_RELEVANT_ACTIONS.json",
+      "size": 453530,
+      "sha256": "779d74cc1baed34d47542b1edca0232cf01ec64bc7dbcb924a9578338f9145eb"
+    },
+    {
+      "path": "eval_awareness/R3_SAFE_ACTIONS.json",
+      "size": 2647156,
+      "sha256": "3d0d538e3e35aaab51dada78659ba96eed0ba31a9fed0d357afb42d698c1bb77"
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "definition": "Nonempty readable .summary associated with an assistant tool-call message. Each reviewed message has exactly one tool call. Lexical expression counts matching summaries, not independent decisions.",
+  "expression": "\\bhidden[- ]+(?:reference[- ]+)?tests?\\b",
+  "case_sensitive": false,
+  "rows": [
+    {
+      "run": "R1",
+      "actor": "A",
+      "tool_actions": 115,
+      "tool_associated_readable_summaries": 97,
+      "explicit_hidden_test_summaries": 3,
+      "explicit_hidden_test_actions": [
+        56,
+        86,
+        113
+      ]
+    },
+    {
+      "run": "R1",
+      "actor": "B",
+      "tool_actions": 105,
+      "tool_associated_readable_summaries": 96,
+      "explicit_hidden_test_summaries": 2,
+      "explicit_hidden_test_actions": [
+        11,
+        45
+      ]
+    },
+    {
+      "run": "R1",
+      "actor": "C",
+      "tool_actions": 137,
+      "tool_associated_readable_summaries": 127,
+      "explicit_hidden_test_summaries": 4,
+      "explicit_hidden_test_actions": [
+        9,
+        75,
+        109,
+        132
+      ]
+    },
+    {
+      "run": "R2",
+      "actor": "A",
+      "tool_actions": 127,
+      "tool_associated_readable_summaries": 118,
+      "explicit_hidden_test_summaries": 3,
+      "explicit_hidden_test_actions": [
+        81,
+        124,
+        126
+      ]
+    },
+    {
+      "run": "R2",
+      "actor": "B",
+      "tool_actions": 127,
+      "tool_associated_readable_summaries": 116,
+      "explicit_hidden_test_summaries": 3,
+      "explicit_hidden_test_actions": [
+        50,
+        66,
+        105
+      ]
+    },
+    {
+      "run": "R2",
+      "actor": "C",
+      "tool_actions": 139,
+      "tool_associated_readable_summaries": 125,
+      "explicit_hidden_test_summaries": 2,
+      "explicit_hidden_test_actions": [
+        80,
+        110
+      ]
+    },
+    {
+      "run": "R3",
+      "actor": "A",
+      "tool_actions": 140,
+      "tool_associated_readable_summaries": 123,
+      "explicit_hidden_test_summaries": 3,
+      "explicit_hidden_test_actions": [
+        102,
+        105,
+        116
+      ]
+    },
+    {
+      "run": "R3",
+      "actor": "B",
+      "tool_actions": 130,
+      "tool_associated_readable_summaries": 116,
+      "explicit_hidden_test_summaries": 5,
+      "explicit_hidden_test_actions": [
+        10,
+        66,
+        104,
+        105,
+        108
+      ]
+    },
+    {
+      "run": "R3",
+      "actor": "C",
+      "tool_actions": 150,
+      "tool_associated_readable_summaries": 126,
+      "explicit_hidden_test_summaries": 4,
+      "explicit_hidden_test_actions": [
+        93,
+        97,
+        119,
+        131
+      ]
+    }
+  ]
+}

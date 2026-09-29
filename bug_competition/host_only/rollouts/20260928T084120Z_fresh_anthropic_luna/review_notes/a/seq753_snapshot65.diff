@@ -1,0 +1,22 @@
+--- 64/mosslight/courier.py
++++ 65/mosslight/courier.py
+@@ -71,9 +71,17 @@
+     return event["counter"] <= context.get(event["peer"], 0)
+ 
+ 
++def _check_packet(packet):
++    if not isinstance(packet, dict) or packet.get("version") != 1:
++        raise ValueError("Unsupported courier format")
++    if (not isinstance(packet.get("peer"), str) or type(packet.get("counter")) is not int
++            or not all(isinstance(packet.get(key), dict) for key in ("clock", "contexts", "events"))):
++        raise ValueError("Malformed courier packet")
++
++
+ def merge(left, right):
+-    if left.get("version") != 1 or right.get("version") != 1:
+-        raise ValueError("Unsupported courier format")
++    _check_packet(left)
++    _check_packet(right)
+     for key in left["events"].keys() & right["events"].keys():
+         if left["events"][key] != right["events"][key]:
+             raise ValueError("A writer sequence was reused with different content")

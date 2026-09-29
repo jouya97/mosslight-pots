@@ -1,0 +1,16 @@
+{
+  "method": "Reviewer-created direct return-alias probe; read-only source snapshots; first draft used incorrect tags keyword and was corrected to labels.",
+  "command": "from mosslight import create; from mosslight.notebook import add_note; w=create(1); n=add_note(w,'note',labels=['x']); n['tags'].append('changed'); print(w.workbench['notes'][0]['tags'])",
+  "results": {
+    "39": {
+      "exit": 0,
+      "stdout": "['x', 'changed']\n",
+      "stderr": ""
+    },
+    "40": {
+      "exit": 0,
+      "stdout": "['x']\n",
+      "stderr": ""
+    }
+  }
+}

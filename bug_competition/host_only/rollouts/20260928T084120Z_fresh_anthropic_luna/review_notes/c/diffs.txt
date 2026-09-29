@@ -1,0 +1,811 @@
+
+C19 seq117 snapshots 6->7
+--- 6/mosslight/model.py
++++ 7/mosslight/model.py
+@@ -57,7 +57,7 @@
+             "version": SAVE_VERSION, "seed": self.seed, "width": self.width,
+             "height": self.height, "day": self.day, "weather": self.weather,
+             "revision": self.revision, "cells": [cell.to_dict() for cell in self.cells],
+-            "journal": list(self.journal), "workbench": copy.deepcopy(self.workbench),
++            "journal": copy.deepcopy(self.journal), "workbench": copy.deepcopy(self.workbench),
+         }
+ 
+     @classmethod
+
+C21 seq127 snapshots 9->10
+--- 9/mosslight/engine.py
++++ 10/mosslight/engine.py
+@@ -4,6 +4,7 @@
+ import random
+ from .catalog import SPECIES_GUIDE
+ from .model import ACTIONS, Cell, SPECIES, World
++from .catalog import SPECIES_GUIDE
+ 
+ SEASONS = ("Dawn", "Highsummer", "Ember", "Hush")
+ PREFERENCES = {
+@@ -23,7 +24,7 @@
+ 
+ 
+ def phase(day: int) -> int:
+-    return day % 47
++    return day % 48
+ 
+ 
+ def neighbors(world: World, x: int, y: int) -> list[tuple[int, int]]:
+--- 9/mosslight/state.py
++++ 10/mosslight/state.py
+@@ -54,7 +54,7 @@
+         for item in sequence(state[name], name, 500):
+             mapping(item, name)
+             ident = integer(item.get("id"), "Identifier", 1)
+-            if ident in ids or ident > state["next_id"]:
++            if ident in ids or ident >= state["next_id"]:
+                 raise ValueError("Identifiers must be unique and below next_id")
+             ids.add(ident)
+             if name in ("notes", "specimens", "tasks"):
+@@ -129,7 +129,7 @@
+     for point in sequence(state["history"], "History", 240):
+         mapping(point, "History point")
+         integer(point.get("day"), "History day", 0, world.day)
+-        if point["day"] < previous_day:
++        if point["day"] <= previous_day:
+             raise ValueError("History days must increase")
+         previous_day = point["day"]
+         for key in ("occupied", "births", "losses"):
+--- 9/mosslight/weather.py
++++ 10/mosslight/weather.py
+@@ -42,7 +42,7 @@
+ def next_weather(world,kind,within=48):
+     from .validation import choice
+     choice(kind,RAINFALL,"weather")
+-    for entry in almanac(world,within,start=world.day)["days"]:
++    for entry in almanac(world,within)["days"]:
+         if entry["weather"] == kind:
+             return entry
+     return None
+@@ -59,7 +59,7 @@
+             if plan["status"] != "pending":
+                 continue
+             gap = day-plan["day"]
+-            occurs = gap == 0 or (gap > 0 and plan["repeat"] > 0 and gap%plan["repeat"] == 0 and gap//plan["repeat"] <= plan["remaining"])
++            occurs = gap == 0 or (gap > 0 and plan["repeat"] > 0 and gap%plan["repeat"] == 0 and gap//plan["repeat"] < plan["remaining"])
+             if occurs:
+                 plans.append({"id":plan["id"],"name":plan["name"],"action":plan["action"]})
+         result.append({**weather_on(world.seed,day),
+
+C23 seq141 snapshots 12->13
+--- 12/mosslight/engine.py
++++ 13/mosslight/engine.py
+@@ -4,7 +4,6 @@
+ import random
+ from .catalog import SPECIES_GUIDE
+ from .model import ACTIONS, Cell, SPECIES, World
+-from .catalog import SPECIES_GUIDE
+ 
+ SEASONS = ("Dawn", "Highsummer", "Ember", "Hush")
+ PREFERENCES = {
+
+C28 seq175 snapshots 15->16
+--- 15/mosslight/planning.py
++++ 16/mosslight/planning.py
+@@ -64,6 +64,7 @@
+         entry = find_entry(world, "plans", ident)
+         try:
+             tend_many(world, entry["tiles"], entry["action"])
++            entry = find_entry(world, "plans", ident)
+             entry["remaining"] -= 1
+             if entry["remaining"] and entry["repeat"]:
+                 entry["day"] += entry["repeat"]
+
+C30 seq188 snapshots 18->19
+--- 18/mosslight/__main__.py
++++ 19/mosslight/__main__.py
+@@ -124,7 +124,7 @@
+             result = forecast(load(args.path), args.days, args.every)
+             predicted = result.pop("world")
+             if args.output:
+-                if args.output == args.path:
++                if Path(args.output).resolve() == Path(args.path).resolve():
+                     raise ValueError("Forecast output must differ from the source garden")
+                 from .model import World
+                 save(World.from_dict(predicted), args.output)
+@@ -161,7 +161,7 @@
+         return 0
+     except (ValueError, OSError, json.JSONDecodeError) as exc:
+         print(f"mosslight: {exc}", file=sys.stderr)
+-        return 1
++        return 2
+ 
+ 
+ if __name__ == "__main__":
+--- 18/mosslight/charts.py
++++ 19/mosslight/charts.py
+@@ -28,7 +28,7 @@
+     for i,cell in enumerate(world.cells):
+         x,y = i%world.width,i//world.width
+         settings = world.workbench["tiles"][i]
+-        value = settings[layer] if layer in ("terrain","mulch","stress") else cell.shade if layer == "shade" else getattr(cell,layer)
++        value = settings[layer] if layer in ("terrain","mulch","stress") else effective_shade(world,i) if layer == "shade" else getattr(cell,layer)
+         color = TERRAIN_COLORS[value] if layer == "terrain" else color_scale(value)
+         label = str(value) if layer != "terrain" else value[:2].upper()
+         attrs = 'tabindex="0" role="button"' if interactive else ''
+@@ -58,7 +58,7 @@
+         pieces += [f'<path d="M {left} {y} H {left+plot_w}" stroke="#34554a"/>',
+                    f'<text x="{left-10}" y="{y+4}" text-anchor="end" fill="#b2c7b8" font-size="11">{maximum*(4-i)/4:g}</text>']
+     if history:
+-        first,last = 0,len(history)-1
++        first,last = history[0]["day"],history[-1]["day"]
+         points = [(left+(h["day"]-first)/max(1,last-first)*plot_w,top+plot_h*(1-h[metric]/maximum)) for h in history]
+         path = " ".join(f'{"M" if i == 0 else "L"} {x:.2f} {y:.2f}' for i,(x,y) in enumerate(points))
+         pieces.append(f'<path d="{path}" stroke="#d9c389" stroke-width="2" fill="none"/>')
+
+C32 seq198 snapshots 20->21
+--- 20/mosslight/server.py
++++ 21/mosslight/server.py
+@@ -38,12 +38,11 @@
+ 
+     def publish(self, trial, *, history=True):
+         if self.save_path:
+-            self.world = trial
+             save(trial, self.save_path)
+         if history:
+             self.undo_stack.append(copy.deepcopy(self.world.to_dict()))
+-            self.undo_stack = self.undo_stack[:30]
+-            self.redo_stack = self.redo_stack[-30:]
++            self.undo_stack = self.undo_stack[-30:]
++            self.redo_stack = []
+         self.world = trial
+ 
+ 
+@@ -128,7 +127,7 @@
+             if not isinstance(body,dict):
+                 raise ValueError("Expected a JSON object")
+             with self.server.lock:
+-                if "revision" in body and (not isinstance(body["revision"], int) or body["revision"] < self.server.world.revision):
++                if "revision" in body and (type(body["revision"]) is not int or body["revision"] != self.server.world.revision):
+                     return self._json(409,{"error":"The garden changed; refresh and try again"})
+                 if path == "/api/experiment":
+                     return self._json(200,experiment(self.server.world,body.get("days",7),body.get("treatments"),body.get("every",1)))
+@@ -147,7 +146,7 @@
+                     trial.revision = self.server.world.revision+1
+                 elif path == "/api/import":
+                     trial = World.from_dict(body.get("world"))
+-                    if "world" in body:
++                    if "revision" in body:
+                         trial.revision = self.server.world.revision+1
+                 elif path in ("/api/undo","/api/redo"):
+                     source = self.server.undo_stack if path == "/api/undo" else self.server.redo_stack
+@@ -155,7 +154,7 @@
+                     if not source:
+                         raise ValueError("No change to undo or redo")
+                     trial = World.from_dict(copy.deepcopy(source[-1]))
+-                    trial.revision = trial.revision+1
++                    trial.revision = self.server.world.revision+1
+                     previous = copy.deepcopy(self.server.world.to_dict())
+                     self.server.publish(trial,history=False)
+                     source.pop()
+
+C35 seq221 snapshots 22->23
+--- 22/mosslight/campaigns.py
++++ 23/mosslight/campaigns.py
+@@ -176,13 +176,11 @@
+         try:
+             cursor = self.db.execute("""UPDATE branches SET state = ?, status = ?,
+                 owner = NULL, lease_until = NULL WHERE campaign = ? AND ordinal = ?
+-                AND (generation = ? OR owner != ?) AND status = 'running'""",
++                AND generation = ? AND owner = ? AND status = 'running'""",
+                 (_json(state), status, claim["campaign"], claim["ordinal"],
+                  claim["generation"], claim["owner"]))
+             accepted = cursor.rowcount == 1
+             if accepted:
+-                self.db.execute("COMMIT")
+-                self.db.execute("BEGIN IMMEDIATE")
+                 self._checkpoint(claim["campaign"], claim["ordinal"], state)
+                 rows = self.db.execute("SELECT status FROM branches WHERE campaign = ?", (claim["campaign"],)).fetchall()
+                 if all(row["status"] == "complete" for row in rows):
+@@ -241,7 +239,7 @@
+             if treatments is None:
+                 remaining = []
+                 for event in parent["branches"][ordinal]["events"]:
+-                    if offset <= event["offset"] <= offset + days:
++                    if offset < event["offset"] <= offset + days:
+                         remaining.append({"offset": event["offset"] - offset,
+                                           "command": copy.deepcopy(event["command"])})
+                 name = parent["branches"][ordinal]["name"] + " continuation"
+@@ -272,7 +270,8 @@
+             removed = 0
+             for row in rows:
+                 key = (row["ordinal"], row["offset"])
+-                if row["offset"] in (-1, 0, definition["days"]) or row["offset"] % keep_every == 0:
++                if (key in protected or row["offset"] in (-1, 0, definition["days"])
++                        or row["offset"] % keep_every == 0):
+                     continue
+                 self.db.execute("DELETE FROM checkpoints WHERE campaign = ? AND ordinal = ? AND offset = ?",
+                                 (campaign, *key))
+--- 22/mosslight/runtime.py
++++ 23/mosslight/runtime.py
+@@ -53,7 +53,7 @@
+ 
+ 
+ def execution_version(definition):
+-    return CURRENT_VERSION
++    return definition["runtime"]["id"]
+ 
+ 
+ def verify_runtime(recorded):
+
+C41 seq250 snapshots 25->26
+--- 25/mosslight/history.py
++++ 26/mosslight/history.py
+@@ -119,7 +119,7 @@
+         if entity["collection"] != collection:
+             raise HistoryConflict("reference-type", "The reference belongs to another collection",
+                                   event=event["id"], reference=ref)
+-        command["args"]["ident"] = event["bindings"].get("ident", entity["id"])
++        command["args"]["ident"] = entity["id"]
+     return command
+ 
+ 
+@@ -133,7 +133,7 @@
+ 
+ 
+ def _pick_identity(event):
+-    return _digest(event["command"])
++    return event["id"]
+ 
+ 
+ def _respect_shared_order(candidate, local, target):
+@@ -141,7 +141,7 @@
+     rank = {event["id"]: index for index, event in enumerate(candidate)}
+     following = {ident: set() for ident in by_id}
+     incoming = {ident: 0 for ident in by_id}
+-    for sequence in (target,):
++    for sequence in (local, target):
+         retained = [event["id"] for event in sequence if event["id"] in by_id]
+         for before, after in zip(retained, retained[1:]):
+             if after not in following[before]:
+@@ -262,7 +262,7 @@
+ 
+     @staticmethod
+     def _checkpoint_key(root, events):
+-        return _digest({"root": root["id"], "engine": root["engine"], "events": events[-1:]})
++        return _digest({"root": root["id"], "engine": root["engine"], "events": events})
+ 
+     def _replay(self, root, events, *, use_cache=True):
+         if root["engine"] != _version_info(root["engine"]["id"]):
+@@ -404,7 +404,11 @@
+             if event["id"] not in replacements:
+                 events.append(copy.deepcopy(event))
+             elif replacements[event["id"]] is not None:
+-                before = original["result"]
++                before = self._replay(root, events)
++                if before["conflicts"]:
++                    conflict = before["conflicts"][0]
++                    raise HistoryConflict(conflict["kind"], conflict["message"], event=conflict.get("event"),
++                                          reference=conflict.get("reference"))
+                 events.append(_event(replacements[event["id"]], before, event["id"]))
+         result = self._replay(root, events)
+         return self._new_branch(source, original["id"], events, result, label, {
+@@ -443,7 +447,7 @@
+             raise ValueError("Rebase needs histories of the same imported garden")
+         if source["base_revision"] is None:
+             raise ValueError("Only a fork has a recorded base for rebasing")
+-        base_revision = self._branch(source["parent"])["head"]
++        base_revision = source["base_revision"]
+         base = self._revision(base_revision)
+         local, destination = self._revision(source["head"]), self._revision(target["head"])
+         events = _rebase_events(base["events"], local["events"], destination["events"])
+
+C42 seq257 snapshots 27->28
+--- 27/mosslight/history.py
++++ 28/mosslight/history.py
+@@ -405,10 +405,6 @@
+                 events.append(copy.deepcopy(event))
+             elif replacements[event["id"]] is not None:
+                 before = self._replay(root, events)
+-                if before["conflicts"]:
+-                    conflict = before["conflicts"][0]
+-                    raise HistoryConflict(conflict["kind"], conflict["message"], event=conflict.get("event"),
+-                                          reference=conflict.get("reference"))
+                 events.append(_event(replacements[event["id"]], before, event["id"]))
+         result = self._replay(root, events)
+         return self._new_branch(source, original["id"], events, result, label, {
+
+C46 seq275 snapshots 29->30
+--- 29/mosslight/ensemble_compute.py
++++ 30/mosslight/ensemble_compute.py
+@@ -50,7 +50,7 @@
+                   "runtime": definition["runtime"]})
+     cached = lookup(key)
+     requested_identity = {"replicate": spec["replicate"], "treatment": spec["treatment"]}
+-    identity = copy.deepcopy(cached["origin"]["identity"]) if cached is not None else requested_identity
++    identity = requested_identity
+     if cached is not None:
+         payload = copy.deepcopy(cached["payload"])
+         origin = copy.deepcopy(cached["origin"])
+--- 29/mosslight/ensemble_reports.py
++++ 30/mosslight/ensemble_reports.py
+@@ -16,7 +16,7 @@
+         paired_ids = [replicate for replicate in definition["replicates"]
+                       if replicate in controls and replicate in rows
+                       and rows[replicate]["payload"]["status"] == "complete"]
+-        pairs = list(zip(controls.values(), [rows[replicate] for replicate in paired_ids]))
++        pairs = [(controls[replicate], rows[replicate]) for replicate in paired_ids]
+         series = []
+         if pairs:
+             for index, sample in enumerate(pairs[0][0]["payload"]["samples"]):
+--- 29/mosslight/ensembles.py
++++ 30/mosslight/ensembles.py
+@@ -221,7 +221,7 @@
+             current = self._inputs(ensemble, workspace["head"])
+             row = self.db.execute("SELECT generation, dirty FROM ensemble_nodes WHERE ensemble = ? AND node = ?",
+                                   (ensemble, ticket["node"])).fetchone()
+-            checked_reads = {key: ticket["inputs"][key]["digest"] for key in ticket["known_reads"]}
++            checked_reads = dict(computed["reads"])
+             valid = (row is not None and row["dirty"] and row["generation"] == ticket["generation"]
+                      and all(key in current and current[key]["digest"] == fingerprint
+                              for key, fingerprint in checked_reads.items()))
+@@ -271,10 +271,7 @@
+                               (ensemble, revision)).fetchone()
+         if row is None:
+             raise ValueError("This revision has no complete published report")
+-        envelope = json.loads(row[0])
+-        envelope["result"] = summarize(workspace["definition"], self._outcomes(ensemble))
+-        envelope["result_digest"] = digest(envelope["result"])
+-        return envelope
++        return json.loads(row[0])
+ 
+     def replay(self, ensemble, revision=None):
+         workspace = self._workspace(ensemble)
+
+C50 seq296 snapshots 31->32
+--- 31/mosslight/studies.py
++++ 32/mosslight/studies.py
+@@ -140,7 +140,7 @@
+         for replicate in cohort:
+             for treatment in ["control", *treatments]:
+                 if index:
+-                    parent = self.checkpoint(study, index - 1, replicate, "control")
++                    parent = self.checkpoint(study, index - 1, replicate, treatment)
+                     state = copy.deepcopy(parent["state"])
+                     anchor = {key: parent[key] for key in ("study", "stage", "replicate", "treatment", "digest")}
+                 else:
+@@ -257,7 +257,7 @@
+             return
+         stage = self._stage(study, index)
+         support = readiness(stage, self._job_statuses(study, index))
+-        if not support["common"]:
++        if not support["terminal"]:
+             return
+         jobs = self._jobs(study, index)
+         preview = progress(stage, jobs, workspace["definition"]["metric"])
+
+C66 seq402 snapshots 40->41
+--- 40/mosslight/workspace_catalog.py
++++ 41/mosslight/workspace_catalog.py
+@@ -12,7 +12,7 @@
+ def _normalizer(version):
+     if version == 1:
+         return lambda value: value.casefold()
+-    return lambda value: ' '.join(unicodedata.normalize('NFKC', value).casefold().split())
++    return lambda value: ' '.join(unicodedata.normalize('NFKC', unicodedata.normalize('NFKC', value).casefold()).split())
+ 
+ 
+ class WorkspaceCatalog:
+@@ -96,7 +96,10 @@
+                 if item['kind'] not in ('garden','history','study') or not isinstance(item['label'],str) or not item['label'].strip():
+                     raise ValueError('Invalid receipt')
+                 encoded=json.dumps(item['payload'],allow_nan=False,sort_keys=True,separators=(',',':'))
+-                data=(item['id'],item['kind'],item['label'],item['locator'],encoded)
++                locator=item.get('locator','')
++                if not isinstance(item.get('id'),str) or not item['id'] or not isinstance(locator,str):
++                    raise ValueError('Invalid receipt')
++                data=(item['id'],item['kind'],item['label'],locator,encoded)
+                 existing=self.db.execute('SELECT id,kind,label,locator,payload FROM catalog_receipts WHERE id=?',(item['id'],)).fetchone()
+                 if existing is not None and existing != data:
+                     raise ValueError('Conflicting receipt identity')
+
+C69 seq424 snapshots 43->44
+--- 43/mosslight/model.py
++++ 44/mosslight/model.py
+@@ -100,7 +100,7 @@
+             revision = data.get("revision", 0)
+             if type(revision) is not int or revision < 0:
+                 raise ValueError("Invalid revision")
+-            world = cls(seed, width, height, day, cells, list(journal), weather, revision)
++            world = cls(seed, width, height, day, cells, copy.deepcopy(journal), weather, revision)
+             if data["version"] == 2:
+                 from .state import validate
+                 world.workbench = validate(world, data.get("workbench", {}))
+--- 43/mosslight/state.py
++++ 44/mosslight/state.py
+@@ -28,7 +28,7 @@
+     unknown = set(raw) - set(state)
+     if unknown:
+         raw = {key: value for key, value in raw.items() if key not in unknown}
+-    state.update(raw.copy())
++    state.update(copy.deepcopy(raw))
+     text(state["title"], "Garden title", 100)
+     integer(state["next_id"], "Next identifier", 1)
+     tiles = sequence(state["tiles"], "Tiles", 1200)
+
+C82 seq520 snapshots 45->46
+--- 45/mosslight/model.py
++++ 46/mosslight/model.py
+@@ -43,7 +43,7 @@
+             self.workbench = defaults(len(self.cells))
+ 
+     def index(self, x: int, y: int) -> int:
+-        if not isinstance(x, int) or not isinstance(y, int):
++        if type(x) is not int or type(y) is not int:
+             raise ValueError("Coordinates must be integers")
+         if not (0 <= x < self.width and 0 <= y < self.height):
+             raise ValueError("Coordinates outside the terrarium")
+
+C84 seq544 snapshots 48->49
+--- 48/mosslight/field_calibration.py
++++ 49/mosslight/field_calibration.py
+@@ -19,6 +19,10 @@
+     for t, y in raw:
+         grouped.setdefault(t, []).append(y)
+     values = [(t, math.fsum(ys)/len(ys)) for t, ys in grouped.items()]
++    grouped = {}
++    for t, y in values:
++        grouped.setdefault(t, []).append(y)
++    values = [(t, math.fsum(group)/len(group)) for t, group in grouped.items()]
+     origin = values[0][0]
+     ys = [y for _, y in values]
+     center = math.fsum(t - origin for t, _ in values)/len(values)
+
+C101 seq640 snapshots 56->57
+--- 56/mosslight/engine.py
++++ 57/mosslight/engine.py
+@@ -158,7 +158,8 @@
+     if action.startswith("plant_") and tile["terrain"] in ("pond", "stone"):
+         raise ValueError("This terrain cannot support plants")
+     if action == "water":
+-        cell.moisture = clamp(cell.moisture + 32)
++        # Ponds stay full and stones stay dry whatever is poured on them.
++        cell.moisture = {"pond": 100, "stone": 0}.get(tile["terrain"], clamp(cell.moisture + 32))
+         message = f"A slow pour reaches tile {x + 1}, {y + 1}."
+     elif action == "compost":
+         cell.nutrients = clamp(cell.nutrients + 32)
+
+C104 seq654 snapshots 58->59
+--- 58/mosslight/field_calibration.py
++++ 59/mosslight/field_calibration.py
+@@ -19,10 +19,6 @@
+     for t, y in raw:
+         grouped.setdefault(t, []).append(y)
+     values = [(t, math.fsum(ys)/len(ys)) for t, ys in grouped.items()]
+-    grouped = {}
+-    for t, y in values:
+-        grouped.setdefault(t, []).append(y)
+-    values = [(t, math.fsum(group)/len(group)) for t, group in grouped.items()]
+     origin = values[0][0]
+     ys = [y for _, y in values]
+     center = math.fsum(t - origin for t, _ in values)/len(values)
+
+C117 seq731 snapshots 63->64
+--- 63/mosslight/analysis.py
++++ 64/mosslight/analysis.py
+@@ -88,7 +88,7 @@
+         result.append({"size": len(group), "tiles": [list(p) for p in group], "perimeter": perimeter,
+                        "bounds": [min(p[0] for p in group), min(p[1] for p in group),
+                                   max(p[0] for p in group), max(p[1] for p in group)]})
+-    return sorted(result, key=lambda p: (p["size"], p["tiles"][0][1], p["tiles"][0][0]))
++    return sorted(result, key=lambda p: (-p["size"], p["tiles"][0][1], p["tiles"][0][0]))
+ 
+ 
+ def transect(world, x1, y1, x2, y2):
+
+C120 seq755 snapshots 65->66
+--- 65/mosslight/campaigns.py
++++ 66/mosslight/campaigns.py
+@@ -233,6 +233,8 @@
+         self.db.execute("BEGIN IMMEDIATE")
+         try:
+             parent = self._definition(campaign)
++            integer(ordinal, "Branch number", 0, len(parent["branches"]) - 1)
++            integer(offset, "Fork offset", 0, parent["days"])
+             checkpoint = self.checkpoint(campaign, ordinal, offset)
+             if days is None:
+                 days = parent["days"] - offset
+--- 65/mosslight/ensembles.py
++++ 66/mosslight/ensembles.py
+@@ -267,6 +267,7 @@
+         workspace = self._workspace(ensemble)
+         if revision is None:
+             revision = workspace["head"]
++        integer(revision, "Input revision", 0, workspace["head"])
+         row = self.db.execute("SELECT envelope FROM ensemble_reports WHERE ensemble = ? AND revision = ?",
+                               (ensemble, revision)).fetchone()
+         if row is None:
+@@ -277,6 +278,7 @@
+         workspace = self._workspace(ensemble)
+         if revision is None:
+             revision = workspace["head"]
++        integer(revision, "Input revision", 0, workspace["head"])
+         inputs = self._inputs(ensemble, revision)
+         outcomes = []
+         for row in self.db.execute("SELECT node, spec FROM ensemble_nodes WHERE ensemble = ? ORDER BY rowid", (ensemble,)):
+--- 65/mosslight/history.py
++++ 66/mosslight/history.py
+@@ -42,7 +42,7 @@
+             raise ValueError("This standalone history build supports classic-1")
+         names = ("engine", "model", "state", "commands", "planning", "gardening",
+                  "habitat", "weather", "nursery", "notebook", "exchange", "validation")
+-        files = {name: (Path(__file__).parent / (name + ".py")).read_text() for name in names}
++        files = {name: (Path(__file__).parent / (name + ".py")).read_text(encoding="utf-8") for name in names}
+         return {"id": version, "schema": 2, "fingerprint": _digest(files)}
+     return version_info(version)
+ 
+--- 65/mosslight/studies.py
++++ 66/mosslight/studies.py
+@@ -306,6 +306,7 @@
+         workspace = self._workspace(study)
+         if stage is None:
+             stage = workspace["current_stage"]
++        integer(stage, "Study stage", 0, len(workspace["definition"]["stages"]) - 1)
+         row = self.db.execute("SELECT envelope FROM study_reports WHERE study = ? AND stage = ?", (study, stage)).fetchone()
+         if row is None:
+             raise ValueError("This stage has no committed report")
+
+C132 seq822 snapshots 70->71
+--- 70/mosslight/courier.py
++++ 71/mosslight/courier.py
+@@ -5,6 +5,7 @@
+ import copy
+ import json
+ from pathlib import Path
++import sys
+ import zlib
+ 
+ 
+@@ -200,15 +201,19 @@
+     combine.add_argument("left"); combine.add_argument("right"); combine.add_argument("--output", required=True)
+     show = sub.add_parser("inspect"); show.add_argument("packet")
+     args = parser.parse_args(argv)
+-    if args.operation == "export":
+-        from .model import load
+-        packet = from_garden(load(args.garden), args.peer, args.notebook)
+-    elif args.operation == "merge":
+-        packet = merge(json.loads(Path(args.left).read_text(encoding="utf-8")), json.loads(Path(args.right).read_text(encoding="utf-8")))
+-    else:
+-        print(json.dumps(observations(json.loads(Path(args.packet).read_text(encoding="utf-8"))), indent=2, ensure_ascii=False))
+-        return 0
+-    Path(args.output).write_text(json.dumps(packet, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
++    try:
++        if args.operation == "export":
++            from .model import load
++            packet = from_garden(load(args.garden), args.peer, args.notebook)
++        elif args.operation == "merge":
++            packet = merge(json.loads(Path(args.left).read_text(encoding="utf-8")), json.loads(Path(args.right).read_text(encoding="utf-8")))
++        else:
++            print(json.dumps(observations(json.loads(Path(args.packet).read_text(encoding="utf-8"))), indent=2, ensure_ascii=False))
++            return 0
++        Path(args.output).write_text(json.dumps(packet, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
++    except (ValueError, KeyError, TypeError, OSError) as error:
++        print(f"courier: {error}", file=sys.stderr)
++        return 2
+     return 0
+ 
+ 
+--- 70/mosslight/exchange.py
++++ 71/mosslight/exchange.py
+@@ -42,6 +42,8 @@
+                                               for key in ("terrain","mulch","structure","stress")}
+     except (TypeError, KeyError, csv.Error) as exc:
+         raise ValueError("Malformed survey CSV") from exc
++    except ValueError as exc:
++        raise ValueError(f"Malformed survey CSV: {exc}") from exc
+     if len(seen) != len(world.cells):
+         raise ValueError("Survey must contain every tile")
+     trial = World.from_dict(trial.to_dict())
+--- 70/mosslight/history_exchange.py
++++ 71/mosslight/history_exchange.py
+@@ -361,6 +361,7 @@
+     reconcile.add_argument("left"); reconcile.add_argument("right"); reconcile.add_argument("--author", required=True)
+     resolve = sub.add_parser("resolve")
+     resolve.add_argument("channel"); resolve.add_argument("branch"); resolve.add_argument("--author", required=True)
++    resolve.add_argument("--expected-heads", nargs="+", help="Heads reviewed before resolving")
+     args = parser.parse_args(argv)
+     store = HistoryExchange(args.database)
+     try:
+@@ -381,7 +382,7 @@
+         elif args.operation == "reconcile":
+             result = store.reconcile(args.left, args.right, author=args.author)
+         else:
+-            result = store.resolve(args.channel, args.branch, author=args.author)
++            result = store.resolve(args.channel, args.branch, author=args.author, expected_heads=args.expected_heads)
+         print(json.dumps(result, ensure_ascii=False, indent=2))
+         return 0
+     except (ValueError, OSError, sqlite3.Error) as error:
+--- 70/mosslight/irrigation.py
++++ 71/mosslight/irrigation.py
+@@ -148,13 +148,20 @@
+     return result
+ 
+ 
+-def main():
++def main(argv=None):
+     parser=argparse.ArgumentParser(description=__doc__)
+     parser.add_argument('problem',type=Path);parser.add_argument('output',type=Path)
+-    args=parser.parse_args()
+-    data=json.loads(args.problem.read_text(encoding="utf-8"))
+-    problem=definition(**data)
+-    result=solve(problem);save_design(args.output,result)
++    args=parser.parse_args(argv)
++    try:
++        data=json.loads(args.problem.read_text(encoding="utf-8"))
++        if not isinstance(data,dict):raise ValueError('The irrigation problem must be a JSON object')
++        problem=definition(**data)
++        result=solve(problem);save_design(args.output,result)
++    except (ValueError,TypeError,OSError) as error:
++        import sys
++        print(f'irrigation: {error}',file=sys.stderr)
++        return 2
+     print(json.dumps({'score':result['score'],'remaining':result['remaining'],'schedule':result['schedule']}))
++    return 0
+ 
+-if __name__=='__main__':main()
++if __name__=='__main__':raise SystemExit(main())
+--- 70/mosslight/save_merge.py
++++ 71/mosslight/save_merge.py
+@@ -6,6 +6,7 @@
+ import hashlib
+ import json
+ from pathlib import Path
++import sys
+ 
+ from .model import World
+ 
+@@ -162,24 +163,29 @@
+     return reproduced == result
+ 
+ 
+-def main():
++def main(argv=None):
+     parser = argparse.ArgumentParser(description=__doc__)
+     for name in ("base", "left", "right", "output"):
+         parser.add_argument(name)
+     parser.add_argument("--left-origin", required=True)
+     parser.add_argument("--right-origin", required=True)
+     parser.add_argument("--resolutions")
+-    args = parser.parse_args()
++    args = parser.parse_args(argv)
+     read = lambda name: json.loads(Path(name).read_text(encoding="utf-8"))
+-    result = reconcile(read(args.base), read(args.left), read(args.right),
+-                       left_origin=args.left_origin, right_origin=args.right_origin,
+-                       resolutions=read(args.resolutions) if args.resolutions else None)
+-    output = Path(args.output)
+-    temporary = output.with_name(output.name + ".tmp")
+-    temporary.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+-    temporary.replace(output)
++    try:
++        result = reconcile(read(args.base), read(args.left), read(args.right),
++                           left_origin=args.left_origin, right_origin=args.right_origin,
++                           resolutions=read(args.resolutions) if args.resolutions else None)
++        output = Path(args.output)
++        temporary = output.with_name(output.name + ".tmp")
++        temporary.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
++        temporary.replace(output)
++    except (ValueError, OSError) as error:
++        print(f"save_merge: {error}", file=sys.stderr)
++        return 2
+     print(result["status"])
++    return 0
+ 
+ 
+ if __name__ == "__main__":
+-    main()
++    raise SystemExit(main())
+--- 70/mosslight/weather.py
++++ 71/mosslight/weather.py
+@@ -42,6 +42,7 @@
+ def next_weather(world,kind,within=48):
+     from .validation import choice
+     choice(kind,RAINFALL,"weather")
++    integer(within,"Search window",1,365)
+     for entry in almanac(world,within)["days"]:
+         if entry["weather"] == kind:
+             return entry
+
+C139 seq836 snapshots 71->72
+--- 71/mosslight/commands.py
++++ 72/mosslight/commands.py
+@@ -40,6 +40,8 @@
+     mapping(command,"Command")
+     if "op" not in command or set(command) - {"op", "args"}:
+         raise ValueError("Command accepts only op and args")
++    if not isinstance(command["op"], str):
++        raise ValueError("Unknown command")
+     args = mapping(command.get("args",{}),"Command arguments")
+     trial = World.from_dict(copy.deepcopy(world.to_dict()))
+     result = _dispatch(trial,command.get("op"),args)
+--- 71/mosslight/experiments.py
++++ 72/mosslight/experiments.py
+@@ -11,6 +11,8 @@
+ def experiment(world,days,treatments,every=1):
+     integer(days,"Experiment days",1,120)
+     integer(every,"Sample interval",1,120)
++    if world.day+days > 1_000_000:
++        raise ValueError("Experiment extends beyond the garden calendar")
+     sequence(treatments,"Treatments",8)
+     if not treatments:
+         raise ValueError("Supply at least one treatment")
+--- 71/mosslight/gardening.py
++++ 72/mosslight/gardening.py
+@@ -30,8 +30,10 @@
+ 
+ 
+ def tend_many(world, tiles, action):
++    """Apply one care action to each selected tile once, as a single all-or-nothing edit."""
+     from .engine import act
+-    from .model import World
++    from .model import ACTIONS, World
++    choice(action, ACTIONS, "care action")
+     points = coordinates(world, tiles)
+     trial = World.from_dict(copy.deepcopy(world.to_dict()))
+     for x, y in points:
+--- 71/mosslight/habitat.py
++++ 72/mosslight/habitat.py
+@@ -5,6 +5,7 @@
+ 
+ 
+ def effective_shade(world, index):
++    """Shade plants experience: base shade plus shelter from cloths on this and adjoining tiles."""
+     cell = world.cells[index]
+     x, y = index % world.width, index // world.width
+     canopy = 0
+--- 71/mosslight/irrigation_flow.py
++++ 72/mosslight/irrigation_flow.py
+@@ -28,6 +28,8 @@
+         return start,left
+     names={source,*outlets}
+     for index,pipe in enumerate(pipes):
++        if not isinstance(pipe,dict) or not {'from','to','capacity'}<=set(pipe):
++            raise ValueError('Each pipe needs from, to and capacity')
+         start,end,capacity=pipe['from'],pipe['to'],pipe['capacity']
+         if not isinstance(start,str) or not isinstance(end,str) or not start or not end or start==end:
+             raise ValueError('Pipes need distinct named junctions')
+--- 71/mosslight/notebook.py
++++ 72/mosslight/notebook.py
+@@ -87,6 +87,7 @@
+ 
+ 
+ def complete_task(world, ident, done=True):
++    """Mark a reminder complete, or reopen it with done=False; no garden care is performed."""
+     boolean(done, "Completed")
+     entry = find_entry(world, "tasks", ident)
+     entry["done"] = done
+--- 71/mosslight/nursery.py
++++ 72/mosslight/nursery.py
+@@ -39,6 +39,7 @@
+ 
+ 
+ def water_batch(world,ident):
++    """Watering restores a living batch's full three-day supply."""
+     batch = find_entry(world,"nursery",ident)
+     if batch["status"] not in ("growing","ready"):
+         raise ValueError("Only living nursery batches can be watered")
+--- 71/mosslight/planning.py
++++ 72/mosslight/planning.py
+@@ -108,6 +108,7 @@
+ 
+ 
+ def run_rules(world):
++    """Evaluate enabled rules against the day's post-growth conditions, then apply their care."""
+     from .engine import act, log
+     failed = set()
+     snapshot = [(c.moisture, c.nutrients, c.vitality) for c in world.cells]
+--- 71/mosslight/render.py
++++ 72/mosslight/render.py
+@@ -49,6 +49,7 @@
+ 
+ 
+ def render_svg(world: World, *, interactive: bool = False) -> str:
++    """Standalone illustrated SVG; interactive tiles are focusable for keyboard selection."""
+     tile = 48
+     margin = 38
+     header = 94

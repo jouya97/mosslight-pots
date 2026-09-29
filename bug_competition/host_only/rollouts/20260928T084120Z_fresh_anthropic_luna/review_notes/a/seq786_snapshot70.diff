@@ -1,0 +1,381 @@
+--- 69/tests/oracle.py
++++ 70/tests/oracle.py
+@@ -1,20 +0,0 @@
+-import json, sys
+-sys.path.insert(0,'/workspace')
+-from mosslight import create, step
+-from mosslight.model import World
+-d=json.load(open('/workspace/examples/first-garden.json'))
+-w=create(34,16,11)
+-step(w,24)
+-got=w.to_dict()
+-diff=0
+-for i,(a,b) in enumerate(zip(got['cells'],d['cells'])):
+-    if a!=b:
+-        diff+=1
+-        if diff<5: print(i,a,b)
+-print('cell diffs',diff, 'weather', got['weather'], d['weather'])
+-gj=[(e['day'],e['text']) for e in got['journal']]
+-dj=[(e['day'],e['text']) for e in d['journal']]
+-for x in dj:
+-    if x not in gj: print('missing',x)
+-for x in gj:
+-    if x not in dj: print('extra',x)
+--- 69/tests/oracle2.py
++++ 70/tests/oracle2.py
+@@ -1,27 +0,0 @@
+-import json, sys
+-sys.path.insert(0,'/workspace')
+-from mosslight import create
+-from mosslight.exchange import replay
+-d=json.load(open('/workspace/examples/lantern-hollow.json'))
+-w=create(34,16,11)
+-cmds=json.load(open('/workspace/examples/hollow-actions.json'))
+-w,_=replay(w,cmds)
+-got=w.to_dict()
+-for k in got:
+-    if k not in ('cells','workbench','journal') and got[k]!=d[k]: print('diff',k,got[k],d[k])
+-diff=0
+-for i,(a,b) in enumerate(zip(got['cells'],d['cells'])):
+-    if a!=b:
+-        diff+=1
+-        if diff<5: print(i,a,b)
+-print('cell diffs',diff)
+-for k in d['workbench']:
+-    if got['workbench'].get(k)!=d['workbench'][k]:
+-        if k=='tiles':
+-            for i,(a,b) in enumerate(zip(got['workbench'][k], d['workbench'][k])):
+-                if a!=b: print('tile',i,a,b)
+-        else: print('wb diff',k,got['workbench'].get(k),d['workbench'][k])
+-gj=[(e['day'],e['text']) for e in got['journal']]
+-dj=[(e['day'],e['text']) for e in d['journal']]
+-print('journal equal', gj==dj)
+-if gj!=dj: print(gj); print(dj)
+--- 69/tests/t_camp.py
++++ 70/tests/t_camp.py
+@@ -1,22 +0,0 @@
+-import sys, json, tempfile, os; sys.path.insert(0,'/workspace')
+-from mosslight import create
+-from mosslight.campaigns import CampaignStore
+-from mosslight.commands import execute
+-w=create(34,8,6)
+-execute(w,{"op":"structure","args":{"x":0,"y":0,"structure":"rain_barrel"}})
+-tr=json.load(open('/workspace/examples/treatments.json'))
+-d=tempfile.mkdtemp()
+-s=CampaignStore(os.path.join(d,'c.sqlite'))
+-c=s.create(w,12,tr,3,'classic-1')
+-c2=s.create(w,12,tr,3,'conservation-2')
+-for cc in (c,c2):
+-    while s.work_once(cc): pass
+-    print(s.status(cc))
+-r1=s.result(c); r2=s.result(c2)
+-print(r1['branches'][0]['final']['averages'], r2['branches'][0]['final']['averages'])
+-print(s.replay(c)==r1, s.replay(c2)==r2)
+-f=s.fork(c,1,6,days=6)
+-print(s.provenance(f))
+-while s.work_once(f): pass
+-print(s.result(f)['start_day'], s.result(f)['end_day'])
+-print(s.compact(c,5))
+--- 69/tests/t_cat.py
++++ 70/tests/t_cat.py
+@@ -1,19 +0,0 @@
+-import sys, os, tempfile, sqlite3, json; sys.path.insert(0,'/workspace')
+-from mosslight.workspace_catalog import WorkspaceCatalog, _normalizer
+-d=tempfile.mkdtemp(); p=os.path.join(d,'c.sqlite')
+-db=sqlite3.connect(p)
+-db.create_function('catalog_key',1,_normalizer(1),deterministic=True)
+-db.executescript('''CREATE TABLE catalog_format (singleton INTEGER PRIMARY KEY CHECK(singleton=1), version INTEGER NOT NULL);
+-CREATE TABLE catalog_receipts (id TEXT PRIMARY KEY, kind TEXT NOT NULL, label TEXT NOT NULL, locator TEXT NOT NULL, payload TEXT NOT NULL);
+-CREATE INDEX catalog_by_label ON catalog_receipts(catalog_key(label),kind);
+-INSERT INTO catalog_format VALUES(1,1);''')
+-for i,l in enumerate(['Ｆield  Pond','Field Pond','field pond ']):
+-    db.execute('INSERT INTO catalog_receipts VALUES(?,?,?,?,?)',(str(i),'garden',l,'','{}'))
+-db.commit(); db.close()
+-c=WorkspaceCatalog(p)
+-print([r['label'] for r in c.search('FIELD pond')])
+-print([r['label'] for r in c.search('field pond', kind='garden')])
+-c.close()
+-c=WorkspaceCatalog(p)
+-print([r['label'] for r in c.search('Field Pond')])
+-print(c.db.execute('PRAGMA integrity_check').fetchall())
+--- 69/tests/t_courier.py
++++ 70/tests/t_courier.py
+@@ -1,26 +0,0 @@
+-import sys, copy; sys.path.insert(0,'/workspace')
+-from mosslight.courier import *
+-a=new_packet('desk'); put(a,'n1',{'text':'Fern','tags':['x']}); put(a,'n2',{'text':'Moss'})
+-b=copy.deepcopy(a); b['peer']='field'; b['counter']=0
+-put(a,'n1',{'text':'Fern A'}); put(b,'n1',{'text':'fern a'})
+-m=merge(a,b); print([ (o['record'],o['fields']['text'],o['conflicted']) for o in observations(m)])
+-m2=merge(b,a); print(observations(m)==observations(m2))
+-# edit vs delete
+-c=copy.deepcopy(m); c['peer']='c'; c['counter']=0
+-d=copy.deepcopy(m)
+-remove(c,'n2'); put(d,'n2',{'text':'Moss2'})
+-print([o['record'] for o in observations(merge(c,d))], [o['record'] for o in observations(merge(d,c))])
+-# checkpoint and old
+-cp=checkpoint(merge(c,d)); print(observations(merge(cp,a))==observations(cp), observations(merge(a,cp))==observations(cp))
+-# projection
+-p=project(m,['n2']); 
+-q=copy.deepcopy(m); put(q,'n1',{'text':'later'})
+-full=checkpoint(q)
+-print([o['fields']['text'] for o in observations(merge(full,p))])
+-print([o['fields']['text'] for o in observations(merge(p,full))])
+-# caller-owned
+-tags=['a']; e=new_packet('z'); put(e,'r',{'tags':tags}); tags.append('b'); print(observations(e)[0]['fields'])
+-print(acknowledged({'x':{'desk':3},'y':{'desk':1}},['x','y']), acknowledged({'x':{'desk':3}},['x','y']))
+-print(recover(receipt('héllo ✦')))
+-try: recover('abc')
+-except ValueError as ex: print('err',ex)
+--- 69/tests/t_courier_fuzz.py
++++ 70/tests/t_courier_fuzz.py
+@@ -1,31 +0,0 @@
+-import sys, copy, random, itertools; sys.path.insert(0,'/workspace')
+-from mosslight.courier import *
+-def obs(p): return observations(p)
+-bad=0
+-for trial in range(300):
+-    rng=random.Random(trial)
+-    peers=['a','b','c']
+-    packets={p:new_packet(p) for p in peers}
+-    recs=['r1','r2','r3']
+-    for step in range(12):
+-        p=rng.choice(peers); op=rng.random()
+-        if op<0.45: put(packets[p], rng.choice(recs), {'text':rng.choice(['x','y','z','X'])})
+-        elif op<0.55: remove(packets[p], rng.choice(recs))
+-        elif op<0.8:
+-            q=rng.choice(peers)
+-            src=packets[q]
+-            r=rng.random()
+-            if r<0.3: src=project(src,[rng.choice(recs)])
+-            elif r<0.5: src=checkpoint(src)
+-            m=merge(packets[p], src); packets[p]=m
+-        else:
+-            packets[p]=checkpoint(packets[p])
+-    a,b,c=packets['a'],packets['b'],packets['c']
+-    ref=obs(merge(merge(a,b),c))
+-    others=[obs(merge(a,merge(b,c))), obs(merge(merge(c,a),b)), obs(merge(checkpoint(merge(b,a)),c)),
+-            obs(merge(merge(checkpoint(a),checkpoint(b)),checkpoint(c))), obs(merge(merge(a,b),merge(c,a)))]
+-    for i,o in enumerate(others):
+-        if o!=ref:
+-            bad+=1
+-            if bad<4: print('trial',trial,'variant',i); print(ref); print(o)
+-print('bad',bad)
+--- 69/tests/t_hist.py
++++ 70/tests/t_hist.py
+@@ -1,36 +0,0 @@
+-import sys, os, tempfile, json; sys.path.insert(0,'/workspace')
+-from mosslight import create
+-from mosslight.history import HistoryStore, HistoryConflict
+-d=tempfile.mkdtemp(); h=HistoryStore(os.path.join(d,'h.sqlite'))
+-w=create(34,8,6)
+-b=h.create(w)['branch']
+-s=h.append(b,{"op":"note","args":{"content":"A"}}); eA=s['events'][-1]['id']
+-s=h.append(b,{"op":"note","args":{"content":"B"}}); eB=s['events'][-1]['id']
+-s=h.append(b,{"op":"edit_note","args":{"ident":2,"content":"B2"}}); eE=s['events'][-1]['id']
+-print('append keys', 'event' in s, [n['text'] for n in s['world']['workbench']['notes']])
+-c=h.correct(b,{eA:None})
+-print('correct', c['status'], [ (n['id'],n['text']) for n in c['world']['workbench']['notes']])
+-c2=h.correct(b,{eA:{"op":"task","args":{"content":"t","due":1}}})
+-print('correct2', c2['status'], [ (n['id'],n['text']) for n in c2['world']['workbench']['notes']], [t['id'] for t in c2['world']['workbench']['tasks']])
+-c3=h.correct(b,{eB:None})
+-print('correct3', c3['status'], c3['conflicts'])
+-try:
+-    h.append(c3['branch'],{"op":"note","args":{"content":"x"}})
+-except HistoryConflict as e: print('append on conflicted', e.details['kind'])
+-f=h.fork(b,'f')['branch']
+-h.append(b,{"op":"note","args":{"content":"P"}})
+-h.append(f,{"op":"note","args":{"content":"F"}})
+-r=h.rebase(f,b)
+-print('rebase', r['status'], [n['text'] for n in r['world']['workbench']['notes']], r['origin']['operation'])
+-# cherry pick
+-f2=h.fork(b,'f2')['branch']
+-s=h.append(f2,{"op":"note","args":{"content":"Q"}}); eQ=s['events'][-1]['id']
+-s=h.append(f2,{"op":"edit_note","args":{"ident":s['world']['workbench']['notes'][-1]['id'],"content":"Q2"}}); eQ2=s['events'][-1]['id']
+-p=h.cherry_pick(f2,b,[eQ2])
+-print('pick missing obj', p['status'], p['conflicts'])
+-p=h.cherry_pick(f2,b,[eQ,eQ2])
+-print('pick', p['status'], [n['text'] for n in p['world']['workbench']['notes']])
+-p2=h.cherry_pick(f2,p['branch'],[eQ])
+-print('pick again', len(p2['events'])==len(p['events']))
+-print('verify', h.verify(b)['matches'])
+-print(h.references(b)[:2])
+--- 69/tests/t_hx.py
++++ 70/tests/t_hx.py
+@@ -1,40 +0,0 @@
+-import sys, os, tempfile; sys.path.insert(0,'/workspace')
+-from mosslight import create
+-from mosslight.commands import execute
+-from mosslight.history_exchange import HistoryExchange
+-w=create(34,8,6); execute(w,{"op":"note","args":{"content":"orig"}})
+-d=tempfile.mkdtemp(); X=HistoryExchange(os.path.join(d,'x.sqlite'))
+-h=X.history
+-main=h.create(w)['branch']
+-ann=X.announce(main,author='desk',name='pond'); ch=ann['channel']; g=ann['publication']
+-cx=X.checkout(g)['branch']; cy=X.checkout(g)['branch']
+-h.append(cx,{"op":"task","args":{"content":"T","due":3}})
+-L1=X.publish(cx,checkout=cx,author='desk')['publication']
+-h.append(cy,{"op":"edit_note","args":{"ident":1,"content":"changed"}})
+-snap=h.snapshot(cy); edit_id=snap['events'][-1]['id']
+-R1=X.publish(cy,checkout=cy,author='field')['publication']
+-m1=X.reconcile(L1,R1,author='desk'); m2=X.reconcile(L1,R1,author='field')
+-print(m1['status'], m2['status'], m1['publication']!=m2['publication'])
+-b1=m1['branch']; b2=m2['branch']
+-h.append(b1,{"op":"note","args":{"content":"B"}})
+-A2=X.publish(b1,checkout=b1,author='desk')['publication']
+-corr=h.correct(b2,{edit_id:None})['branch']
+-B2=X.publish(corr,checkout=b2,author='field')['publication']
+-r=X.reconcile(A2,B2,author='desk')
+-print(r['status'], [n['text'] for n in r['world']['workbench']['notes']], [t['text'] for t in r['world']['workbench']['tasks']])
+-r=X.reconcile(B2,A2,author='field')
+-print(r['status'], [n['text'] for n in r['world']['workbench']['notes']])
+-print(X.heads(ch))
+-Y=HistoryExchange(os.path.join(d,'y.sqlite'))
+-old=X.export(ch, heads=[L1])
+-new=X.export(ch)
+-print(Y.receive(new)['heads']==sorted(X.heads(ch)))
+-print(Y.receive(old)['heads']==sorted(X.heads(ch)))
+-co=Y.checkout(A2)
+-print([n['text'] for n in co['world']['workbench']['notes']])
+-bad=X.export(ch); bad['body']['selected']=['zzz']
+-import json
+-from mosslight.history import _digest
+-bad['checksum']=_digest(bad['body'])
+-try: Y.receive(bad)
+-except ValueError as e: print('rejected', e)
+--- 69/tests/t_hx2.py
++++ 70/tests/t_hx2.py
+@@ -1,32 +0,0 @@
+-import sys, os, tempfile, json, copy; sys.path.insert(0,'/workspace')
+-from mosslight import create
+-from mosslight.commands import execute
+-from mosslight.history_exchange import HistoryExchange
+-from mosslight.history import _digest
+-w=create(34,8,6); execute(w,{"op":"note","args":{"content":"orig"}})
+-d=tempfile.mkdtemp(); X=HistoryExchange(os.path.join(d,'x.sqlite')); h=X.history
+-main=h.create(w)['branch']
+-ann=X.announce(main,author='desk',name='pond'); ch=ann['channel']; g=ann['publication']
+-co=X.checkout(g)['branch']
+-h.append(co,{"op":"note","args":{"content":"n2"}})
+-p1=X.publish(co,checkout=co,author='desk')
+-try: X.publish(co,checkout=main,author='desk')
+-except ValueError as e: print('publish non-checkout:', e)
+-parcel=X.export(ch)
+-bad=copy.deepcopy(parcel); pid=p1['publication']
+-bad['body']['publications'][pid]['author']=' '
+-bad['checksum']=_digest(bad['body'])
+-Y=HistoryExchange(os.path.join(d,'y.sqlite'))
+-try: Y.receive(bad)
+-except ValueError as e: print('bad parcel:', e)
+-print('roots after bad', Y.db.execute('select count(*) from history_roots').fetchone()[0], Y.db.execute('select count(*) from exchange_publications').fetchone()[0])
+-bad2=copy.deepcopy(parcel); bad2['checksum']='0'*64
+-try: Y.receive(bad2)
+-except ValueError as e: print('bad checksum:', e)
+-r=Y.receive(parcel); print('good', r['heads']==[pid])
+-# resolve with stale heads
+-try: Y.resolve(ch, Y.checkout(pid)['branch'], author='field', expected_heads=[g])
+-except ValueError as e: print('stale resolve:', getattr(e,'details',e))
+-c=Y.checkout(pid); res=Y.resolve(ch, c['branch'], author='field'); print(res['status'], Y.heads(ch)==[res['publication']])
+-# returned data independence
+-e=X.export(ch); e['body']['channel']['name']='zzz'; print(X.export(ch)['body']['channel']['name'])
+--- 69/tests/t_irr.py
++++ 70/tests/t_irr.py
+@@ -1,17 +0,0 @@
+-import sys, os, tempfile, json; sys.path.insert(0,'/workspace')
+-from mosslight import create
+-from mosslight.irrigation import definition, solve, replay, save_design, load_design, objective
+-w=create(34,6,4)
+-layout={"source":"tank","pipes":[{"from":"tank","to":"north","capacity":20},{"from":"tank","to":"south","capacity":20}],
+- "outlets":{"north":{"demand":20,"tiles":[[0,0],[1,0]]},"south":{"demand":20,"tiles":[[0,3],[1,3]]}}}
+-choices=[{"name":"closed","open":[]},{"name":"north","open":["north"]},{"name":"both","open":["north","south"]}]
+-p=definition(w,layout,choices,3,30,[5,0,5])
+-r=solve(p); print(r['schedule'], r['score'], r['remaining'], r['explored'])
+-import itertools
+-best=None
+-for s in itertools.product(range(3),repeat=3):
+-    st=replay(p,list(s)); key=(objective(st),st['remaining'])
+-    if best is None or key>best[0]: best=(key,s)
+-print(best)
+-d=tempfile.mkdtemp(); f=os.path.join(d,'r.json'); save_design(f,r); print(load_design(f)['score'])
+-print(w.cells[0].moisture, p['world']['cells'][0]['moisture'])
+--- 69/tests/t_merge.py
++++ 70/tests/t_merge.py
+@@ -1,46 +0,0 @@
+-import sys, copy; sys.path.insert(0,'/workspace')
+-from mosslight import create, step
+-from mosslight.commands import execute
+-from mosslight.save_merge import reconcile, verify_receipt
+-b=create(34,8,6); execute(b,{"op":"note","args":{"content":"base note","labels":["a"]}})
+-L=copy.deepcopy(b); R=copy.deepcopy(b)
+-execute(L,{"op":"note","args":{"content":"left note"}})
+-execute(R,{"op":"note","args":{"content":"right note"}})
+-execute(L,{"op":"edit_note","args":{"ident":1,"content":"edited left"}})
+-execute(R,{"op":"edit_note","args":{"ident":1,"labels":["b"]}})
+-r=reconcile(b.to_dict(),L.to_dict(),R.to_dict(),left_origin='desk',right_origin='field')
+-print(r['status'], r.get('conflicts'))
+-if r['status']=='ready':
+-    print([(n['id'],n['text'],n['tags']) for n in r['world']['workbench']['notes']], r['world']['workbench']['next_id'])
+-    print(r['receipt']['allocation'])
+-    r2=reconcile(b.to_dict(),R.to_dict(),L.to_dict(),left_origin='field',right_origin='desk')
+-    print(r2['world']==r['world'])
+-    print(verify_receipt(r,b.to_dict(),L.to_dict(),R.to_dict(),left_origin='desk',right_origin='field'))
+-# conflict: both edit same note text differently
+-L2=copy.deepcopy(b); R2=copy.deepcopy(b)
+-execute(L2,{"op":"edit_note","args":{"ident":1,"content":"L"}})
+-execute(R2,{"op":"edit_note","args":{"ident":1,"content":"R"}})
+-r=reconcile(b.to_dict(),L2.to_dict(),R2.to_dict(),left_origin='desk',right_origin='field')
+-print(r['status'], [c['path'] for c in r['conflicts']])
+-res={r['conflicts'][0]['path']:{"choose":"right"}}
+-r2=reconcile(b.to_dict(),L2.to_dict(),R2.to_dict(),left_origin='desk',right_origin='field',resolutions=res)
+-print(r2['status'], [n['text'] for n in r2['world']['workbench']['notes']])
+-print(verify_receipt(r2,b.to_dict(),L2.to_dict(),R2.to_dict(),left_origin='desk',right_origin='field'))
+-# ecology conflict
+-L3=copy.deepcopy(b); R3=copy.deepcopy(b); step(L3,1); execute(R3,{"op":"tend","args":{"x":0,"y":0,"action":"water"}})
+-execute(L3,{"op":"note","args":{"content":"from left"}})
+-r=reconcile(b.to_dict(),L3.to_dict(),R3.to_dict(),left_origin='desk',right_origin='field')
+-print(r['status'], [c['path'] for c in r['conflicts']])
+-r=reconcile(b.to_dict(),L3.to_dict(),R3.to_dict(),left_origin='desk',right_origin='field',resolutions={"/ecology":{"choose":"right"}})
+-print(r['status'], r.get('reason'))
+-# delete vs edit
+-L4=copy.deepcopy(b); R4=copy.deepcopy(b)
+-execute(L4,{"op":"delete_entry","args":{"collection":"notes","ident":1}})
+-execute(R4,{"op":"edit_note","args":{"ident":1,"content":"kept"}})
+-r=reconcile(b.to_dict(),L4.to_dict(),R4.to_dict(),left_origin='desk',right_origin='field')
+-print(r['status'], [c['path'] for c in r['conflicts']])
+-# incompatible: same bed name
+-L5=copy.deepcopy(b); R5=copy.deepcopy(b)
+-execute(L5,{"op":"bed","args":{"name":"Bed","tiles":[[0,0]]}}); execute(R5,{"op":"bed","args":{"name":"bed","tiles":[[1,1]]}})
+-r=reconcile(b.to_dict(),L5.to_dict(),R5.to_dict(),left_origin='desk',right_origin='field')
+-print(r['status'], r.get('reason'))
+--- 69/tests/t_server.py
++++ 70/tests/t_server.py
+@@ -1,29 +0,0 @@
+-import sys, json, threading, urllib.request, tempfile, os; sys.path.insert(0,'/workspace')
+-from mosslight import create
+-from mosslight.server import make_server
+-d=tempfile.mkdtemp(); path=os.path.join(d,'g.json')
+-srv=make_server(create(34,8,6),0,path); t=threading.Thread(target=srv.serve_forever,daemon=True); t.start()
+-base=f"http://127.0.0.1:{srv.server_port}"
+-def req(p,body=None):
+-    r=urllib.request.Request(base+p,data=None if body is None else json.dumps(body).encode(),headers={"Content-Type":"application/json"},method="GET" if body is None else "POST")
+-    try:
+-        with urllib.request.urlopen(r) as resp: return resp.status, resp.read()
+-    except urllib.error.HTTPError as e: return e.code, e.read()
+-s,b=req('/api/world'); w=json.loads(b); print(s, w['world']['revision'], w['undo'])
+-s,b=req('/api/command',{"command":{"op":"tend","args":{"x":0,"y":0,"action":"water"}},"revision":w['world']['revision']}); print(s, json.loads(b)['world']['revision'])
+-s,b=req('/api/command',{"command":{"op":"tend","args":{"x":0,"y":0,"action":"water"}},"revision":0}); print('stale',s)
+-s,b=req('/api/step',{"days":2}); r=json.loads(b); print(s, r['world']['day'], r['world']['revision'], r['undo'])
+-s,b=req('/api/undo',{}); r=json.loads(b); print('undo',s, r['world']['day'], r['world']['revision'], r['undo'], r['redo'])
+-s,b=req('/api/redo',{}); r=json.loads(b); print('redo',s, r['world']['day'], r['world']['revision'], r['undo'], r['redo'])
+-imp=create(5,5,5).to_dict(); imp['revision']=77
+-s,b=req('/api/import',{"world":imp}); r=json.loads(b); print('import legacy', s, r['world']['revision'])
+-s,b=req('/api/import',{"world":imp,"revision":77}); r=json.loads(b); print('import rev', s, r['world']['revision'])
+-s,b=req('/api/forecast?days=3&every=2'); print('forecast', s, [x['day'] for x in json.loads(b)['timeline']])
+-s,b=req('/api/nope'); print('404', s)
+-s,b=req('/api/transect?x1=0&y1=0&x2=3&y2=3'); print('transect',s,[(p['x'],p['y']) for p in json.loads(b)])
+-s,b=req('/api/calendar?days=2'); print('cal', s)
+-s,b=req('/api/replay',{"commands":[{"op":"note","args":{"content":"a"}},{"op":"note","args":{"content":"b"}}]}); r=json.loads(b); print('replay', s, r['world']['revision'], r['result'])
+-s,b=req('/api/command',{"command":{"op":"tend","args":{"x":99,"y":0,"action":"water"}}}); print('bad', s)
+-s,b=req('/api/command',{"command":{"op":"tend","args":{"x":0,"y":0,"action":"water"}},"revision":True}); print('bool rev', s)
+-print(json.load(open(path))['revision'])
+-srv.shutdown()

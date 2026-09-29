@@ -14,6 +14,7 @@ from inspect_ai.model import ModelOutput, GenerateConfig, ContentReasoning
 from inspect_ai.tool import ToolCall, ToolInfo, ToolParams
 
 from bug_competition.harness.core import ScriptedAgent, process, tree_hash, TOOLS
+from bug_competition.task import PROMPT
 from bug_competition.harness.parallel import ParallelCompetition
 from bug_competition.grader.grader import grade_episode
 from bug_competition.host_only.tools import branch_rollout as branch
@@ -53,7 +54,7 @@ class BranchTests(unittest.TestCase):
         self.comp = ParallelCompetition(self.shared, self.protected, LocalExecutor(), oracle,
             {a: ScriptedAgent([]) for a in 'AB'}, weights={'D': 5}, relevance={'D': {'x.txt'}})
         self.comp.begin(60, turn_limit=5)
-        self.histories = {a: [ChatMessageUser(content='Inspect and repair.')] for a in 'AB'}
+        self.histories = {a: [ChatMessageUser(content=PROMPT)] for a in 'AB'}
         self.action('A', 'shell', {'command': "printf 'fixed\\n' > x.txt"}, opaque=True)
         self.action('B', 'status', {})
         self.action('A', 'claim', {'summary': 'fixed x', 'files': ['x.txt']})
@@ -83,6 +84,57 @@ class BranchTests(unittest.TestCase):
 
     def loaded(self, sequence=None):
         return branch.load_source(self.source, self.cut if sequence is None else sequence)
+
+    def test_versioned_status_continuation_preserves_prefix_and_replays_new_feedback(self):
+        from bug_competition.harness.core import STATUS_CALLER_ONLY, STATUS_COMPETITOR_SCORES
+        before = (self.protected / 'events.jsonl').read_bytes()
+        folder, config = self.prepared(status_protocol=STATUS_COMPETITOR_SCORES, notices=[])
+        records, state, histories = self.loaded()[2:]
+        self.assertEqual(state['status_protocol'], STATUS_CALLER_ONLY)
+        # Historical ledgers predate the baseline protocol field and still validate unchanged.
+        legacy = copy.deepcopy(records)
+        legacy[0].pop('status_protocol', None)
+        self.assertEqual(branch.scan_prefix(legacy, ['A', 'B'], self.cut, {'D': 5})['status_protocol'],
+                         STATUS_CALLER_ONLY)
+        target = self.root / 'v2-shared'
+        target.mkdir()
+        (target / 'x.txt').write_text('fixed\n')
+        comp = ResumedCompetition(target, self.root / 'v2-protected', LocalExecutor(), oracle,
+            {a: ScriptedAgent([]) for a in 'AB'}, weights={'D': 5}, relevance={'D': {'x.txt'}})
+        comp.restore(self.protected, records, state, config)
+        try:
+            seen = comp.act('B', dict(tool='status', arguments={}))
+            self.assertEqual(seen['leaderboard']['competitors'],
+                             [dict(actor='competitor_1', points=5, credited_bugs=1)])
+            claim = comp.act('B', dict(tool='claim', arguments={'summary': 'checking'}))
+            self.assertNotIn('competitors', claim['leaderboard'])
+            combined = branch.records_from(comp.protected / 'events.jsonl')
+            self.assertEqual(combined[:len(records)], records)
+            replayed = branch.scan_prefix(combined, ['A', 'B'], len(combined) - 1, {'D': 5})
+            self.assertEqual(replayed['status_protocol'], STATUS_COMPETITOR_SCORES)
+            switches = [r for r in combined if r['type'] == 'status_protocol_changed']
+            self.assertEqual(len(switches), 1)
+            self.assertEqual(switches[0]['previous_protocol'], STATUS_CALLER_ONLY)
+            # Future branches inherit the active version, without adding a redundant switch.
+            next_tree = self.root / 'v2-next-shared'
+            next_tree.mkdir()
+            (next_tree / 'x.txt').write_text('fixed\n')
+            next_comp = ResumedCompetition(next_tree, self.root / 'v2-next-protected', LocalExecutor(), oracle,
+                {a: ScriptedAgent([]) for a in 'AB'}, weights={'D': 5}, relevance={'D': {'x.txt'}})
+            inherited = {k: v for k, v in config.items() if k != 'status_protocol'}
+            next_comp.restore(comp.protected, combined, replayed, inherited)
+            try:
+                self.assertEqual(next_comp.act('A', dict(tool='status', arguments={}))['leaderboard']['competitors'],
+                                 [dict(actor='competitor_2', points=0, credited_bugs=0)])
+                again = branch.records_from(next_comp.protected / 'events.jsonl')
+                self.assertEqual(len([r for r in again if r['type'] == 'status_protocol_changed']), 1)
+                branch.scan_prefix(again, ['A', 'B'], len(again) - 1, {'D': 5})
+            finally:
+                next_comp.finish()
+        finally:
+            comp.finish()
+        self.assertEqual((self.protected / 'events.jsonl').read_bytes(), before)
+        self.assertNotIn('competitors', json.loads(histories['B'][-1]['content'])['leaderboard'])
 
     def test_prefix_has_exact_state_and_no_future(self):
         _, _, records, state, histories = self.loaded()
@@ -148,8 +200,8 @@ class BranchTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'no model continuation'):
             check_historical_verdicts(lambda *_: {'D': False}, self.protected, state, 60)
 
-    def prepared(self, name='prepared', **kwargs):
-        contract = dict(model='mock/test', tools=[t.model_dump(mode='json') for t in self.tools], config={})
+    def prepared(self, name='prepared', model='mock/test', **kwargs):
+        contract = dict(model=model, tools=[t.model_dump(mode='json') for t in self.tools], config={})
         branch.write_json(self.source / 'live_probes.json', [{'id': 'D', 'program': 'pass', 'expected': None}])
         with patch.object(branch, 'manifest_weights', return_value={'D': 5}), \
              patch.object(branch, 'manifest_files', return_value={'D': {'x.txt'}}), \
@@ -165,6 +217,7 @@ class BranchTests(unittest.TestCase):
         sibling, other = self.prepared(name='sibling', probes_from=folder)
         self.assertEqual(config['probe_files'], other['probe_files'])
         self.assertEqual(config['notices'], [])
+        self.assertEqual(config['shell_seconds'], 180)
         self.assertEqual(other['notices'], [4, 3, 2, 1])
         self.assertEqual((folder / 'checkpoint/snapshots/1/x.txt').read_text(), 'fixed\n')
         self.assertFalse((folder / 'checkpoint/snapshots/2').exists())
@@ -175,11 +228,37 @@ class BranchTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'already exists'):
             self.prepared()
 
+    def test_shell_budget_prepared_and_restored(self):
+        folder, config = self.prepared(shell_seconds=75)
+        self.assertEqual(config['shell_seconds'], 75)
+        records, state, _ = self.loaded()[2:]
+        target = self.root / 'timeout-shared'
+        target.mkdir()
+        (target / 'x.txt').write_text('fixed\n')
+        comp = ResumedCompetition(target, self.root / 'timeout-protected', LocalExecutor(), oracle,
+            {a: ScriptedAgent([]) for a in 'AB'}, weights={'D': 5}, relevance={'D': {'x.txt'}})
+        comp.restore(self.protected, records, state, config)
+        try:
+            self.assertEqual(comp.shell_seconds, 75)
+        finally:
+            comp.finish()
+        config['shell_seconds'] = float('inf')
+        branch.write_json(folder / 'branch.json', config)
+        with self.assertRaisesRegex(ValueError, 'shell_seconds'):
+            branch.validate_bundle(folder)
+
     def test_changed_runtime_rejected(self):
         folder, _ = self.prepared()
         with patch.object(branch, 'runtime_files', return_value={}):
             with self.assertRaisesRegex(ValueError, 'Runtime changed'):
                 branch.validate_bundle(folder)
+
+    def test_prepared_prompt_intervention_is_rejected(self):
+        folder, config = self.prepared()
+        config['intervention'] = {'type': 'replace_opening_prompt', 'prompt': 'another task'}
+        branch.write_json(folder / 'branch.json', config)
+        with self.assertRaisesRegex(ValueError, 'interventions are no longer launchable'):
+            branch.validate_bundle(folder)
 
     def test_missing_original_probes_needs_explicit_policy(self):
         contract = dict(model='mock/test', tools=[], config={})
@@ -189,6 +268,77 @@ class BranchTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'not saved'):
                 branch.prepare(self.source, self.root / 'nope', sequence=self.cut)
         self.assertFalse((self.root / 'nope').exists())
+
+    def test_incompatible_archived_prompt_remains_readable_but_cannot_resume(self):
+        path = self.source / 'trajectories.json'
+        data = branch.read_json(path)
+        data[0]['conversations']['A'][0]['content'] = 'Historical alternate experiment'
+        branch.write_json(path, data)
+        original = path.read_bytes()
+        self.assertEqual(self.loaded()[4]['A'][0]['content'], 'Historical alternate experiment')
+        with self.assertRaisesRegex(ValueError, 'differs from PROMPT'):
+            self.prepared()
+        self.assertFalse((self.root / 'prepared').exists())
+        self.assertEqual(path.read_bytes(), original)
+
+    def test_prompt_replacement_cli_is_not_available(self):
+        import io
+        from contextlib import redirect_stderr
+        for option in ('--replace-opening-prompt', '--opening-prompt-file', '--historical-reasoning'):
+            with self.subTest(option=option), redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                branch.main(['prepare', str(self.source), '--sequence', str(self.cut),
+                             '--output', str(self.root / 'unused'), option])
+        self.assertFalse((self.root / 'unused').exists())
+
+    def test_outbound_omission_keeps_archived_and_new_reasoning(self):
+        history = self.loaded()[4]['A']
+        original = copy.deepcopy(history)
+        extended = history + [copy.deepcopy(history[1])]
+        changed = branch.outbound_history(extended, len(history))
+        self.assertEqual(changed[1]['content'], [])
+        self.assertEqual(changed[1]['tool_calls'], original[1]['tool_calls'])
+        self.assertEqual(changed[2:], extended[2:])
+        self.assertEqual(history, original)
+        self.assertEqual(branch.outbound_history(history), history)
+
+    def test_interrupted_peer_does_not_mask_primary_timeout(self):
+        class Competition:
+            def view(self, identity): return {'terminal': False}
+            def remaining(self): return 60
+            def stop(self, error): pass
+        async def generate(context, **kwargs):
+            if context == ['peer']:
+                raise InterruptedError('competition stopped')
+            raise TimeoutError('primary command deadline')
+        with self.assertRaisesRegex(TimeoutError, 'primary command deadline'):
+            asyncio.run(continue_participants(Competition(), {'A': ['peer'], 'B': ['primary']},
+                                              generate, self.tools, GenerateConfig()))
+
+    def test_cancelled_worker_does_not_mask_another_workers_fidelity_error(self):
+        from pydantic import TypeAdapter
+        from inspect_ai.model import ChatMessage
+        records, state, histories = self.loaded()[2:]
+        config = dict(seconds=60, turn_limit=5, notices=[], parent=str(self.source),
+                      source_sequence=self.cut, parent_audit_head=records[-1]['hash'], oracle_origin='test')
+        target = self.root / 'cancelled-peer'
+        target.mkdir()
+        (target / 'x.txt').write_text('fixed\n')
+        comp = ResumedCompetition(target, self.root / 'cancelled-protected', LocalExecutor(), oracle,
+                                  {a: ScriptedAgent([]) for a in 'AB'}, weights={'D': 5}, relevance={'D': {'x.txt'}})
+        comp.restore(self.protected, records, state, config)
+        messages = {a: TypeAdapter(list[ChatMessage]).validate_python(h) for a, h in histories.items()}
+        async def generate(context, **kwargs):
+            if context[1].tool_calls[0].id.startswith('A-'):
+                await asyncio.Event().wait()
+            result = output()
+            result.metadata = {'extra_body': {'input_transformations': [{'type': 'thinking_dropped'}]}}
+            return result
+        try:
+            with self.assertRaisesRegex(ValueError, 'Provider transformed'):
+                asyncio.run(continue_participants(comp, messages, generate, self.tools, GenerateConfig()))
+            self.assertEqual(comp.turns_used, state['turns_used'])
+        finally:
+            comp.finish()
 
     def test_mock_continuation_preserves_credit_and_grades_full_history(self):
         from pydantic import TypeAdapter
@@ -288,26 +438,45 @@ class BranchTests(unittest.TestCase):
             comp.finish()
 
     def test_run_orchestration_with_fake_docker_and_model(self):
+        self._run_orchestration()
+
+    def test_openrouter_orchestration_keeps_provider_connection_settings(self):
+        self._run_orchestration(model='openrouter/anthropic/claude-opus-5.5')
+
+    def test_failed_solver_cannot_be_graded_when_inspect_reports_success(self):
+        self._run_orchestration(transformation=True)
+
+    def _run_orchestration(self, *, transformation=False, model='mock/test'):
         from bug_competition.host_only.tools import branch_runtime as runtime
         # Import before patching get_model: otherwise this module captures the fake
         # in its module-level import and contaminates subsequent Inspect integration tests.
         from bug_competition.adapters.inspect import inspect_task as adapter
         original_get_model = adapter.get_model
-        folder, config = self.prepared(notices=[])
+        folder, config = self.prepared(notices=[], model=model)
         records, state, histories = self.loaded()[2:]
         seen = []
         class Model:
             async def generate(self, messages, **kwargs):
                 seen.append([m.model_dump(mode='json') for m in messages])
-                return output()
+                value = output()
+                if transformation:
+                    value.metadata = {'extra_body': {'input_transformations': [{'type': 'thinking_dropped'}]}}
+                return value
         class Final:
             def __init__(self, **kwargs):
                 pass
             def __call__(self, tree, seconds):
                 return oracle(tree, seconds)
         def evaluate(task, **kwargs):
+            self.assertEqual(kwargs['model_args'], branch.provider_connection(model)['model_args'])
+            self.assertEqual(kwargs['model_base_url'], branch.provider_connection(model)['model_base_url'])
             task_state = SimpleNamespace(messages=[], metadata={}, completed=False)
-            asyncio.run(task.solver(task_state, None))
+            if transformation:
+                # Reproduce the observed misleading Inspect header and empty sample error.
+                with self.assertRaises(ValueError):
+                    asyncio.run(task.solver(task_state, None))
+            else:
+                asyncio.run(task.solver(task_state, None))
             return [SimpleNamespace(status='success')]
         def grade(protected, **kwargs):
             return grade_episode(protected, manifest=self.manifest, **kwargs)
@@ -316,9 +485,21 @@ class BranchTests(unittest.TestCase):
              patch.object(runtime, 'DockerShell', side_effect=lambda _: LocalExecutor()), \
              patch('bug_competition.harness.oracle.DockerOracle', return_value=oracle), \
              patch('bug_competition.grader.grader.FinalOracle', Final), \
-             patch('bug_competition.grader.grader.grade_episode', side_effect=grade), \
+             patch('bug_competition.grader.grader.grade_episode', side_effect=grade) as grader, \
              patch('inspect_ai.model.get_model', return_value=Model()), \
-             patch('inspect_ai.eval', side_effect=evaluate):
+             patch('inspect_ai.eval', side_effect=evaluate), \
+             patch.dict('os.environ', {'OPENROUTER_API_KEY': 'offline-router'}), \
+             patch('bug_competition.harness.adapters.OpenAISearch'):
+            if transformation:
+                with self.assertRaisesRegex(ValueError, 'did not complete'):
+                    runtime.run(folder)
+                grader.assert_not_called()
+                self.assertEqual(branch.read_json(folder / 'invocation.json')['status'], 'failed')
+                self.assertTrue((folder / 'failure.json').exists())
+                self.assertFalse((folder / 'independent_grade.json').exists())
+                events = branch.records_from(branch.protected_path(folder) / 'events.jsonl')
+                self.assertFalse(any(e['type'] == 'action_started' for e in events[len(records):]))
+                return
             result = runtime.run(folder)
             with self.assertRaises(FileExistsError):
                 runtime.run(folder)
@@ -326,11 +507,16 @@ class BranchTests(unittest.TestCase):
         self.assertIs(adapter.get_model, original_get_model)
         self.assertEqual(result['points'], {'A': 5, 'B': 0})
         self.assertEqual(len(seen), 2)
-        self.assertIn(histories['A'], seen)
-        self.assertIn(histories['B'], seen)
+        for actor in 'AB':
+            self.assertIn(histories[actor], seen)
         self.assertEqual(branch.read_json(folder / 'invocation.json')['status'], 'complete')
         self.assertTrue(branch.protected_path(folder).exists())
         self.assertTrue((folder / 'independent_grade.json').exists())
+        events = branch.records_from(branch.protected_path(folder) / 'events.jsonl')
+        self.assertFalse(any(e['type'] == 'opening_prompt_replaced' for e in events))
+        self.assertEqual(events[:len(records)], records)
+        self.assertEqual(branch.load_source(folder, sequence=self.cut)[2], records)
+        return folder
 
 
 if __name__ == '__main__':

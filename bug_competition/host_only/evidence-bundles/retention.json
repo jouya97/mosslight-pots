@@ -1,0 +1,45 @@
+{
+  "retention_policy": "Keep only the three most recent completed research experiments, as confirmed by the repository owner on 2026-09-28.",
+  "retained": [
+    "bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2",
+    "bug_competition/host_only/rollouts/20260928T084120Z_fresh_anthropic_luna",
+    "bug_competition/host_only/branches/20260928T070429Z_anthropic_seq69_shell180_luna"
+  ],
+  "removed_run_directories": [
+    "bug_competition/host_only/rollouts/20260925T125655Z_two_opus_retry",
+    "bug_competition/host_only/rollouts/20260925T2024Z_two_opus_100_actions",
+    "bug_competition/host_only/rollouts/20260925T2139Z_three_opus_50_actions_scoring_prompt",
+    "bug_competition/host_only/rollouts/20260925_two_opus",
+    "bug_competition/host_only/rollouts/20260926T0442Z_three_opus_200_actions_xhigh_summaries_countdown_error_notice",
+    "bug_competition/host_only/rollouts/20260926T0555Z_four_opus_150_actions_xhigh_summaries_countdown_error_notice",
+    "bug_competition/host_only/rollouts/20260926T0810Z_three_opus_150_actions_xhigh_summaries_countdown_error_notice_status",
+    "bug_competition/host_only/rollouts/20260926T2104Z_three_opus_150_actions_v2_flat_flip_board",
+    "bug_competition/host_only/rollouts/20260927T0008Z_three_opus_150_actions_v2_goal_framing",
+    "bug_competition/host_only/rollouts/20260927T0100Z_three_opus_150_actions_v2_goal_framing_r2",
+    "bug_competition/host_only/rollouts/20260927T0103Z_three_opus_150_actions_v2_goal_framing_r2",
+    "bug_competition/host_only/rollouts/20260927T034509Z_three_opus_150_actions_sp_replication_wording_only",
+    "bug_competition/host_only/rollouts/20260927T074630Z_three_opus_150_actions_sp_replication_wording_only_retry1",
+    "bug_competition/host_only/rollouts/20260928T044826Z_fresh_openrouter_1",
+    "bug_competition/host_only/rollouts/20260928T064046Z_fresh_anthropic_1",
+    "bug_competition/host_only/rollouts/POSITIVE_SIGNAL_20260925T2355Z_three_opus_100_actions_xhigh_summaries",
+    "bug_competition/host_only/rollouts/SMOKE_20260926T0431Z_two_opus_5_actions",
+    "bug_competition/host_only/rollouts/SMOKE_20260927T0345Z_sp_replication_full_countdown",
+    "bug_competition/host_only/rollouts/SUPER_POSITIVE_SIGNAL_20260926T0057Z_three_opus_150_actions_xhigh_summaries_20_10_notices",
+    "bug_competition/host_only/branches/20260927T095839Z_pre_countdown_control",
+    "bug_competition/host_only/branches/20260927T100000Z_action100_continuation_test",
+    "bug_competition/host_only/branches/20260927T102500Z_action100_continuation_test_retry1",
+    "bug_competition/host_only/branches/20260927T202453Z_action125_steal_credit",
+    "bug_competition/host_only/branches/20260927T204602Z_action125_steal_credit_retry1",
+    "bug_competition/host_only/branches/20260927T233557Z_action125_all_defects_scores_v2",
+    "bug_competition/host_only/branches/20260928T061430Z_fresh_openrouter_anthropic_continue_seq431"
+  ],
+  "removed_directory_count": 26,
+  "removed_file_bytes": 1404557690,
+  "note": "Retained evidence is unchanged. Maintained experiment probes are copied into host_only/fixtures/fresh_rollout_probes. Historical parent paths in retained provenance can refer to removed runs; the retained continuation includes its checkpoint prefix.",
+  "removed_obsolete_planning_documents": [
+    "bug_competition/host_only/HANDOFF_ASTRA_SP_REPLICATION.md",
+    "bug_competition/host_only/HIGH_DIFFICULTY_PROPOSAL.md",
+    "bug_competition/host_only/DIFFICULTY_REASSESSMENT_2026-09-25.md"
+  ],
+  "replaced_document": "bug_competition/host_only/README.md (obsolete96-defect build guide replaced by current reviewer index)"
+}

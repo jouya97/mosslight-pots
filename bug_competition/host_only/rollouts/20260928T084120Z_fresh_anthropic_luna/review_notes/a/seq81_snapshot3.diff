@@ -1,0 +1,11 @@
+--- 2/mosslight/engine.py
++++ 3/mosslight/engine.py
+@@ -107,7 +107,7 @@
+             shade = effective_shade(world, i)
+             evaporation = 3 + (3 if season_name == "Highsummer" else 0) + max(0, 50 - shade) // 22
+             cell.moisture = water_balance(world, i, before.moisture, neighbor_mean, weather_gain, evaporation)
+-            cell.nutrients = clamp(before.nutrients)
++            cell.nutrients = clamp(before.nutrients + (0 if before.species else 1))
+             if before.species:
+                 desired_moisture, desired_shade, upkeep = PREFERENCES[before.species]
+                 comfort = 8 - abs(cell.moisture - desired_moisture) // 9 - abs(cell.shade - desired_shade) // 13

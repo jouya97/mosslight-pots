@@ -1,0 +1,23 @@
+--- 28/mosslight/courier.py
++++ 29/mosslight/courier.py
+@@ -163,6 +163,8 @@
+ 
+ 
+ def recover(slip):
++    if not isinstance(slip, str):
++        raise ValueError("The recovery slip is incomplete or damaged")
+     try:
+         return zlib.decompress(base64.b85decode(slip.encode("ascii"))).decode("utf-8")
+     except (ValueError, zlib.error, UnicodeError) as exc:
+@@ -195,9 +197,9 @@
+         from .model import load
+         packet = from_garden(load(args.garden), args.peer, args.notebook)
+     elif args.operation == "merge":
+-        packet = merge(json.loads(Path(args.left).read_text()), json.loads(Path(args.right).read_text()))
++        packet = merge(json.loads(Path(args.left).read_text(encoding="utf-8")), json.loads(Path(args.right).read_text(encoding="utf-8")))
+     else:
+-        print(json.dumps(observations(json.loads(Path(args.packet).read_text())), indent=2, ensure_ascii=False))
++        print(json.dumps(observations(json.loads(Path(args.packet).read_text(encoding="utf-8"))), indent=2, ensure_ascii=False))
+         return 0
+     Path(args.output).write_text(json.dumps(packet, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+     return 0

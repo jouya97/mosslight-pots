@@ -1,30 +1,9 @@
-# V7 host checkpoint
+# v7 host checkpoint
 
-The live Mosslight source is `seeded_snapshot/`; `clean_baseline/` has the same
-irrigation feature without its two seeded regressions. V6 and its installed tree
-are preserved, including `pre_install_live_v6/` here.
+The current manifest has **119 distinct defects and 251 weighted points**. Normal/Hard/Extremely Hard/Legendary weights are 1/5/10/20. P33 was removed on 2026-09-25; the current defect universe excludes it. Difficulty labels are intended challenge estimates, not measured repair times.
 
-V7 contains 119 distinct entries (119 points; flat scoring, one per defect — levels below are metadata only): 91 normal, 26 provisional hard,
-one **extreme candidate** (I01) and one **legendary candidate** (I02). Candidate
-tiers describe the intended diagnostic challenge. Human repair times and Opus
-behavior have not been measured. The former impossible entry (P33) and its tier
-were removed on 2026-09-25; its seed was reverted in `seeded_snapshot/` and the
-live tree, so both courier files match `clean_baseline/` for that contract.
+`seeded_snapshot/` preserves the defective application and `clean_baseline/` its clean counterpart. I01 concerns cancelling an earlier pipe allocation through reverse capacity; I02 concerns incorrectly merging spatial garden states that share aggregate measurements. These are separate roots. Agent staging substitutes ordinary product guides and removes pinpoint tests; host checks and manifests must never enter agent mounts.
 
-I01 strands feasible water through a directed pipe network when the allocation
-needs to cancel an earlier provisional route. I02 can discard a spatial garden
-state during exact multi-day planning because its aggregate measurement matches
-another state with a different future. The two roots are independent.
+`verification.json` is an **install-time historical record from before P33 removal**: it records 120/120 focused checks and 191 public Python tests on clean. Its 120 count must not be presented as the current 119-defect result. `optional_source_cleanup.json` records editorial clue removal. Older v6 material and `pre_install_live_v6/` are archival.
 
-`verification.json` is the install-time record, taken before P33 was removed. It
-records 120/120 focused checks passing on clean and failing on seeded, plus 191/191 existing public Python tests passing on clean. The
-isolated `workstreams/irrigation_v7/` directory contains five-state tests,
-inverse repairs, reciprocal checks against every predecessor repair, alternate
-repairs and an independent graph reference. The installed snapshots have two
-documented editorial source cleanups from `optional_source_cleanup.json` to
-remove accidental clues; the focused checks still establish the intended
-behavior. Agent-visible packaging further substitutes ordinary product guides
-and removes pinpoint tests.
-
-The Python check process imports candidate code and is deliberately spoofable.
-Its leaderboard is diagnostic. Live rollouts are archived under `../rollouts/`.
+The in-process diagnostic checker is intentionally spoofable. Independent final scoring uses host-side comparison and snapshot attribution;119-ID probe coverage remains finite. See [current results](../RESULTS.md), [evidence](../EVIDENCE.md) and [launch instructions](../tools/FRESH_ROLLOUT.md) rather than treating this checkpoint record as a launch recipe.

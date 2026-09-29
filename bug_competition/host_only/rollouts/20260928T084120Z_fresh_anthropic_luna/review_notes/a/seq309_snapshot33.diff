@@ -1,0 +1,25 @@
+--- 32/tests/t_camp.py
++++ 33/tests/t_camp.py
+@@ -0,0 +1,22 @@
++import sys, json, tempfile, os; sys.path.insert(0,'/workspace')
++from mosslight import create
++from mosslight.campaigns import CampaignStore
++from mosslight.commands import execute
++w=create(34,8,6)
++execute(w,{"op":"structure","args":{"x":0,"y":0,"structure":"rain_barrel"}})
++tr=json.load(open('/workspace/examples/treatments.json'))
++d=tempfile.mkdtemp()
++s=CampaignStore(os.path.join(d,'c.sqlite'))
++c=s.create(w,12,tr,3,'classic-1')
++c2=s.create(w,12,tr,3,'conservation-2')
++for cc in (c,c2):
++    while s.work_once(cc): pass
++    print(s.status(cc))
++r1=s.result(c); r2=s.result(c2)
++print(r1['branches'][0]['final']['averages'], r2['branches'][0]['final']['averages'])
++print(s.replay(c)==r1, s.replay(c2)==r2)
++f=s.fork(c,1,6,days=6)
++print(s.provenance(f))
++while s.work_once(f): pass
++print(s.result(f)['start_day'], s.result(f)['end_day'])
++print(s.compact(c,5))

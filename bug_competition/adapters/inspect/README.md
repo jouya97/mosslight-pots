@@ -1,67 +1,25 @@
-# Inspect API check
+# Inspect adapter
 
-Checked against current official documentation/source on 2026-09-25, without a
-model rollout:
+Reviewer baseline: **Python 3.12 and Inspect 0.3.268**, installed through the repository's `requirements-review.txt`. Use the [maintained launcher](../../host_only/tools/FRESH_ROLLOUT.md) rather than ad-hoc `inspect eval` commands for the canonical experiment.
 
-- [`Model.generate`](https://inspect.aisi.org.uk/reference/inspect_ai.model.html#model)
-  accepts `ToolInfo` objects, an explicit `tool_choice`, and `GenerateConfig`.
-- [`ToolInfo` / `ToolParams`](https://inspect.aisi.org.uk/reference/inspect_ai.tool.html#toolinfo)
-  use a typed parameters object. The adapter validates the broker JSON schema
-  with `ToolParams.model_validate`.
-- [`ToolCall`](https://github.com/UKGovernmentBEIS/inspect_ai/blob/main/src/inspect_ai/tool/_tool_call.py)
-  has `id`, `function`, dictionary `arguments`, optional `parse_error`, and `type`.
-  Malformed or batched calls now get explicit tool error messages without any
-  broker mutation, and remain under the safety wall-clock ceiling.
-- [`ChatMessageTool`](https://inspect.aisi.org.uk/reference/inspect_ai.model.html#chatmessagetool)
-  accepts the call ID, function name and `ToolCallError` used here.
-- The generic config documentation lists limited provider support for
-  `parallel_tool_calls`, but the current
-  [Anthropic provider implementation](https://github.com/UKGovernmentBEIS/inspect_ai/blob/main/src/inspect_ai/model/_providers/anthropic.py)
-  maps it to `disable_parallel_tool_use`. The adapter requests auto tool choice
-  and disabled parallel calls, and still validates the response.
-- The solver sets `reasoning_effort='xhigh'` so Inspect sends
-  `thinking.display='summarized'`; without an effort, Opus 5.5 thinking text is
-  omitted. With thinking requested, Inspect 0.3.268 omits `tool_choice`, so the
-  solver restores `{'type':'auto','disable_parallel_tool_use':true}` through the
-  Anthropic provider's `extra_body`.
+The adapter starts an asynchronous loop for each participant with a private conversation and the sole active `PROMPT`. Each response may contain one tool call. This restriction does not serialize different participants: their model requests and shell executions can overlap, while commit grading/publication serialize. The host merges completed transactional edits and privately returns the result to its caller.
 
-The [Inspect changelog](https://inspect.aisi.org.uk/CHANGELOG.html) records
-Opus 5.5 support in 0.3.267. Use at least that version for this model. These are
-source/API checks; offline mock integration and live two- and three-Opus runs
-(`host_only/rollouts/`) have since exercised the adapter.
+Current fresh runs request xhigh reasoning effort, 64,000 maximum output tokens and zero retries. Direct Anthropic and OpenRouter have explicit provider settings; there is no alternate-provider/model fallback. Saved provider configuration, not a generic model label, identifies a historical run. Offline mocks validate wiring, not upstream availability.
 
-## Concurrent execution
+Tool responses retain conflict errors and countdown notices. A notice on completed action k was not available to that action's preceding reasoning. Current fresh countdown is 20, then 10..1 remaining. The prompt's all-defects completion/ten-final-actions promise is not implemented by the adapter or broker.
 
-The solver starts one asynchronous participant loop per conversation. Model calls
-and shell actions overlap across participants; each participant still issues one
-tool call at a time. `parallel_tool_calls=False` limits one model response, not
-concurrency between competitors. The broker runs each shell against its latest
-starting snapshot and commits changed files to the canonical shared checkout in
-completion order. Grading and publication serialize; shell execution does not.
-A file that another commit changed after the action started is three-way merged
-by lines; overlapping edits keep the head version and the result says
-`[Error: PATH your change was not applied]`.
-Unrelated files survive.
+The tools are `shell`, `claim`, `status` and `web_search`. Current score feedback uses stable anonymized competitor aggregates (`competitor_scores_v2`); claims and recent action labels are shared, but raw verdicts, changed paths and protected evidence remain host-only. Claims do not assign points.
 
-The tools offered to the model are `shell`, `claim`, `status` and `web_search`.
-`status` takes no arguments, uses one action, and returns the shared provisional work
-board: every participant's points and credited repairs (leader first), every claim, and
-the last 12 committed actions with the paths they changed. Participants appear by label
-(A, B, ...), the viewer marked `(you)`; each view is logged as a `status_viewed` ledger
-event. No other result carries a score. All notices share the JSON `notice` field, one per
-line, in the order conflict, countdown.
+## Transcript review
 
-Each participant has 40 completed tool actions by default; the prompt does not
-state the limit. On each of the final 20 actions the broker adds a neutral countdown,
-`[Notice: N actions remaining.]` with N = limit - k (singular for 1; counts at or
-above the limit are skipped), to that action's result (to the error text for a
-rejected response). The countdown suite runs limits 150, 25 (also with batched
-calls), 21, 20, 5 and 1 through the real Inspect loop. Final tool results are retained even at the cap. A failed action promptly cancels pending peer model
-requests. Cancellation awaits all outstanding action threads
-before tool cleanup and evidence closure. Unfinished workspaces never publish.
+Inspect has one primary Messages list per sample, which displays A's conversation. Review `state.metadata["competition_conversations"]`, exported `trajectories.json`, and ledger records to inspect every actor. Host A/B/C labels identify private histories; they are not the labels exposed to competitors.
 
-The offline integration suite uses the actual Inspect 0.3.268 mock provider. Its
-barriers require simultaneous model requests and overlapping shell actions; a
-controlled second commit, merged onto the first because it edits different lines
-of the same file, takes the first editor’s repair credit in final replay.
-This verifies scheduling without a live model or API request.
+Provider responses can contain opaque reasoning/signature payloads. Analyze supplied readable summaries and visible commands/results; do not present opaque payloads as decoded reasoning. Derive actor action ordinals from `action_started`, then join `action_completed` by action_id. Counting completions alone can shift ordinals for interrupted or rejected actions. A summary may express a hypothesis that the command later disproves. Exit zero alone can conceal failed earlier shell statements or pipelines.
+
+Cancellation drains outstanding action workers; interrupted private workspaces never publish. Final grading independently reconstructs every actor's raw points. [Evidence documentation](../../host_only/EVIDENCE.md) describes archival provenance and access.
+
+```sh
+python -B -m unittest bug_competition.tests.test_inspect_adapter -v
+```
+
+This uses the mock provider and makes no paid model calls.

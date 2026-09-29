@@ -20,7 +20,7 @@ import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 
-from .core import (Competition, TOOLS, UNKNOWN_TOOL, WEB_SEARCH_FAILED, WEB_SEARCH_UNCONFIGURED,
+from .core import (Competition, SHELL_SECONDS, TOOLS, UNKNOWN_TOOL, WEB_SEARCH_FAILED, WEB_SEARCH_UNCONFIGURED,
                    argument_error, known_tool, tree_hash, recent_action, repair_summary, status_viewed, work_board)
 from .merge import merge_mode, merge_text
 from bug_competition.grader.attribution import ATTRIBUTION_POLICY, update_owners
@@ -57,7 +57,6 @@ def actions_remaining_notice(turn_limit, used_after):
 
 # A shell command's own limit. Overrunning it fails only that action; the contest's
 # global deadline (the agent-time budget) still ends the contest as `safety_deadline`.
-SHELL_SECONDS = 30
 TIMEOUT_EXIT_CODE = 124
 TIMEOUT_ERROR = f'Command timed out after {SHELL_SECONDS} seconds.'
 # Per-action rejections of workspace states the shared checkout cannot hold.
@@ -297,7 +296,7 @@ class ParallelCompetition(Competition):
             self.current_hash = digest
             self.audit.append({'type':'baseline', 'tree':digest, 'oracle':baseline,
                                'scheduler':'parallel_transactions',
-                               'attribution_policy':ATTRIBUTION_POLICY})
+                               'attribution_policy':ATTRIBUTION_POLICY, 'status_protocol':self.status_protocol})
         except BaseException as exc:
             self.stop(exc)
             raise
@@ -417,19 +416,19 @@ class ParallelCompetition(Competition):
                     # immutable copy supplies merge bases for this action's stale files.
                     base_tree = self.protected / 'snapshots' / str(self.counter - 1)
                     before_files = file_inventory(workspace)
-                limit = min(SHELL_SECONDS, self.remaining())
+                limit = min(self.shell_seconds, self.remaining())
                 try:
                     observation = self.executor.shell(workspace, args['command'], limit)
                 except (TimeoutError, subprocess.TimeoutExpired) as exc:
-                    if limit < SHELL_SECONDS:
+                    if limit < self.shell_seconds:
                         raise  # The contest's global deadline, not this command's own limit.
                     # Only this action fails. Its workspace is never inventoried or committed.
                     partial = getattr(exc, 'output', None)
                     if isinstance(partial, bytes):
                         partial = partial.decode('utf8', 'replace')
                     observation = {'exit_code':TIMEOUT_EXIT_CODE, 'output':partial or '',
-                                   'truncated':bool(getattr(exc, 'truncated', False)), 'error':TIMEOUT_ERROR}
-                    rejection = {'reason':'timeout', 'seconds':SHELL_SECONDS}
+                                   'truncated':bool(getattr(exc, 'truncated', False)), 'error':f'Command timed out after {self.shell_seconds:g} seconds.'}
+                    rejection = {'reason':'timeout', 'seconds':self.shell_seconds}
                 # DockerShell removes the entire container before returning, including descendants.
                 symlinks = find_symlinks(workspace)
                 if symlinks:
@@ -472,7 +471,7 @@ class ParallelCompetition(Competition):
                     elif invalid is None and tool == 'status':
                         # The committed provisional work board, read in commit order like a claim.
                         observation = work_board(identity, self.agents, self.owners, self.current,
-                                                 self.weights, self.claims, self.recent)
+                                                 self.weights, self.claims, self.recent, self.status_protocol)
                     elif not known_tool(tool):
                         observation = dict(UNKNOWN_TOOL)
                     if changed:

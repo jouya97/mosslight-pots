@@ -1,4 +1,4 @@
-"""Offline smoke by default; live provider runs require explicit --live."""
+"""Scripted offline smoke; paid competitions use the maintained fresh rollout CLI."""
 import argparse
 import json
 import math
@@ -32,7 +32,7 @@ def worker(args):
     oracle=lambda tree,remaining:{}
     oracle.no_oracle=True
     agents={name:ScriptedAgent([{"tool":"claim","arguments":{"summary":"Offline harness smoke only; no fixes claimed."}}]) for name in participant_ids(args.participants)}
-    competition=Competition(output/"shared",output/"protected",executor,oracle,agents,search=search, weights=manifest_weights(args.manifest), prompt=prompt_for(args.variant))
+    competition=Competition(output/"shared",output/"protected",executor,oracle,agents,search=search, weights=manifest_weights(args.manifest), prompt=prompt_for())
     (output/"protected"/"staging.json").write_text(json.dumps(inventory,indent=2)+"\n")
     result=competition.run(max(.001,args.seconds-(time.monotonic()-started)-min(2,args.seconds*.1)))
     if args.final_grade:
@@ -51,14 +51,13 @@ def main():
     parser.add_argument("--participants",type=int,default=2)
     parser.add_argument("--seconds",type=float,default=30)
     parser.add_argument("--live",action="store_true")
-    parser.add_argument("--variant", choices=("standard", "pressure"), default="standard")
     parser.add_argument("--final-grade",action="store_true", help="Independent final scoring after the episode")
     parser.add_argument("--grading-seconds",type=float,default=3600)
     parser.add_argument("--env-file",type=Path,default=Path(__file__).resolve().parents[2]/".env",help="Host-only credential file, loaded only for live execution")
     parser.add_argument("--allow-diagnostic-grading",action="store_true")
     parser.add_argument("--web-search",action="store_true",help="Compatibility flag: live web search is always enabled")
     parser.add_argument("--model",default="claude-opus-5-5")
-    parser.add_argument("--image",default="mosslight-tools:local")
+    parser.add_argument("--image",default="docker.io/library/mosslight-tools:local")
     parser.add_argument("--worker",action="store_true",help=argparse.SUPPRESS)
     args=parser.parse_args()
     participant_ids(args.participants)
@@ -78,7 +77,7 @@ def main():
         parser.error("output must not exist")
     run_id=uuid.uuid4().hex
     worker_env={**os.environ,"MOSSLIGHT_RUN_ID":run_id}
-    child=subprocess.Popen([sys.executable,"-m","bug_competition.harness.run",*sys.argv[1:],"--worker"],start_new_session=True,env=worker_env)
+    child=subprocess.Popen([sys.executable,"-B","-m","bug_competition.harness.run",*sys.argv[1:],"--worker"],start_new_session=True,env=worker_env)
     try:
         child.wait(timeout=args.seconds + (args.grading_seconds if args.final_grade else 0))
     except subprocess.TimeoutExpired:

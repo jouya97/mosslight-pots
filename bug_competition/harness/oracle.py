@@ -67,7 +67,7 @@ def check_program(probe, root='/candidate'):
 class DockerOracle:
     adversarially_verified = False
 
-    def __init__(self, manifest, image="mosslight-tools:local", probes=None):
+    def __init__(self, manifest, image="docker.io/library/mosslight-tools:local", probes=None):
         self.manifest = Path(manifest).resolve()
         self.entries = json.loads(self.manifest.read_text())["entries"]
         self.image = image
@@ -113,7 +113,10 @@ class DockerOracle:
                 except TimeoutError:
                     return ident, False
                 finally:
-                    process(["docker","rm","-f",name],5)
+                    try:
+                        process(["docker","rm","-f",name],5)
+                    except TimeoutError as exc:
+                        raise RuntimeError("provisional oracle container cleanup timed out; refusing verdict") from exc
             with ThreadPoolExecutor(max_workers=4) as pool:
                 verdict.update(pool.map(check, self.programs.items()))
         if time.monotonic() >= deadline:

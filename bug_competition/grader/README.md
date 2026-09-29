@@ -1,7 +1,7 @@
 # Independent final checks
 
 `FinalOracle` loads one behavioral probe for each of the 119 v7 contracts
-(119 raw points; flat scoring, one point per defect). Startup rejects missing, duplicate, or unknown IDs. The four
+(251 eligible points: normal 1, hard 5, extreme 10, legendary 20). Startup rejects missing, duplicate, or unknown IDs. The four
 `grader_data/probes_*.json` files contain 117 static probe definitions; N01 and
 I01 are constructed by the host.
 E01's calendar inputs and I01's capacities vary between adjudications and remain
@@ -39,13 +39,13 @@ Every passing defect that failed at baseline transfers to the latest actor whose
 commit changed any of its manifest `file`, `locations[].file`, or
 `replacements[].file` paths, including edits that fix nothing. False-to-true
 repairs also earn credit when indirect. Final replay recomputes changed paths
-from authenticated snapshots and counts only repairs surviving at the final head.
+from hash-verified snapshots and counts only repairs surviving at the final head.
 Claims and diagnostic ownership records do not determine final credit.
 
 ## Replay budget
 
 The default final-adjudication budget is 3600 seconds. Four probes run
-concurrently. Authenticated repeated full-tree hashes reuse verdicts from the
+concurrently. Verified repeated full-tree hashes reuse verdicts from the
 same adjudication; each snapshot is still hash-verified and participates in
 ownership attribution. Distinct source trees receive fresh observations.
 
@@ -59,7 +59,7 @@ check is never interpreted as a repair regression.
 Run `python3 -B -m unittest bug_competition.grader.tests.test_independent_probes`.
 The suite checks every probe against the trusted clean fixture, the complete
 seeded fixture, and that fixture with only the target repair applied. It also
-checks host comparator rejection, exhaustive solver validation, authenticated
+checks host comparator rejection, exhaustive solver validation, hash-verified
 verdict caching, and incomplete adjudication. Its subprocess runner is for these
 bundled trusted fixtures only; production uses `CandidateRunner`.
 

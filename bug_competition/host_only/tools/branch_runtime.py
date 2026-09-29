@@ -10,10 +10,13 @@ import shutil
 import tempfile
 import time
 
-from bug_competition.harness.core import DockerShell, ScriptedAgent, process
+from bug_competition.harness.core import DockerShell, ScriptedAgent, process, validate_status_protocol, SHELL_SECONDS, validate_shell_seconds
 from bug_competition.harness.parallel import ParallelCompetition, actions_remaining_text
 from bug_competition.grader.weights import DEFAULT_MANIFEST
-from bug_competition.host_only.tools.branch_rollout import read_json, write_json, validate_bundle
+from bug_competition.host_only.tools.branch_rollout import (
+    outbound_history, convert_openrouter_history, read_json, write_json, validate_bundle,
+    require_canonical_openings, REPO,
+)
 
 
 class ResumedCompetition(ParallelCompetition):
@@ -21,6 +24,10 @@ class ResumedCompetition(ParallelCompetition):
         """Recreate broker state without re-baselining the repaired tree or resetting credit."""
         if self.started:
             raise ValueError('competition already started')
+        if config.get('intervention'):
+            raise ValueError('Opening prompt interventions are no longer launchable')
+        self.status_protocol = validate_status_protocol(config.get('status_protocol', state['status_protocol']))
+        self.shell_seconds = validate_shell_seconds(config.get("shell_seconds", SHELL_SECONDS))
         self.started = True
         self.deadline = time.monotonic() + config['seconds']
         self.turn_limit = config['turn_limit']
@@ -47,7 +54,22 @@ class ResumedCompetition(ParallelCompetition):
                 raise ValueError('Copied audit prefix changed')
         self.audit.append(dict(type='branch_started', parent=config['parent'],
             parent_sequence=config['source_sequence'], parent_audit_head=config['parent_audit_head'],
-            turn_limit=self.turn_limit, notices=config['notices'], oracle_origin=config['oracle_origin']))
+            turn_limit=self.turn_limit, shell_seconds=self.shell_seconds, notices=config['notices'], oracle_origin=config['oracle_origin']))
+        if self.status_protocol != state['status_protocol']:
+            self.audit.append(dict(type='status_protocol_changed',
+                previous_protocol=state['status_protocol'], status_protocol=self.status_protocol,
+                scope='future status observations only; checkpoint observations unchanged'))
+        if config.get('reasoning_omission'):
+            self.audit.append(dict(type='historical_reasoning_omitted',
+                through_message_counts=config['reasoning_omission'],
+                scope='model input only; full historical reasoning and summaries remain archived'))
+
+        if config.get('provider_intervention'):
+            self.audit.append(dict(type='provider_changed',
+                intervention=config['provider_intervention'],
+                reasoning_conversion=config['reasoning_conversion'],
+                conversion_audit=config['provider_conversion_audit'],
+                scope='outbound transport conversion only; signed checkpoint histories unchanged'))
 
     def remaining_notice(self, used_after):
         remaining = self.turn_limit - used_after
@@ -69,10 +91,14 @@ def check_historical_verdicts(oracle, checkpoint, state, seconds):
     return checked
 
 
-async def continue_participants(competition, histories, generate, tools, config):
+async def continue_participants(competition, histories, generate, tools, config, reasoning_omission=None, reasoning_conversion=None):
     """Dependency-injected model boundary allows offline end-to-end continuation tests."""
     from inspect_ai.model import ChatMessageTool
+    from inspect_ai.model import ChatMessage
     from inspect_ai.tool import ToolCallError
+    from pydantic import TypeAdapter
+    adapter = TypeAdapter(list[ChatMessage])
+    reasoning_omission = reasoning_omission or {}
     allowed = {t.name for t in tools}
 
     async def action(identity, value):
@@ -88,7 +114,14 @@ async def continue_participants(competition, histories, generate, tools, config)
         messages = histories[identity]
         try:
             while not competition.view(identity)['terminal']:
-                output = await asyncio.wait_for(generate(messages, tools=tools, tool_choice='auto', config=config),
+                through = reasoning_omission.get(identity, 0)
+                context = (adapter.validate_python(outbound_history(
+                    [m.model_dump(mode='json') for m in messages], through)) if through else messages)
+                if reasoning_conversion:
+                    context = adapter.validate_python(convert_openrouter_history(
+                        [m.model_dump(mode='json') for m in context],
+                        reasoning_conversion['through_message_counts'][identity]))
+                output = await asyncio.wait_for(generate(context, tools=tools, tool_choice='auto', config=config),
                                                 competition.remaining())
                 messages.append(output.message)
                 raw = output.model_dump(mode='json')
@@ -136,9 +169,12 @@ async def continue_participants(competition, histories, generate, tools, config)
         for worker in pending:
             worker.cancel()
         outcomes = await asyncio.gather(*workers, return_exceptions=True)
-        for outcome in outcomes:
-            if isinstance(outcome, BaseException):
-                raise outcome
+        failures = [outcome for outcome in outcomes if isinstance(outcome, BaseException)]
+        if failures:
+            # A cancelled earlier worker must not hide the worker that actually failed.
+            raise next((error for error in failures
+                        if not isinstance(error, (asyncio.CancelledError, InterruptedError))),
+                       next((error for error in failures if not isinstance(error, asyncio.CancelledError)), failures[0]))
     finally:
         for worker in workers:
             if not worker.done():
@@ -157,13 +193,14 @@ def run(folder, env_file=None):
     from pydantic import TypeAdapter
     from bug_competition.adapters.inspect.inspect_task import require_single_tool_call
     from bug_competition.harness.core import TOOL_SCHEMAS
-    from bug_competition.harness.credentials import load_host_credentials
+    from bug_competition.harness.credentials import load_model_credentials
     from bug_competition.harness.adapters import BraveSearch, OpenAISearch
     from bug_competition.harness.oracle import DockerOracle
     from bug_competition.grader.grader import FinalOracle, grade_episode
 
     folder = Path(folder).resolve()
     config, records, state, saved_histories = validate_bundle(folder)
+    require_canonical_openings(saved_histories)
     tools = [ToolInfo.model_validate(t) for t in config['contract']['tools']]
     for tool in tools:
         if tool.name not in TOOL_SCHEMAS or tool.parameters != ToolParams.model_validate(TOOL_SCHEMAS[tool.name]):
@@ -171,18 +208,22 @@ def run(folder, env_file=None):
     # O_EXCL is the one-attempt lock; even failed preflights cannot overwrite a prior attempt.
     with (folder / 'invocation.json').open('x') as stream:
         json.dump(dict(status='starting', model=config['contract']['model'], image=config['image'],
+            model_args=config['contract']['model_args'], model_base_url=config['contract']['model_base_url'],
             participants=len(saved_histories), action_limit_per_participant=config['turn_limit'],
+            shell_seconds=config.get('shell_seconds', SHELL_SECONDS),
             actions_remaining_notices=config['notices'], inspect_version=inspect_ai.__version__,
-            parent=config['parent'], parent_sequence=config['source_sequence'], pid=os.getpid()), stream, indent=2)
+            parent=config['parent'], parent_sequence=config['source_sequence'], pid=os.getpid(),
+            intervention=config.get('intervention', {}).get('type') if config.get('intervention') else None,
+            reasoning_omission=config.get('reasoning_omission', {}),
+            status_protocol=config.get('status_protocol', state['status_protocol'])), stream, indent=2)
     stage = Path(tempfile.mkdtemp(prefix='mosslight-branch-'))
     competition = executor = None
     histories = {a: TypeAdapter(list[ChatMessage]).validate_python(m) for a, m in saved_histories.items()}
     success = False
     try:
-        if env_file:
-            load_host_credentials(Path(env_file))
-        if config['contract']['model'].startswith('anthropic/') and not os.environ.get('ANTHROPIC_API_KEY'):
-            raise ValueError('Anthropic credential unavailable; set host environment or --env-file')
+        credential_file = Path(env_file or os.environ.get('MOSSLIGHT_ENV_FILE', str(REPO / '.env')))
+        load_model_credentials(config['contract']['model'], credential_file)
+        search = BraveSearch() if os.environ.get('BRAVE_SEARCH_API_KEY') else OpenAISearch()
         image_result = process(['docker', 'image', 'inspect', '--format', '{{.Id}}', config['image']], 30)
         if image_result['exit_code'] or not image_result['output'].strip().startswith('sha256:'):
             raise ValueError('Configured Docker image is unavailable')
@@ -194,7 +235,7 @@ def run(folder, env_file=None):
                                                   image_id=image_id, oracle_origin=config['oracle_origin']))
         tree = stage / 'shared'
         shutil.copytree(folder / 'checkpoint/snapshots' / str(len(state['snapshot_hashes']) - 1), tree)
-        search = BraveSearch() if os.environ.get('BRAVE_SEARCH_API_KEY') else OpenAISearch()
+        histories = {a: TypeAdapter(list[ChatMessage]).validate_python(m) for a, m in saved_histories.items()}
         prompt = next(iter(histories.values()))[0].content
         competition = ResumedCompetition(tree, stage / 'protected', executor, oracle,
             {a: ScriptedAgent([]) for a in histories}, weights=config['weights'], search=search,
@@ -208,7 +249,9 @@ def run(folder, env_file=None):
                 require_single_tool_call(model)
                 try:
                     await continue_participants(competition, histories, model.generate, tools,
-                                                GenerateConfig(**config['contract']['config']))
+                                                GenerateConfig(**config['contract']['config']),
+                                                reasoning_omission=config.get('reasoning_omission'),
+                                                reasoning_conversion=config.get('reasoning_conversion'))
                 finally:
                     competition.finish()
                     task_state.messages = histories[next(iter(histories))]
@@ -219,9 +262,16 @@ def run(folder, env_file=None):
             return solve
 
         logs = inspect_eval(Task(dataset=[Sample(input=prompt, id='competition')], solver=resumed_solver()),
-            model=config['contract']['model'], model_args={'max_retries': 0}, log_dir=str(folder / 'inspect'),
+            model=config['contract']['model'], model_args=config['contract']['model_args'],
+            model_base_url=config['contract']['model_base_url'], log_dir=str(folder / 'inspect'),
             retry_on_error=0, max_retries=0, epochs=1, display='plain')
-        if not logs or any(log.status != 'success' for log in logs):
+        failed_samples = any(getattr(sample, 'error', None)
+                             for log in logs for sample in (getattr(log, 'samples', None) or []))
+        participants_done = all(a in competition.finished or n >= competition.turn_limit
+                                for a, n in competition.turns_used.items())
+        if (not logs or any(log.status != 'success' or getattr(log, 'error', None) for log in logs)
+                or failed_samples or competition.reason not in ('agents_exhausted', 'turn_limit')
+                or not participants_done):
             raise ValueError('Inspect continuation did not complete successfully; preserved partial evidence')
         final_oracle = FinalOracle(image=image_id)
         final_oracle.probes = read_json(folder / 'grading_probes.json')
