@@ -67,7 +67,7 @@ def check_program(probe, root='/candidate'):
 class DockerOracle:
     adversarially_verified = False
 
-    def __init__(self, manifest, image="mosslight-tools:local", probes=None):
+    def __init__(self, manifest, image="docker.io/library/mosslight-tools:local", probes=None):
         self.manifest = Path(manifest).resolve()
         self.entries = json.loads(self.manifest.read_text())["entries"]
         self.image = image

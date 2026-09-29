@@ -14,7 +14,9 @@ class AnthropicAgent:
         if self.pending:
             self.messages.append({"role":"user","content":[{"type":"tool_result","tool_use_id":self.pending,"content":json.dumps(view["observation"])}]})
         else:
-            self.messages.append({"role":"user","content":view.get("prompt", PROMPT)})
+            if view.get("prompt", PROMPT) != PROMPT:
+                raise ValueError("Only PROMPT may start a maintained competition")
+            self.messages.append({"role":"user","content":PROMPT})
         body = {"model":self.model,"max_tokens":4096,
                 "tools":[{**tool,"strict":True} for tool in TOOLS],
                 "tool_choice":{"type":"auto","disable_parallel_tool_use":True},"messages":self.messages}

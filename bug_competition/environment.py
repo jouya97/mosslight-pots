@@ -3,7 +3,7 @@
 The identity in a broker view is routing metadata, never model input.
 """
 from pathlib import Path
-from .harness.core import Competition, DockerShell, ScriptedAgent, participant_ids
+from .harness.core import Competition, DockerShell, ScriptedAgent, participant_ids, STATUS_CALLER_ONLY
 from .harness.parallel import ParallelCompetition
 from .harness.adapters import OpenAISearch, BraveSearch
 from .harness.oracle import DockerOracle
@@ -14,6 +14,7 @@ from .visibility.build import build_agent_tree
 
 class Environment:
     def __init__(self, variant='standard', parameters=None, *, executor=None, oracle=None, search=None):
+        prompt_for(variant)  # Reject unsupported variants before creating evidence.
         self.variant, self.parameters = variant, parameters or {}
         self.identities = participant_ids(self.parameters.get('participants', 2))
         self.executor, self.oracle, self.search = executor, oracle, search
@@ -27,7 +28,7 @@ class Environment:
         package = Path(__file__).resolve().parent
         source = Path(self.parameters.get('source', package / 'mosslight'))
         build_agent_tree(source, root / 'shared')
-        image = self.parameters.get('image', 'mosslight-tools:local')
+        image = self.parameters.get('image', 'docker.io/library/mosslight-tools:local')
         if self.executor is None and self.search is None:
             import os
             self.search = BraveSearch() if os.environ.get('BRAVE_SEARCH_API_KEY') else OpenAISearch()
@@ -35,7 +36,8 @@ class Environment:
         self.competition = broker(root / 'shared', root / 'protected',
             self.executor or DockerShell(image), self.oracle or DockerOracle(DEFAULT_MANIFEST, image),
             {identity:ScriptedAgent([]) for identity in self.identities}, weights=manifest_weights(),
-            search=self.search, prompt=prompt_for(self.variant))
+            search=self.search, prompt=prompt_for(self.variant),
+            status_protocol=self.parameters.get('status_protocol', STATUS_CALLER_ONLY))
     def reset_parallel(self, workdir):
         self._prepare(workdir, parallel=True)
         self.competition.begin(float(self.parameters.get('seconds', 1800)),

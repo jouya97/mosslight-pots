@@ -1,4 +1,0 @@
-{
-  "error_type": "RuntimeError",
-  "traceback": "Traceback (most recent call last):\n  File \"/Users/jian/Documents/GitHub/mosslight-pots/bug_competition/host_only/tools/fresh_openrouter.py\", line 733, in main\n    return worker()\n           ^^^^^^^^\n  File \"/Users/jian/Documents/GitHub/mosslight-pots/bug_competition/host_only/tools/fresh_openrouter.py\", line 471, in worker\n    validate_completion(logs, competition)\n  File \"/Users/jian/Documents/GitHub/mosslight-pots/bug_competition/host_only/tools/fresh_openrouter.py\", line 346, in validate_completion\n    raise RuntimeError('Inspect evaluation did not finish cleanly')\nRuntimeError: Inspect evaluation did not finish cleanly\n"
-}

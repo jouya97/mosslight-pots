@@ -42,3 +42,19 @@ def load_openrouter_credentials(path: Path) -> None:
     load_host_credentials(path, allowed_keys=OPENROUTER_KEYS)
     if not os.environ.get("OPENROUTER_API_KEY") and os.environ.get("OPEN_ROUTER_KEY"):
         os.environ["OPENROUTER_API_KEY"] = os.environ["OPEN_ROUTER_KEY"]
+
+
+def load_model_credentials(model: str, path: Path) -> None:
+    """Load the selected provider's credentials before starting expensive execution."""
+    if model.startswith('openrouter/'):
+        load_openrouter_credentials(path)
+        key = 'OPENROUTER_API_KEY'
+    elif model.startswith('anthropic/'):
+        load_host_credentials(path)
+        key = 'ANTHROPIC_API_KEY'
+    elif model.startswith('mock'):
+        return
+    else:
+        raise ValueError('Unsupported continuation provider')
+    if not os.environ.get(key):
+        raise ValueError(f'{key} is required; set the host environment or --env-file')

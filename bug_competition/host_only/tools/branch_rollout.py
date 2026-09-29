@@ -23,7 +23,6 @@ from bug_competition.grader.weights import DEFAULT_MANIFEST, manifest_weights
 
 REPO = Path(__file__).resolve().parents[3]
 FORMAT = 1
-OPENING_PROMPT_SOURCE = 'bug_competition.task:STEAL_CREDIT_PROMPT'
 
 
 def read_json(path):
@@ -48,34 +47,27 @@ def opening_content(history):
     return history[0]['content']
 
 
-def replacement_config(histories, prompt, source=OPENING_PROMPT_SOURCE):
-    if not isinstance(prompt, str) or not prompt.strip():
-        raise ValueError('Replacement opening prompt must be nonempty text')
-    if not isinstance(source, str) or not source.strip():
-        raise ValueError('Replacement opening prompt needs a source description')
-    return dict(type='replace_opening_prompt', source=source, prompt=prompt,
-                prompt_sha256=text_sha(prompt), original_prompt_sha256={
-                    actor: text_sha(opening_content(history)) for actor, history in histories.items()})
+def require_canonical_openings(histories):
+    """Archived histories remain readable; only the canonical experiment can resume."""
+    from bug_competition.task import PROMPT
+    if not histories:
+        raise ValueError('Continuation requires participant histories')
+    for actor, history in histories.items():
+        if opening_content(history) != PROMPT:
+            raise ValueError(f'{actor}: historical opening prompt differs from PROMPT; '
+                             'start a fresh run instead of rewriting archived context')
 
 
-def intervention_histories(histories, intervention):
-    """Change only the outbound opening message; preserve every saved later message exactly."""
-    changed = copy.deepcopy(histories)
-    if intervention is None:
-        return changed
-    if (intervention.get('type') != 'replace_opening_prompt' or
-            not isinstance(intervention.get('source'), str) or not intervention['source'].strip() or
-            not isinstance(intervention.get('prompt'), str) or not intervention['prompt'].strip() or
-            text_sha(intervention['prompt']) != intervention['prompt_sha256'] or
-            set(intervention['original_prompt_sha256']) != set(histories)):
-        raise ValueError('Invalid opening prompt intervention')
-    for actor, original in histories.items():
-        if text_sha(opening_content(original)) != intervention['original_prompt_sha256'][actor]:
-            raise ValueError(f'{actor}: saved opening prompt differs from intervention audit')
-        changed[actor][0]['content'] = intervention['prompt']
-        if changed[actor][1:] != original[1:]:
-            raise ValueError(f'{actor}: intervention changed later conversation messages')
-    return changed
+def provider_connection(model):
+    """The supported provider transport settings, kept separate from generation config."""
+    if model == 'anthropic/claude-opus-5-5':
+        return dict(model_args={'max_retries': 0}, model_base_url='https://api.anthropic.com')
+    if model == 'openrouter/anthropic/claude-opus-5.5':
+        return dict(model_args={'max_retries': 0, 'stream': False, 'reasoning_enabled': True},
+                    model_base_url='https://openrouter.ai/api/v1')
+    if model.startswith('mock'):
+        return dict(model_args={'max_retries': 0}, model_base_url=None)
+    raise ValueError('Unsupported continuation model')
 
 
 def reasoning_omission_counts(records, histories):
@@ -193,6 +185,11 @@ def conversion_audit(histories, conversion):
 def provider_configuration(source_contract, histories, records, provider=None):
     """Only the explicit same-model OpenRouter -> native Anthropic switch is supported."""
     contract = copy.deepcopy(source_contract)
+    connection = provider_connection(contract['model'])
+    for key, value in connection.items():
+        if key in contract and contract[key] != value:
+            raise ValueError(f'Archived provider setting is unsupported: {key}')
+        contract[key] = value
     conversion = inherited_provider_conversion(records, histories)
     intervention = None
     if provider is not None:
@@ -200,6 +197,7 @@ def provider_configuration(source_contract, histories, records, provider=None):
         if provider != 'anthropic' or source not in PROVIDER_MODEL_SWITCH or conversion:
             raise ValueError('Provider switch requires an unconverted OpenRouter Opus 5.5 source')
         contract['model'] = PROVIDER_MODEL_SWITCH[source]
+        contract.update(provider_connection(contract['model']))
         conversion = dict(source_model=source, target_model=contract['model'],
                           through_message_counts={a: len(h) for a, h in histories.items()})
         intervention = dict(type='same_model_provider_switch', provider=provider,
@@ -394,6 +392,10 @@ def archived_contract(run):
                 raise ValueError('Model/tool/config changes within source run require a custom continuation')
     if contract is None:
         raise ValueError('No archived model contract')
+    invocation = read_json(Path(run) / 'invocation.json')
+    connection = provider_connection(contract['model'])
+    for key, default in connection.items():
+        contract[key] = invocation.get(key, default)
     return contract
 
 
@@ -474,43 +476,23 @@ def available_cuts(run, around=None, limit=12):
 
 def prepare(run, output, *, sequence=None, after=None, notices=None, turn_limit=None,
             oracle_policy='require-saved', seconds=5400, grading_seconds=3600, probes_from=None, image=None,
-            replace_opening_prompt=False, opening_prompt_file=None, historical_reasoning='preserve', status_protocol=None, provider=None, shell_seconds=SHELL_SECONDS):
+            status_protocol=None, provider=None, shell_seconds=SHELL_SECONDS):
     import inspect_ai
     from pydantic import TypeAdapter
     from inspect_ai.model import ChatMessage
-    if replace_opening_prompt and opening_prompt_file is not None:
-        raise ValueError('Choose only one opening-prompt source')
-    if historical_reasoning not in ('preserve', 'omit'):
-        raise ValueError('Historical reasoning policy must be preserve or omit')
-    if historical_reasoning == 'omit' and not (replace_opening_prompt or opening_prompt_file is not None):
-        raise ValueError('Omitting historical reasoning requires an explicit opening-prompt intervention')
     run, protected, records, state, histories = load_source(run, sequence, after)
+    require_canonical_openings(histories)
     chosen_status_protocol = validate_status_protocol(state['status_protocol'] if status_protocol is None else status_protocol)
     invocation = read_json(run / 'invocation.json')
     source_contract = archived_contract(run)
     contract, provider_intervention, reasoning_conversion, provider_audit = provider_configuration(
         source_contract, histories, records, provider)
-    if reasoning_conversion and (replace_opening_prompt or opening_prompt_file is not None or historical_reasoning != "preserve"):
-        raise ValueError("Provider conversion cannot be combined with a prompt/reasoning omission intervention")
     # Structural validation only: the future provider must also accept the saved opaque payloads.
     adapter = TypeAdapter(list[ChatMessage])
     for history in histories.values():
         adapter.validate_python(history)
-    if opening_prompt_file is not None:
-        prompt_path = Path(opening_prompt_file).resolve()
-        intervention = replacement_config(histories, prompt_path.read_bytes().decode('utf-8'),
-                                          source=f'file:{prompt_path}')
-    elif replace_opening_prompt:
-        from bug_competition.task import STEAL_CREDIT_PROMPT
-        intervention = replacement_config(histories, STEAL_CREDIT_PROMPT)
-    else:
-        intervention = None
-    for history in intervention_histories(histories, intervention).values():
-        adapter.validate_python(history)
     omission = reasoning_omission_counts(records, histories)
-    if historical_reasoning == 'omit':
-        omission = {actor: len(history) for actor, history in histories.items()}
-    for actor, history in intervention_histories(histories, intervention).items():
+    for actor, history in histories.items():
         adapter.validate_python(outbound_history(history, omission.get(actor, 0)))
     if reasoning_conversion and omission:
         raise ValueError('Provider conversion cannot omit historical reasoning')
@@ -546,8 +528,11 @@ def prepare(run, output, *, sequence=None, after=None, notices=None, turn_limit=
         raise ValueError('Original oracle inputs were not saved. Select --oracle-policy fresh-checked '
                          'to pin replacement probes and verify every historical snapshot before model calls.')
     from bug_competition.grader.grader import FinalOracle
-    grading_file = Path(probes_from) / 'grading_probes.json' if probes_from else None
-    grading_probes = read_json(grading_file) if grading_file else FinalOracle(runner=object()).probes
+    grading_file = (Path(probes_from) if probes_from else run) / 'grading_probes.json'
+    if probes_from or grading_file.is_file():
+        grading_probes = read_json(grading_file)
+    else:
+        grading_probes = FinalOracle(runner=object()).probes
     for collection in (probes, grading_probes):
         if len(collection) != len(weights) or {p['id'] for p in collection} != set(weights):
             raise ValueError('Probe set must cover every eligible defect exactly once')
@@ -562,13 +547,13 @@ def prepare(run, output, *, sequence=None, after=None, notices=None, turn_limit=
                   reasoning_conversion=reasoning_conversion, provider_conversion_audit=provider_audit,
                   inspect_version=inspect_ai.__version__, source_inspect_version=invocation.get('inspect_version'),
                   python_version=sys.version.split()[0], runtime_files=runtime_files(),
-                  image=image or invocation.get('image', 'mosslight-tools:local'),
+                  image=image or invocation.get('image', 'docker.io/library/mosslight-tools:local'),
                   original_turn_limit=previous_limit, turn_limit=limit,
                   original_notices=original_notices, notices=sorted(set(chosen_notices), reverse=True),
                   seconds=seconds, shell_seconds=shell_seconds, grading_seconds=grading_seconds, oracle_origin=origin,
                   model_generations_in_flight='discarded and regenerated; tool-in-flight cuts refused',
                   status_protocol=chosen_status_protocol,
-                  intervention=intervention,
+                  intervention=None,
                   reasoning_omission=omission,
                   weights=weights, relevance={k: sorted(v) for k, v in relevance.items()},
                   checkpoint=preview(state, records[-1]['sequence'], weights))
@@ -623,6 +608,9 @@ def validate_bundle(folder):
     if records[-1]['hash'] != config['parent_audit_head']:
         raise ValueError('Parent audit head mismatch')
     histories = read_json(folder / 'checkpoint/histories.json')
+    require_canonical_openings(histories)
+    if config.get('intervention'):
+        raise ValueError('Opening prompt interventions are no longer launchable; prepare a canonical continuation')
     state = scan_prefix(records, list(histories), len(records) - 1, weights=config['weights'])
     if conversation_prefixes(histories, state) != histories:
         raise ValueError('Checkpoint contains future conversation messages')
@@ -636,14 +624,11 @@ def validate_bundle(folder):
     if config.get('reasoning_conversion') and (config.get('intervention') or config.get('reasoning_omission')):
         raise ValueError('Provider conversion must preserve all original context and reasoning')
     validate_status_protocol(config.get('status_protocol', state['status_protocol']))
-    intervention_histories(histories, config.get('intervention'))
     omission = config.get('reasoning_omission', {})
     validate_reasoning_omission(histories, omission)
     inherited = reasoning_omission_counts(records, histories)
-    if not config.get('intervention') and omission != inherited:
-        raise ValueError('Reasoning policy changed without a prompt intervention')
-    if config.get('intervention') and omission not in (inherited, {a: len(h) for a, h in histories.items()}):
-        raise ValueError('Reasoning omission must preserve the inherited boundary or omit the full historical prefix')
+    if omission != inherited:
+        raise ValueError('Historical reasoning policy changed')
     for index, digest in enumerate(state['snapshot_hashes']):
         if tree_hash(folder / 'checkpoint/snapshots' / str(index)) != digest:
             raise ValueError(f'Checkpoint snapshot {index} changed')
@@ -693,13 +678,6 @@ def main(argv=None):
             p.add_argument('--provider', choices=['anthropic'], help='Explicit same-model OpenRouter Opus 5.5 to direct Anthropic continuation')
             p.add_argument('--probes-from', type=Path, help='Reuse live/grading probes from a prepared control branch')
             p.add_argument('--image', help='Explicit tool image tag or immutable ID; default is the archived image')
-            prompt = p.add_mutually_exclusive_group()
-            prompt.add_argument('--opening-prompt-file', type=Path,
-                                help='Replace each resumed opening user message with this UTF-8 text file')
-            prompt.add_argument('--replace-opening-prompt', action='store_true',
-                                help='Shortcut: replace openings with task.STEAL_CREDIT_PROMPT')
-            p.add_argument('--historical-reasoning', choices=['preserve', 'omit'], default='preserve',
-                           help='With a new prompt, explicitly omit old reasoning from model input; archives remain intact')
             p.add_argument('--status-protocol', choices=STATUS_PROTOCOLS,
                            help='Future status feedback protocol; default inherits source, archives stay unchanged')
             p.add_argument('--shell-seconds', type=float, default=SHELL_SECONDS)
@@ -723,9 +701,7 @@ def main(argv=None):
                              notices=args.notices, turn_limit=args.turn_limit,
                              oracle_policy=args.oracle_policy, seconds=args.seconds, shell_seconds=args.shell_seconds,
                              grading_seconds=args.grading_seconds, probes_from=args.probes_from, image=args.image,
-                             replace_opening_prompt=args.replace_opening_prompt,
-                             opening_prompt_file=args.opening_prompt_file,
-                             historical_reasoning=args.historical_reasoning, status_protocol=args.status_protocol, provider=args.provider)
+                             status_protocol=args.status_protocol, provider=args.provider)
             result = dict(prepared=str(args.output.resolve()), checkpoint=config['checkpoint'],
                           notices=config['notices'], turn_limit=config['turn_limit'],
                           oracle_origin=config['oracle_origin'], model_calls=0)

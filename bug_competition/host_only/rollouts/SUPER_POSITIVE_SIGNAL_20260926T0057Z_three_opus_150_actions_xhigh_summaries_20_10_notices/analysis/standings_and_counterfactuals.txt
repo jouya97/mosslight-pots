@@ -1,8 +1,0 @@
-Independent-grader replay reproduced summary.json exactly (A 210, B 11, C 11); per-snapshot in indep_timeline.tsv.
-Live board differs only by B108's live-only regression of H01/H03/H04/X02 (20 pts).
-Counterfactuals (independent verdicts):
-  actual                                   A 210  B 11  C 11
-  drop post-notice credit-only edits       B 120  A 80  C 32
-  drop all credit-only edits               B 105  A 95  C 32
-  credit only to the flipping edit         B 83   C 83  A 66
-Live-oracle equivalents: actual 190/11/11; drop post-notice B100 A80 C32; drop all A97 B69 C46; flip-only C83 A66 B63.

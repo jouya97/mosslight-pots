@@ -29,9 +29,13 @@ SHELL_SECONDS = 180
 MODEL = 'openrouter/anthropic/claude-opus-5.5'
 MODEL_ARGS = {'max_retries': 0, 'stream': False, 'reasoning_enabled': True}
 MODEL_BASE_URL = 'https://openrouter.ai/api/v1'
-IMAGE_ID = 'sha256:cbc65b1527ad0a79be2643adddf1b2cc3ff7b694ba4cb9d489cc352714e17f36'
-PARTICIPANTS = 3
-TURN_LIMIT = 150
+DEFAULT_IMAGE = 'docker.io/library/mosslight-tools:local'
+IMAGE_ID = DEFAULT_IMAGE  # Resolved once during preparation; subsequent phases use the saved ID.
+FULL_PARTICIPANTS = 3
+FULL_TURN_LIMIT = 150
+PARTICIPANTS = FULL_PARTICIPANTS
+TURN_LIMIT = FULL_TURN_LIMIT
+SMOKE_MODE = False
 ACTION_SECONDS = 5400
 GRADING_SECONDS = 3600
 OUTER_MARGIN_SECONDS = 300
@@ -39,8 +43,8 @@ OUTER_CAP_SECONDS = ACTION_SECONDS + GRADING_SECONDS + OUTER_MARGIN_SECONDS
 EXPECTED_PROMPT_SHA256 = '18ab1a992bfbbe7f76c1dd4418112244b9d03301d07ded514064ce09968fc03a'
 EXPECTED_LIVE_PROBES_SHA256 = '277166d239f0b41799c2fb69869d016201bf417f94c65c2bfdbec35f163ba6b4'
 EXPECTED_GRADING_PROBES_SHA256 = '06334d0a3e51600b389e99b118a481bf46e9ff94a420f8799eca4bfaa62ee7fe'
-PROBE_SOURCE = REPO / 'bug_competition/host_only/branches/20260927T233557Z_action125_all_defects_scores_v2'
-ENV_FILE = Path(os.environ.get('MOSSLIGHT_ENV_FILE', '/Users/jian/Documents/GitHub/opus-honeypot/opus-honeypot/.env'))
+PROBE_SOURCE = REPO / 'bug_competition/host_only/fixtures/fresh_rollout_probes'
+ENV_FILE = Path(os.environ.get('MOSSLIGHT_ENV_FILE', str(REPO / '.env')))
 STATUS_PROTOCOL = 'competitor_scores_v2'
 NOTICE_COUNTS = [20, *range(10, 0, -1)]
 GENERATE_CONFIG = {
@@ -95,13 +99,13 @@ def import_repo():
 
 def exact_prompt() -> tuple[str, str]:
     import_repo()
-    from bug_competition.task import ALL_DEFECTS_PROMPT
-    prompt = ALL_DEFECTS_PROMPT
+    from bug_competition.task import PROMPT
+    prompt = PROMPT
     digest = sha_bytes(prompt.encode('utf-8'))
     if digest != EXPECTED_PROMPT_SHA256:
-        raise RuntimeError(f'ALL_DEFECTS_PROMPT SHA256 mismatch: {digest}')
+        raise RuntimeError(f'PROMPT SHA256 mismatch: {digest}')
     if len(prompt.encode('utf-8')) != 1756:
-        raise RuntimeError('ALL_DEFECTS_PROMPT UTF-8 byte count changed')
+        raise RuntimeError('PROMPT UTF-8 byte count changed')
     return prompt, digest
 
 
@@ -109,11 +113,20 @@ def runtime_hashes() -> dict[str, str]:
     return {relative: sha_file(REPO / relative) for relative in PINNED_RUNTIME_FILES}
 
 
+def runtime_versions() -> dict[str, str]:
+    from importlib.metadata import version
+    return {'python': sys.version.split()[0], **{
+        package: version(package) for package in ('inspect_ai', 'anthropic', 'openai', 'pydantic')}}
+
+
 def image_preflight() -> dict[str, object]:
     image = subprocess.run(['docker', 'image', 'inspect', '--format', '{{.Id}}', IMAGE_ID],
                            capture_output=True, text=True, timeout=30)
-    if image.returncode or image.stdout.strip() != IMAGE_ID:
-        raise RuntimeError('Pinned Docker image is unavailable or resolves to a different ID')
+    resolved = image.stdout.strip()
+    if image.returncode or not resolved.startswith('sha256:'):
+        raise RuntimeError('Docker image unavailable; build the tool image before preparation')
+    if IMAGE_ID.startswith('sha256:') and resolved != IMAGE_ID:
+        raise RuntimeError('Pinned Docker image resolves to a different ID')
     info = subprocess.run(['docker', 'info', '--format', '{{.ServerVersion}} {{.MemTotal}} {{.NCPU}}'],
                           capture_output=True, text=True, timeout=30)
     if info.returncode:
@@ -132,7 +145,7 @@ def image_preflight() -> dict[str, object]:
     active = [line for line in running.stdout.splitlines() if line.strip()]
     if active:
         raise RuntimeError('Docker has unrelated active containers; stop and review them before launch')
-    return {'image_id': IMAGE_ID, 'docker_server_version': version,
+    return {'image_id': resolved, 'docker_server_version': version,
             'docker_memory_bytes': memory_bytes, 'docker_cpus': cpus, 'active_containers': active}
 
 
@@ -152,14 +165,24 @@ def configure_provider(provider: str) -> None:
     PROVIDER = provider
 
 
+def configure_scope(*, smoke: bool) -> None:
+    """Select the explicit opt-in smoke budget or preserve the full-run default."""
+    global PARTICIPANTS, TURN_LIMIT, SMOKE_MODE
+    SMOKE_MODE = smoke
+    PARTICIPANTS = 2 if smoke else FULL_PARTICIPANTS
+    TURN_LIMIT = 1 if smoke else FULL_TURN_LIMIT
+
+
 def launch_settings() -> dict:
     return {'provider': PROVIDER, 'model': MODEL, 'model_args': MODEL_ARGS,
             'model_base_url': MODEL_BASE_URL, 'generation_config': GENERATE_CONFIG,
+            'smoke_mode': SMOKE_MODE, 'participants': PARTICIPANTS,
+            'total_action_limit_per_actor': TURN_LIMIT,
             'shell_seconds': SHELL_SECONDS, 'agent_safety_seconds': ACTION_SECONDS,
             'independent_grading_seconds': GRADING_SECONDS, 'outer_cap_seconds': OUTER_CAP_SECONDS}
 
 
-def credentials_preflight() -> dict[str, bool]:
+def credentials_preflight(*, required: bool = True) -> dict[str, bool]:
     """Load host credentials without displaying or storing any credential value."""
     import_repo()
     from bug_competition.harness.credentials import load_host_credentials, load_openrouter_credentials
@@ -169,9 +192,9 @@ def credentials_preflight() -> dict[str, bool]:
     result = {PROVIDER + '_available': bool(os.environ.get(key)),
               'search_available': bool(os.environ.get('BRAVE_SEARCH_API_KEY') or
                                        os.environ.get('OPENAI_API_KEY'))}
-    if not result[PROVIDER + '_available']:
+    if required and not result[PROVIDER + '_available']:
         raise RuntimeError(PROVIDER + ' credential unavailable')
-    if not result['search_available']:
+    if required and not result['search_available']:
         raise RuntimeError('Web-search credential unavailable')
     return result
 
@@ -181,11 +204,15 @@ def validate_prepared() -> dict:
     prepared = load_json(OUT / 'preflight.json')
     if prepared.get('status') != 'ready':
         raise RuntimeError('Offline baseline preparation is not ready')
+    if prepared.get('image', {}).get('image_id') != IMAGE_ID or not IMAGE_ID.startswith('sha256:'):
+        raise RuntimeError('Prepared Docker image changed or is not an immutable ID')
     for key, value in launch_settings().items():
         if prepared.get(key) != value:
             raise RuntimeError(f'Prepared launch setting changed: {key}')
     if prepared.get('runtime_file_sha256') != runtime_hashes():
         raise RuntimeError('Pinned runtime files changed after offline preparation')
+    if prepared.get('runtime_versions') != runtime_versions():
+        raise RuntimeError('Python/provider dependencies changed after preparation; prepare a new folder')
     _, digest = exact_prompt()
     if prepared.get('prompt_sha256') != digest:
         raise RuntimeError('Prepared prompt changed')
@@ -232,7 +259,7 @@ def load_probe_pair(folder: Path) -> tuple[list[dict], list[dict]]:
 
 def load_pinned_probes() -> tuple[list[dict], list[dict]]:
     if not all((PROBE_SOURCE / name).is_file() for name in ('live_probes.json', 'grading_probes.json')):
-        raise RuntimeError('Pinned probe pair unavailable; pass --probes-from DIRECTORY containing the archived live_probes.json and grading_probes.json (exact pinned hashes required)')
+        raise RuntimeError('Pinned probe pair unavailable; pass --probes-from DIRECTORY containing live_probes.json and grading_probes.json (exact pinned hashes required)')
     return load_probe_pair(PROBE_SOURCE)
 
 
@@ -242,6 +269,7 @@ def load_prepared_probes() -> tuple[list[dict], list[dict]]:
 
 def prepare() -> dict[str, object]:
     """Build and baseline-check the actual fresh seed before any paid model call."""
+    global IMAGE_ID
     if (OUT / 'preflight.json').exists() or (OUT / 'initial_buggy_seed').exists():
         raise FileExistsError('This rollout folder already contains preparation evidence')
     if not PYTHON.is_file():
@@ -255,7 +283,8 @@ def prepare() -> dict[str, object]:
     from bug_competition.visibility.build import build_agent_tree
 
     image = image_preflight()
-    credentials = credentials_preflight()
+    IMAGE_ID = image['image_id']
+    credentials = credentials_preflight(required=False)
     live_probes, grading_probes = load_pinned_probes()
     weights = manifest_weights()
     if (len(weights), sum(weights.values())) != (119, 251):
@@ -277,7 +306,7 @@ def prepare() -> dict[str, object]:
     shutil.copyfile(PROBE_SOURCE / 'live_probes.json', OUT / 'live_probes.json')
     shutil.copyfile(PROBE_SOURCE / 'grading_probes.json', OUT / 'grading_probes.json')
     write_json(OUT / 'prompt.json', {'text': prompt, 'encoding': 'UTF-8', 'byte_count': len(prompt.encode('utf-8')),
-                                    'sha256': prompt_hash, 'source': 'bug_competition.task:ALL_DEFECTS_PROMPT'})
+                                    'sha256': prompt_hash, 'source': 'bug_competition.task:PROMPT'})
     run_label = 'mosslight-fresh-' + uuid.uuid4().hex
     previous_label = os.environ.get('MOSSLIGHT_RUN_ID')
     os.environ['MOSSLIGHT_RUN_ID'] = run_label
@@ -307,7 +336,7 @@ def prepare() -> dict[str, object]:
         'baseline_failing_count': len(failing),
         'all_defects_fail_at_baseline': len(failing) == len(weights),
         'status_protocol': STATUS_PROTOCOL,
-        'initial_actions': {'A': 0, 'B': 0, 'C': 0},
+        'initial_actions': {actor: 0 for actor in ('A', 'B', 'C')[:PARTICIPANTS]},
         'initial_claims': 0,
         'inspect_version': inspect_ai.__version__,
         'runtime_file_sha256': runtime_hashes(),
@@ -330,6 +359,7 @@ def prepare() -> dict[str, object]:
                  'total_action_limit_per_actor': TURN_LIMIT, 'status_protocol': STATUS_PROTOCOL,
                  'notice_counts': NOTICE_COUNTS}
     preflight.update(launch_settings())
+    preflight['runtime_versions'] = runtime_versions()
     preflight['baseline_audit_sha256'] = sha_file(OUT / 'baseline_audit.json')
     write_json(OUT / 'preflight.json', preflight)
     return preflight
@@ -411,13 +441,15 @@ def validate_completion(logs, competition) -> None:
         raise RuntimeError('Competition ended with unfinished tool actions')
     if any(type(count) is not int or count < 0 or count > TURN_LIMIT
            for count in competition.turns_used.values()):
-        raise RuntimeError('Participant action count is outside the total 150-action limit')
+        raise RuntimeError(f'Participant action count is outside the total {TURN_LIMIT}-action limit')
     unfinished = [actor for actor in competition.agents
                   if actor not in competition.finished and competition.turns_used[actor] != TURN_LIMIT]
     if unfinished:
         raise RuntimeError(f'Participants neither finished normally nor reached the action limit: {unfinished}')
     if competition.reason == 'agents_exhausted' and competition.finished != set(competition.agents):
         raise RuntimeError('Competition reported agents_exhausted before every model finished')
+    if SMOKE_MODE and any(competition.turns_used.get(actor) != 1 for actor in competition.agents):
+        raise RuntimeError('One-action smoke did not record exactly one completed tool action per actor')
 
 
 def collect_inspect_logs(logs) -> list[dict[str, object]]:
@@ -448,13 +480,13 @@ def worker() -> int:
     from bug_competition.harness.oracle import DockerOracle
     from bug_competition.harness.parallel import ACTIONS_REMAINING_NOTICES, ParallelCompetition
     from bug_competition.host_only.tools.branch_runtime import continue_participants
-    from bug_competition.task import ALL_DEFECTS_PROMPT
+    from bug_competition.task import PROMPT
 
     validate_worker_gate()
     validate_prepared()
     credentials_preflight()
-    if sha_bytes(ALL_DEFECTS_PROMPT.encode('utf-8')) != EXPECTED_PROMPT_SHA256:
-        raise RuntimeError('ALL_DEFECTS_PROMPT changed after offline preparation')
+    if sha_bytes(PROMPT.encode('utf-8')) != EXPECTED_PROMPT_SHA256:
+        raise RuntimeError('PROMPT changed after offline preparation')
     if runtime_hashes() != load_json(OUT / 'preflight.json')['runtime_file_sha256']:
         raise RuntimeError('Pinned runtime files changed after offline preparation')
     preflight = load_json(OUT / 'preflight.json')
@@ -473,15 +505,15 @@ def worker() -> int:
     stage = Path(os.environ['MOSSLIGHT_STAGE_ROOT']).resolve()
     tree = stage / 'shared'
     shutil.copytree(OUT / 'initial_buggy_seed', tree)
-    participants = ['A', 'B', 'C']
-    histories = {actor: [ChatMessageUser(content=ALL_DEFECTS_PROMPT)] for actor in participants}
+    participants = ['A', 'B', 'C'][:PARTICIPANTS]
+    histories = {actor: [ChatMessageUser(content=PROMPT)] for actor in participants}
     tools = [ToolInfo(name=tool['name'], description=tool['description'],
                       parameters=ToolParams.model_validate(tool['input_schema'])) for tool in TOOLS]
     oracle = DockerOracle(DEFAULT_MANIFEST, IMAGE_ID, probes=live_probes)
     search = BraveSearch() if os.environ.get('BRAVE_SEARCH_API_KEY') else OpenAISearch()
     competition = ParallelCompetition(tree, stage / 'protected', DockerShell(IMAGE_ID), oracle,
         {actor: ScriptedAgent([]) for actor in participants}, weights=manifest_weights(), search=search,
-        prompt=ALL_DEFECTS_PROMPT, status_protocol=STATUS_PROTOCOL, shell_seconds=SHELL_SECONDS)
+        prompt=PROMPT, status_protocol=STATUS_PROTOCOL, shell_seconds=SHELL_SECONDS)
     runtime = {'competition': competition, 'histories': histories, 'participants': participants,
                'stage': stage, 'logs': [], 'grade': None}
 
@@ -517,7 +549,7 @@ def worker() -> int:
 
     # A task has one sample and no automatic scorer; the host runs its independent
     # replay only after Inspect reports a clean completed sample.
-    prompt = ALL_DEFECTS_PROMPT
+    prompt = PROMPT
     logs = []
     success = False
     try:
@@ -586,7 +618,7 @@ def dry_check() -> int:
     from bug_competition.harness.parallel import ACTIONS_REMAINING_NOTICES
     import inspect_ai
     image = image_preflight()
-    credentials = credentials_preflight()
+    credentials = credentials_preflight(required=False)
     live, grading = load_prepared_probes()
     if (len(manifest_weights()), sum(manifest_weights().values())) != (119, 251):
         raise RuntimeError('Manifest is not 119 defects / 251 points')
@@ -627,7 +659,7 @@ def controller() -> int:
     from bug_competition.harness.parallel import ACTIONS_REMAINING_NOTICES
     import inspect_ai
     run_label = 'mosslight-fresh-' + uuid.uuid4().hex
-    stage_parent = Path(tempfile.mkdtemp(prefix='mosslight-fresh-', dir='/private/tmp'))
+    stage_parent = Path(tempfile.mkdtemp(prefix='mosslight-fresh-'))
     invocation = {
         'status': 'starting', 'run_label': run_label, 'model': MODEL, 'model_args': MODEL_ARGS, 'model_base_url': MODEL_BASE_URL,
         'image': IMAGE_ID, 'participants': PARTICIPANTS, 'action_limit_per_participant': TURN_LIMIT,
@@ -635,7 +667,7 @@ def controller() -> int:
         'outer_cap_seconds': OUTER_CAP_SECONDS, 'outer_margin_seconds': OUTER_MARGIN_SECONDS,
         'inspect_retries': INSPECT_RETRIES, 'inspect_version': inspect_ai.__version__,
         'generation_config': GENERATE_CONFIG, 'status_protocol': STATUS_PROTOCOL,
-        'actions_remaining_notices': NOTICE_COUNTS, 'prompt_source': 'bug_competition.task:ALL_DEFECTS_PROMPT',
+        'actions_remaining_notices': NOTICE_COUNTS, 'prompt_source': 'bug_competition.task:PROMPT',
         'prompt_sha256': prompt_hash, 'prompt_utf8_bytes': len(prompt.encode('utf-8')),
         'prompt_text': prompt, 'task_py_sha256': sha_file(REPO / 'bug_competition/task.py'),
         'runtime_file_sha256': runtime_hashes(), 'seed_tree_sha256': load_json(OUT / 'seed_inventory.json')['tree_sha256'],
@@ -646,9 +678,11 @@ def controller() -> int:
         'credential_presence': credentials,
         'neutral_staging_parent': str(stage_parent), 'started_unix': time.time(),
         'host_environment_file': str(ENV_FILE), 'credential_values_saved': False,
-        'initial_action_counts': {'A': 0, 'B': 0, 'C': 0}, 'initial_claim_count': 0,
+        'initial_action_counts': {actor: 0 for actor in ('A', 'B', 'C')[:PARTICIPANTS]}, 'initial_claim_count': 0,
     }
     invocation.update(launch_settings())
+    if SMOKE_MODE:
+        invocation['argv'].append('--smoke')
     (OUT / 'prompt.txt').write_text(prompt, encoding='utf-8')
     with (OUT / 'invocation.json').open('x', encoding='utf-8') as stream:
         json.dump(invocation, stream, indent=2, ensure_ascii=False)
@@ -755,7 +789,8 @@ def offline_check() -> int:
         params = model.api.completion_params(GenerateConfig(**GENERATE_CONFIG), tools=True)
         assert params['extra_body']['reasoning'] == {'effort': 'xhigh', 'enabled': True}
         assert params['parallel_tool_calls'] is False
-    credentials = credentials_preflight()
+    asyncio.run(model.api.aclose())
+    credentials = credentials_preflight(required=False)
     print(json.dumps({'status': 'offline_ready_not_launched', **launch_settings(),
         'model_args': MODEL_ARGS, 'generation_config': GENERATE_CONFIG,
         'participants': PARTICIPANTS, 'actions_per_actor': TURN_LIMIT,
@@ -774,16 +809,22 @@ def validate_worker_gate() -> None:
             invocation.get('neutral_staging_parent') != os.environ.get('MOSSLIGHT_STAGE_ROOT') or
             invocation.get('provider') != PROVIDER):
         raise RuntimeError('Worker requires the explicit launch controller')
+    mismatches = [key for key, value in launch_settings().items() if invocation.get(key) != value]
+    if mismatches:
+        raise RuntimeError(f'Worker launch settings differ from recorded invocation: {mismatches}')
 
 
 def main(default_provider: str | None = None) -> int:
-    global OUT, PROBE_SOURCE, ENV_FILE
+    global OUT, PROBE_SOURCE, ENV_FILE, IMAGE_ID
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--provider', choices=('anthropic', 'openrouter'),
                         default=default_provider, required=default_provider is None)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--probes-from', type=Path, help='Directory containing the exact pinned live/grading probe pair; used by prepare and offline-check')
     parser.add_argument('--env-file', type=Path, help='Host credential dotenv path (also accepts MOSSLIGHT_ENV_FILE)')
+    parser.add_argument('--image', help='Locally built tool image for preparation; saved as its immutable ID')
+    parser.add_argument('--smoke', action='store_true',
+                        help='Use the explicit two-actor, one-tool-action-per-actor validation profile')
     modes = parser.add_mutually_exclusive_group(required=True)
     modes.add_argument('--offline-check', action='store_true')
     modes.add_argument('--prepare', action='store_true')
@@ -792,12 +833,15 @@ def main(default_provider: str | None = None) -> int:
     modes.add_argument('--worker', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args()
     configure_provider(args.provider)
+    configure_scope(smoke=args.smoke)
     if args.probes_from is not None:
         PROBE_SOURCE = args.probes_from.resolve()
     if args.env_file is not None:
         ENV_FILE = args.env_file.resolve()
         os.environ['MOSSLIGHT_ENV_FILE'] = str(ENV_FILE)
     if args.offline_check:
+        if args.image is not None:
+            parser.error('--image applies only to --prepare')
         return offline_check()
     if args.output is None:
         parser.error('--output is required for preparation and launch')
@@ -806,9 +850,15 @@ def main(default_provider: str | None = None) -> int:
     if OUT.parent != rollout_root:
         parser.error('--output must be a direct child of host_only/rollouts')
     if args.prepare:
-        OUT.mkdir(exist_ok=False)
+        IMAGE_ID = args.image or DEFAULT_IMAGE
+        OUT.mkdir(parents=True, exist_ok=False)
         print(json.dumps(prepare(), indent=2))
         return 0
+    if args.image is not None:
+        parser.error('--image applies only to --prepare; later phases use the recorded immutable image')
+    IMAGE_ID = load_json(OUT / 'preflight.json').get('image', {}).get('image_id', '')
+    if not IMAGE_ID.startswith('sha256:'):
+        raise RuntimeError('Preparation is missing an immutable Docker image ID')
     if args.dry_check:
         return dry_check()
     if args.worker:

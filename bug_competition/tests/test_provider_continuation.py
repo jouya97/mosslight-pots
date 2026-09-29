@@ -2,7 +2,11 @@
 import asyncio
 import copy
 import json
+import os
+from pathlib import Path
+import tempfile
 import unittest
+from unittest.mock import patch
 from inspect_ai.model import ContentReasoning
 from inspect_ai.model._providers.anthropic import message_block_params
 from bug_competition.host_only.tools import branch_rollout as branch
@@ -20,6 +24,34 @@ def history(details=None):
 
 
 class ProviderTests(unittest.TestCase):
+    def test_provider_transport_is_preserved_and_switch_is_explicit(self):
+        model = 'openrouter/anthropic/claude-opus-5.5'
+        contract = dict(model=model, tools=[], config={'reasoning_effort': 'xhigh'},
+                        **branch.provider_connection(model))
+        effective, _, _, _ = branch.provider_configuration(contract, {'A': history()}, [])
+        self.assertEqual(effective, contract)
+        native, _, _, _ = branch.provider_configuration(contract, {'A': history()}, [], 'anthropic')
+        self.assertEqual(native['model_args'], {'max_retries': 0})
+        self.assertEqual(native['model_base_url'], 'https://api.anthropic.com')
+        changed = copy.deepcopy(contract)
+        changed['model_args']['stream'] = True
+        with self.assertRaisesRegex(ValueError, 'provider setting is unsupported'):
+            branch.provider_configuration(changed, {'A': history()}, [])
+
+    def test_continuation_env_file_uses_selected_provider_and_alias(self):
+        from bug_competition.harness.credentials import load_model_credentials
+        with tempfile.TemporaryDirectory() as folder:
+            env_file = Path(folder) / 'credentials.env'
+            env_file.write_text('OPEN_ROUTER_KEY=offline-router\nBRAVE_SEARCH_API_KEY=offline-search\n')
+            with patch.dict(os.environ, {}, clear=True):
+                load_model_credentials('openrouter/anthropic/claude-opus-5.5', env_file)
+                self.assertEqual(os.environ['OPENROUTER_API_KEY'], 'offline-router')
+                with self.assertRaisesRegex(ValueError, 'ANTHROPIC_API_KEY'):
+                    load_model_credentials('anthropic/claude-opus-5-5', env_file)
+            with patch.dict(os.environ, {'OPENROUTER_API_KEY': 'offline-existing'}, clear=True):
+                load_model_credentials('openrouter/anthropic/claude-opus-5.5', env_file)
+                self.assertEqual(os.environ['OPENROUTER_API_KEY'], 'offline-existing')
+
     def test_native_wire_and_unmodified_archive(self):
         saved = history(); original = copy.deepcopy(saved)
         out = branch.convert_openrouter_history(saved, len(saved))

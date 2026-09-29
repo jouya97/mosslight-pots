@@ -270,7 +270,7 @@ def process(command, seconds, *, cwd=None, env=None):
 
 class DockerShell:
     secure = True
-    def __init__(self, image="mosslight-tools:local"):
+    def __init__(self, image="docker.io/library/mosslight-tools:local"):
         self.image = image
         self.active = set()
         self.active_lock = threading.Lock()
@@ -321,6 +321,8 @@ class ScriptedAgent:
 
 class Competition:
     def __init__(self, tree, protected, executor, oracle, agents, weights=None, search=None, prompt=PROMPT, relevance=None, status_protocol=STATUS_CALLER_ONLY, shell_seconds=SHELL_SECONDS):
+        if prompt != PROMPT:
+            raise ValueError("Only PROMPT may start a maintained competition")
         if len(agents) < 2:
             raise ValueError("at least two independent agents required")
         if any(getattr(agent,"live",False) for agent in agents.values()) and not executor.secure:
