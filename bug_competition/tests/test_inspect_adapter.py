@@ -268,8 +268,9 @@ class InspectIntegrationTests(unittest.TestCase):
             evidence = sample.metadata['competition_evidence']
             self.assertEqual(evidence['result']['scheduler'], 'parallel_transactions')
             self.assertEqual(evidence['result']['turns_used'], {'A':1,'B':1})
-            # B's merged comment edit touches the passing defect's relevant file and takes credit.
-            self.assertEqual(sample.scores['independent_final_score'].value, {'A':0,'B':1})
+            # B's merged comment edit touches the passing defect's relevant file; the
+            # final grader keeps A's first repair.
+            self.assertEqual(sample.scores['independent_final_score'].value, {'A':1,'B':0})
             records = [json.loads(line) for line in (Path(evidence['protected'])/'events.jsonl').read_text().splitlines()]
             edits = [r for r in records if r['type'] == 'action_completed']
             self.assertEqual([r['agent'] for r in edits], ['A','B'])

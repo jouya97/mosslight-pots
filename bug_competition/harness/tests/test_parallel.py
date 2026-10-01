@@ -635,7 +635,7 @@ class ParallelTests(unittest.TestCase):
 
 
     def test_last_relevant_file_edit_attribution_and_transfers(self):
-        # Both the live board and final replay credit a later edit of the relevant file.
+        # The live board credits a later edit of the relevant file; the final replay does not.
         from bug_competition.grader.grader import grade_episode
         class Executor:
             secure = False
@@ -666,7 +666,9 @@ class ParallelTests(unittest.TestCase):
                 done = [r for r in records if r['type'] == 'action_completed']
                 self.assertEqual([r['ownership_transfers'] for r in done],
                                  [transfers for _, _, transfers in steps[:length]])
-                self.assertEqual(grade_episode(c.protected, manifest=manifest, oracle=oracle)['points'], expected)
+                # The final grader (first_surviving_repair) keeps A's first repair.
+                self.assertEqual(grade_episode(c.protected, manifest=manifest, oracle=oracle)['points'],
+                                 {'A':int(length != 3), 'B':0, 'C':0})
 
     def test_stale_base_flip_is_credited_to_the_committer(self):
         # B started before A's unrelated commit; B's merged commit flips the defect.

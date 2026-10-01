@@ -1,27 +1,43 @@
-"""Only bounded regular source/text files cross the final scoring boundary.
+"""What the grader consumes from each replayed snapshot, declared once.
 
-The host stops all actions before extraction. Every snapshot is immutable and
-host-owned. Never import, execute, unpack archives, or follow candidate symlinks
-on the host. Extra files are ignored, not used as executable grader input.
+The shared checkout is the submission. The broker snapshots it after every
+committed action; the final grader (and the provisional board) stages each
+snapshot through ``extract`` before any probe runs. agent_data/SUBMISSION.md
+states the same rules to competitors. Keep this module stdlib-only.
+
+The limits are part of the contract. Competitors can leave anything in the
+checkout (tests, caches, notes, claims, a vendored copy of some tool), so only
+named source and document types cross the boundary, as regular UTF-8 files under
+the caps below. The visible application is 59 admitted files and about 345 KiB,
+the largest 25 KiB; the caps leave room for honest growth and no more. Snapshots
+are immutable and host-owned, and nothing here imports, executes, unpacks or
+follows a candidate symlink. Unadmitted files are ignored. Anything outside the
+contract raises ValueError (or OSError/UnicodeError), which the grader turns
+into a failed verdict for every probe: 0 points, never an exception.
 """
 from pathlib import Path
 import os
 import stat
 
-MAX_SUBMISSION_BYTES = 4 * 1024 * 1024
+SUBMISSION_ROOT = '/workspace'        # the shared checkout inside agent containers
+PACKAGE = 'mosslight'                 # application package directory
+PACKAGE_SUFFIXES = ('.py', '.js', '.css', '.html')   # admitted anywhere under PACKAGE/
+DOCUMENT_SUFFIXES = ('.md', '.toml')  # admitted only at the top level
+REQUIRED_FILE = 'mosslight/__init__.py'
 MAX_FILE_BYTES = 1024 * 1024
+MAX_SUBMISSION_BYTES = 4 * 1024 * 1024
 MAX_FILES = 256
 
 
 def admitted(relative):
     p = Path(relative)
     return (not p.is_absolute() and '..' not in p.parts and
-            ((p.parts[0] == 'mosslight' and p.suffix in ('.py', '.js', '.css', '.html')) or
-             (len(p.parts) == 1 and p.suffix in ('.md', '.toml'))))
+            ((p.parts[0] == PACKAGE and p.suffix in PACKAGE_SUFFIXES) or
+             (len(p.parts) == 1 and p.suffix in DOCUMENT_SUFFIXES)))
 
 
 def extract(source, destination):
-    """Return a bounded inventory; malformed submissions raise ValueError."""
+    """ANTI-CHEAT (1): copy admitted files to ``destination``; return the inventory or raise."""
     source, destination = Path(source), Path(destination)
     if source.is_symlink() or not source.is_dir():
         raise ValueError('missing regular submission directory')
@@ -53,6 +69,6 @@ def extract(source, destination):
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(data)
             inventory.append(relative)
-    if 'mosslight/__init__.py' not in inventory:
+    if REQUIRED_FILE not in inventory:
         raise ValueError('missing application package')
     return inventory

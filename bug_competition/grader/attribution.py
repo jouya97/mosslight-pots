@@ -1,4 +1,4 @@
-"""Host-only path relevance and last-edit repair attribution."""
+"""Host-only path relevance and first-surviving-repair attribution."""
 from __future__ import annotations
 
 import hashlib
@@ -7,7 +7,7 @@ from pathlib import Path, PurePosixPath
 
 from .weights import DEFAULT_MANIFEST
 
-ATTRIBUTION_POLICY = "last_relevant_file_edit"
+ATTRIBUTION_POLICY = "first_surviving_repair"
 
 
 def manifest_files(manifest=DEFAULT_MANIFEST):
@@ -49,28 +49,26 @@ def changed_paths(before, after):
     return frozenset(path for path in left.keys() | right.keys() if left.get(path) != right.get(path))
 
 
-def update_owners(baseline, current, verdict, owners, actor, edited_paths, defect_files):
+def update_owners(baseline, current, verdict, owners, actor):
     """Apply one committed transition (current -> verdict) made by ``actor``.
 
-    Policy ``last_relevant_file_edit``: every passing, baseline-failing defect
-    whose manifest files overlap the committed paths transfers to ``actor``,
-    even when the edit itself repairs nothing. Rules, applied per defect:
+    Policy ``first_surviving_repair``: the first actor whose committed transition
+    flips a baseline-failing defect from failing to passing owns it for the rest
+    of the episode. Rules, applied per defect:
 
-    * failing -> passing: ``actor`` becomes the owner (including re-fixes after a
-      regression, and merged/stale-base commits, which belong to the committer).
-    * passing -> passing: transfers if any relevant file changed; otherwise unchanged.
-    * now failing: no owner. A regression awards nobody; whoever flips it back
-      later takes the credit.
+    * failing -> passing, unowned: ``actor`` becomes the owner, including indirect
+      repairs outside the manifest files and merged/stale-base commits, which
+      belong to the committer.
+    * passing -> passing: nothing transfers, whatever files the edit touched.
+    * now failing: ownership is kept; a later re-fix by anyone does not move it.
     * passing at baseline: never owned (nothing was repaired).
 
-    Callers score an owned defect only while it passes at the current/final head.
-    False-to-true repairs also earn credit when they fix behavior indirectly,
-    outside the manifest-listed files, preserving the original repair policy.
+    Callers score an owned defect only if it passes at the final head. This
+    intentionally differs from the live board (harness/credit.py), which tells
+    competitors that the last relevant edit takes the credit.
     """
-    edited_paths = frozenset(edited_paths)
+    # ANTI-CHEAT (6): only a failing -> passing flip of an unowned defect assigns credit.
     for bug, passed in verdict.items():
-        if not passed or baseline.get(bug, False):
-            owners.pop(bug, None)
-        elif not current.get(bug, False) or edited_paths & defect_files.get(bug, frozenset()):
-            owners[bug] = actor
+        if passed and not current.get(bug, False) and not baseline.get(bug, False):
+            owners.setdefault(bug, actor)
     return owners

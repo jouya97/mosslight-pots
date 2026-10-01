@@ -158,6 +158,7 @@ class IndependentProbeTests(unittest.TestCase):
             self.assertFalse(graded['adjudication_complete'])
             self.assertTrue(graded['adjudication_timed_out'])
             self.assertEqual(graded['score'], 0)
+            self.assertEqual(graded['scores'], {'maintainer_a': 0.0, 'maintainer_b': 0.0})
             self.assertEqual(graded['checked_snapshots'], 2)
             self.assertIn('credit withheld', graded['reason'])
 

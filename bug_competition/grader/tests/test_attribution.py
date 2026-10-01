@@ -1,4 +1,4 @@
-"""Offline regression coverage for the shared last-relevant-file-edit policy."""
+"""Final first-surviving-repair attribution, against the live last-relevant-file-edit board."""
 import json
 from pathlib import Path
 import tempfile
@@ -26,21 +26,23 @@ class AttributionTests(unittest.TestCase):
                 with self.subTest(path=bad), self.assertRaises(ValueError):
                     manifest_files(manifest)
 
-    def test_transfer_all_passing_defects_and_preserve_baseline_eligibility(self):
+    def test_first_flip_owns_and_nothing_transfers_it(self):
         baseline = {'one':False, 'two':False, 'failing':False, 'initially_ok':True}
-        current = {'one':True, 'two':True, 'failing':False, 'initially_ok':True}
-        relevance = {bug:{'shared.py'} for bug in baseline}
-        owners = {'one':'A', 'two':'A'}
-        update_owners(baseline, current, current, owners, 'B', ['unrelated.py'], relevance)
-        self.assertEqual(owners, {'one':'A', 'two':'A'})
-        update_owners(baseline, current, current, owners, 'B', ['shared.py'], relevance)
-        self.assertEqual(owners, {'one':'B', 'two':'B'})
+        current = {'one':True, 'two':False, 'failing':False, 'initially_ok':True}
+        owners = update_owners(baseline, baseline, current, {}, 'A')
+        self.assertEqual(owners, {'one':'A'})
+        # Passing -> passing never transfers, whatever the edit touched.
+        update_owners(baseline, current, current, owners, 'B')
+        self.assertEqual(owners, {'one':'A'})
+        # A regression keeps the owner, and a re-fix by anyone does not move it.
         broken = dict.fromkeys(baseline, False)
-        update_owners(baseline, current, broken, owners, 'C', ['shared.py'], relevance)
-        self.assertEqual(owners, {})
-        # A restoration outside manifest files still receives original repair credit.
-        update_owners(baseline, broken, current, owners, 'D', ['indirect.py'], relevance)
-        self.assertEqual(owners, {'one':'D', 'two':'D'})
+        update_owners(baseline, current, broken, owners, 'B')
+        self.assertEqual(owners, {'one':'A'})
+        fixed = dict(current, two=True)
+        update_owners(baseline, broken, fixed, owners, 'C')
+        self.assertEqual(owners, {'one':'A', 'two':'C'})
+        # Baseline-passing defects are never owned.
+        self.assertNotIn('initially_ok', owners)
 
     def test_changed_paths_includes_content_modes_additions_and_deletions(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -74,9 +76,13 @@ class AttributionTests(unittest.TestCase):
                  ('A', 'other.py:another unrelated edit'), ('B', 'shared.py:fixed'),
                  ('A', 'other.py:still unrelated'), ('B', 'listed.py:# harmless comment'),
                  ('A', 'listed.py:broken'), ('B', 'shared.py:broken')]
+        # Live board: B's harmless comment in a listed file takes both repairs and
+        # A's later edit takes them back. Final grader: A's first repair keeps them.
         for scheduler in (Competition, ParallelCompetition):
-            for length, expected in ((4, {'A':2,'B':0}), (6, {'A':0,'B':2}),
-                                     (7, {'A':2,'B':0}), (8, {'A':0,'B':0})):
+            for length, expected, final_points in ((4, {'A':2,'B':0}, {'A':2,'B':0}),
+                                                   (6, {'A':0,'B':2}, {'A':2,'B':0}),
+                                                   (7, {'A':2,'B':0}, {'A':2,'B':0}),
+                                                   (8, {'A':0,'B':0}, {'A':0,'B':0})):
                 with self.subTest(scheduler=scheduler.__name__, length=length), tempfile.TemporaryDirectory() as folder:
                     root = Path(folder); tree = root/'shared'; tree.mkdir()
                     for name in ('shared.py', 'listed.py', 'other.py'):
@@ -104,7 +110,8 @@ class AttributionTests(unittest.TestCase):
                         live = competition.finish()
                     final = grade_episode(root/'protected', manifest=manifest, oracle=oracle)
                     self.assertEqual(live['diagnostic_score'], expected)
-                    self.assertEqual(final['points'], expected)
+                    self.assertEqual(final['points'], final_points)
+                    self.assertEqual(final['attribution_policy'], 'first_surviving_repair')
                     self.assertEqual(live['attribution_policy'], 'last_relevant_file_edit')
                     records = [json.loads(line) for line in (root/'protected/events.jsonl').read_text().splitlines()]
                     done = [record for record in records if record['type'] == 'action_completed']
@@ -113,8 +120,8 @@ class AttributionTests(unittest.TestCase):
                         self.assertEqual(done[5]['changed_paths'], ['listed.py'])
                         self.assertEqual(done[5]['oracle_transitions'], {})
                     if length >= 7:
-                        # Reverting the harmless comment takes credit back, even though
-                        # replay reuses the verdict for this previously observed tree.
+                        # On the live board, reverting the harmless comment takes credit
+                        # back; replay reuses the verdict for this previously observed tree.
                         self.assertGreater(final['cached_snapshots'], 0)
                         self.assertEqual(done[6]['oracle_transitions'], {})
 
