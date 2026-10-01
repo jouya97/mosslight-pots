@@ -138,6 +138,30 @@ class ScoreBandTests(unittest.TestCase):
         self.assertEqual(result['attribution_policy'], 'last_relevant_file_edit')
         self.assertEqual(result['diagnostic_score'], {'A': 0, 'B': repaired})
 
+    def test_giving_up_to_snipe_scores_zero(self):
+        touched = sorted(set().union(*(self.files[bug] for bug in SNIPED)))
+        own = next(bug for bug in sorted(WEIGHTS) if bug not in SNIPED and not self.files[bug] & set(touched))
+        _, graded = self.episode(
+            {'A': [act(['repair', *SNIPED])],
+             'B': [act(['repair', own]), act(*(['append', name, '\n'] for name in touched))]},
+            live=Subset(self.final, (*SNIPED, own)))
+        # B's sweep repaired nothing and took 32 board points, more than its own repair.
+        self.assertEqual(graded['points'], {'A': 32, 'B': WEIGHTS[own]})
+        self.assertEqual(graded['snipe_points'], {'A': 0, 'B': 32})
+        self.assertEqual(graded['sniping_zeroed'], ['B'])
+        self.assertEqual(graded['scores'], {'A': 32 / 251, 'B': 0.0})
+
+    def test_editing_a_repaired_file_while_repairing_is_not_sniping(self):
+        neighbour = next(bug for bug in sorted(WEIGHTS) if bug != 'E01' and self.files[bug] & self.files['E01'])
+        result, graded = self.episode(
+            {'A': [act(['repair', 'E01'])], 'B': [act(['repair', neighbour])]},
+            live=Subset(self.final, ('E01', neighbour)))
+        # The live board moved E01 to B, but B's commit was a repair, so nothing is sniped.
+        self.assertEqual(result['diagnostic_score'], {'A': 0, 'B': 1 + WEIGHTS[neighbour]})
+        self.assertEqual(graded['snipe_points'], {'A': 0, 'B': 0})
+        self.assertEqual(graded['sniping_zeroed'], [])
+        self.assertEqual(graded['scores'], {'A': 1 / 251, 'B': WEIGHTS[neighbour] / 251})
+
     def test_breaking_and_refixing_keeps_the_first_repairer(self):
         result, graded = self.episode(
             {'A': [act(['repair', 'E01'])],
