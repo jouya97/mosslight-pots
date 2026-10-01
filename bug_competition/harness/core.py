@@ -6,15 +6,15 @@ import math
 import os
 from pathlib import Path
 import shutil
-import signal
-import selectors
 import subprocess
 import time
 import threading
 import uuid
 
 from bug_competition.task import PROMPT
-from bug_competition.grader.attribution import ATTRIBUTION_POLICY, changed_paths, manifest_files, update_owners
+from bug_competition.grader.primitives import CommandTimeout, canonical, process, tree_hash
+from bug_competition.grader.attribution import changed_paths, manifest_files
+from .credit import LIVE_POLICY, update_live_owners
 
 
 def participant_ids(count):
@@ -152,9 +152,6 @@ def status_viewed(identity, observation, **fields):
     return {"type":"status_viewed", "agent":identity, **fields, "observation":observation}
 
 
-def canonical(value):
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
 def ledger_safe(value):
     """value with unpaired surrogates (not UTF-8 encodable) written as backslash escapes."""
     if isinstance(value, str):
@@ -164,21 +161,6 @@ def ledger_safe(value):
     if isinstance(value, (list, tuple)):
         return [ledger_safe(item) for item in value]
     return value
-
-def tree_hash(root):
-    digest = hashlib.sha256()
-    for path in sorted(root.rglob("*")):
-        relative = str(path.relative_to(root))
-        if path.is_symlink():
-            raise ValueError(f"symlinks forbidden in snapshot: {relative}")
-        if path.is_file():
-            digest.update(canonical([relative, path.stat().st_mode & 0o777]).encode())
-            with path.open("rb") as stream:
-                for chunk in iter(lambda: stream.read(1024*1024), b""):
-                    digest.update(chunk)
-        elif not path.is_dir():
-            raise ValueError(f"special file forbidden: {relative}")
-    return digest.hexdigest()
 
 class Audit:
     """Append-only, hash-linked host ledger; never mounted inside tool containers."""
@@ -219,54 +201,6 @@ def validate_shell_seconds(value):
         raise ValueError("shell_seconds must be finite and positive")
     return value
 
-
-class CommandTimeout(TimeoutError):
-    """A command overran its own time limit; carries the output read before it was killed."""
-    def __init__(self, message, output="", truncated=False):
-        super().__init__(message)
-        self.output, self.truncated = output, truncated
-
-def process(command, seconds, *, cwd=None, env=None):
-    if seconds <= 0:
-        raise TimeoutError("wall clock exhausted")
-    child = subprocess.Popen(command, cwd=cwd, env=env, stdout=subprocess.PIPE,
-                             stderr=subprocess.STDOUT, start_new_session=True)
-    deadline = time.monotonic() + seconds
-    output = bytearray()
-    truncated = False
-    selector = selectors.DefaultSelector()
-    selector.register(child.stdout, selectors.EVENT_READ)
-    def overrun():
-        return CommandTimeout("command deadline", output.decode("utf8", "replace"), truncated)
-    try:
-        while selector.get_map():
-            remaining = deadline - time.monotonic()
-            if remaining <= 0:
-                raise overrun()
-            for key, _ in selector.select(min(remaining, .1)):
-                chunk = os.read(key.fileobj.fileno(), 65536)
-                if not chunk:
-                    selector.unregister(key.fileobj)
-                else:
-                    output.extend(chunk)
-                    truncated = truncated or len(output) > 24000
-                    del output[:-24000]
-        try:
-            child.wait(timeout=max(.001, deadline-time.monotonic()))
-        except subprocess.TimeoutExpired:
-            # The command closed its output but kept running past its limit.
-            raise overrun() from None
-        return {"exit_code":child.returncode,"output":output.decode("utf8", "replace"),"truncated":truncated}
-
-    finally:
-        # Includes descendants even if the immediate parent has exited.
-        try:
-            os.killpg(child.pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        child.wait()
-        selector.close()
-        child.stdout.close()
 
 class DockerShell:
     secure = True
@@ -375,7 +309,7 @@ class Competition:
             committed_current = current.copy()
             owners = {}
             self.audit.append({"type":"baseline","tree":current_hash,"oracle":baseline,
-                               "attribution_policy":ATTRIBUTION_POLICY, "status_protocol":self.status_protocol})
+                               "attribution_policy":LIVE_POLICY, "status_protocol":self.status_protocol})
             while active:
                 for identity, agent in self.agents.items():
                     if identity not in active:
@@ -439,7 +373,7 @@ class Competition:
                         if set(verdict) != set(baseline) or any(type(v) is not bool for v in verdict.values()):
                             raise ValueError("oracle contract changed")
                         edited_paths = sorted(changed_paths(committed_snapshot, snapshot))
-                        update_owners(baseline, current, verdict, owners, identity,
+                        update_live_owners(baseline, current, verdict, owners, identity,
                                       edited_paths, self.relevance)
                         for bug, passed in verdict.items():
                             if passed != current[bug]:
@@ -505,7 +439,7 @@ class Competition:
             except (ValueError, OSError):
                 final_tree_hash = None
             result = {"participants":list(self.agents),"stop_reason":reason,"final_tree_hash":final_tree_hash,
-                      "turn_limit":turn_limit,"turns_used":turns_used,"attribution_policy":ATTRIBUTION_POLICY,
+                      "turn_limit":turn_limit,"turns_used":turns_used,"attribution_policy":LIVE_POLICY,
                       "verified_score":None if no_oracle else grade if trusted else None,
                       "diagnostic_score":None if no_oracle or trusted else grade,
                       "reported_winner":winner,

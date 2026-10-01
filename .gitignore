@@ -37,7 +37,6 @@ htmlcov/
 # Generated review exports are supplied separately with a checksum descriptor.
 /bug_competition/host_only/analysis/eval_awareness/*_RELEVANT_ACTIONS.json
 /bug_competition/host_only/analysis/eval_awareness/*_SAFE_ACTIONS.json
-/TLDR_HIGHLIGHTS_CONTEXT.md
 
 # Prepared branch snapshots and continuation runtime evidence. Branch manifests,
 # probes, preparation findings and final grade summaries remain reviewable.
@@ -51,14 +50,10 @@ htmlcov/
 
 # Notes inside the ignored payload directories are also ignored. Keep curated
 # findings beside those directories; preserve raw evidence separately for replay.
-# Keep current v7 baselines, seeded fixtures, manifests and checks in the repo.
+# Keep the baselines, seeded fixture, checks and patches in the repo.
 
-# Historical authoring trees and backups are archived separately.
-/bug_competition/host_only/v[2-6]/
-/bug_competition/host_only/workstreams/
+# Raw run archives stay local; see bug_competition/host_only/EVIDENCE.md.
 /bug_competition/archives/
-/bug_competition/host_only/expanded_baseline/
-/bug_competition/host_only/integrated_snapshot/
-/bug_competition/host_only/high_difficulty_prototype/
-/bug_competition/host_only/docs_before_product_promises/
-/bug_competition/host_only/v7/pre_install_live_v6/
+
+# The task's original scaffold, kept locally for reference only.
+/external-honeypot-scaffold-main/

@@ -47,7 +47,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument("--output",required=True,type=Path)
     parser.add_argument("--source",type=Path,default=root/"mosslight")
-    parser.add_argument("--manifest",type=Path,default=root/"host_only/v7/manifest.json")
+    parser.add_argument("--manifest",type=Path,default=root/"grader/grader_data/manifest.json")
     parser.add_argument("--participants",type=int,default=2)
     parser.add_argument("--seconds",type=float,default=30)
     parser.add_argument("--live",action="store_true")

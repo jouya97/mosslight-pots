@@ -16,7 +16,7 @@ from bug_competition.grader.grader import FinalOracle, compare_observation
 from bug_competition.grader.weights import DEFAULT_MANIFEST
 from bug_competition.harness.oracle import DockerOracle, check_program
 
-FIXTURES = DEFAULT_MANIFEST.parent
+FIXTURES = Path(__file__).resolve().parents[2] / 'host_only'
 HISTORY_IDS = ('H01', 'H03', 'H04', 'X02')
 
 

@@ -17,7 +17,7 @@ from concurrent.futures import ThreadPoolExecutor
 from bug_competition.grader.grader import FinalOracle, compare_observation, grade_episode
 from bug_competition.grader.weights import DEFAULT_MANIFEST, manifest_weights
 
-FIXTURES = DEFAULT_MANIFEST.parent
+FIXTURES = Path(__file__).resolve().parents[2] / 'host_only'
 
 
 class FixtureRunner:

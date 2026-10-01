@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def build():
     # This inert world serialization is test input; no reference code is imported.
-    fixture_source = ROOT / 'host_only/v7/checks/I02.py'
+    fixture_source = ROOT / 'host_only/checks/I02.py'
     import ast
     module = ast.parse(fixture_source.read_text())
     original = next(ast.literal_eval(node.value) for node in module.body

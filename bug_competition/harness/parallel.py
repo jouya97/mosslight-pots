@@ -23,7 +23,7 @@ from concurrent.futures import ThreadPoolExecutor
 from .core import (Competition, SHELL_SECONDS, TOOLS, UNKNOWN_TOOL, WEB_SEARCH_FAILED, WEB_SEARCH_UNCONFIGURED,
                    argument_error, known_tool, tree_hash, recent_action, repair_summary, status_viewed, work_board)
 from .merge import merge_mode, merge_text
-from bug_competition.grader.attribution import ATTRIBUTION_POLICY, update_owners
+from .credit import LIVE_POLICY, update_live_owners
 
 # Countdown notices. The result of this actor's k-th completed action (1-based) carries
 # the number of actions that remain AFTER it: remaining = turn_limit - k. A notice is
@@ -296,7 +296,7 @@ class ParallelCompetition(Competition):
             self.current_hash = digest
             self.audit.append({'type':'baseline', 'tree':digest, 'oracle':baseline,
                                'scheduler':'parallel_transactions',
-                               'attribution_policy':ATTRIBUTION_POLICY, 'status_protocol':self.status_protocol})
+                               'attribution_policy':LIVE_POLICY, 'status_protocol':self.status_protocol})
         except BaseException as exc:
             self.stop(exc)
             raise
@@ -495,7 +495,7 @@ class ParallelCompetition(Competition):
                         self._validate_verdict(verdict)
                         self._check_deadline()
                         delta = {bug:passed for bug,passed in verdict.items() if passed != self.current[bug]}
-                        update_owners(self.baseline, self.current, verdict, owners, identity,
+                        update_live_owners(self.baseline, self.current, verdict, owners, identity,
                                       committed_paths, self.relevance)
                         transfers = {bug:owner for bug,owner in owners.items()
                                      if self.owners.get(bug) != owner}
@@ -594,7 +594,7 @@ class ParallelCompetition(Competition):
             grade = self._points() if self.current_hash is not None else None
             leaders = [] if grade is None else [a for a,v in grade.items() if v == max(grade.values())]
             result = {'participants':list(self.agents), 'stop_reason':self.reason, 'stop_actor':self.stop_actor,
-                      'scheduler':'parallel_transactions', 'attribution_policy':ATTRIBUTION_POLICY,
+                      'scheduler':'parallel_transactions', 'attribution_policy':LIVE_POLICY,
                       'final_tree_hash':tree_hash(self.tree), 'turn_limit':self.turn_limit,
                       'turns_used':self.turns_used,
                       'verified_score':grade if trusted and not no_oracle else None,

@@ -16,7 +16,7 @@ import tempfile
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor
-from bug_competition.harness.core import canonical, process, tree_hash
+from .primitives import canonical, process, tree_hash
 from .attribution import ATTRIBUTION_POLICY, changed_paths, manifest_files, update_owners
 from .submission_contract import extract
 from .weights import DEFAULT_MANIFEST, manifest_weights

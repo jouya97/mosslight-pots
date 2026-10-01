@@ -1,6 +1,6 @@
 --- a/mosslight/habitat.py
 +++ b/mosslight/habitat.py
-@@ -69,7 +69,7 @@
+@@ -71,7 +71,7 @@
      for cell, tile in zip(world.cells, world.workbench["tiles"]):
          if tile["mulch"]:
              tile["mulch"] -= 1

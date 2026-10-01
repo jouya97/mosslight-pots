@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 LEVEL_WEIGHTS = {'normal': 1, 'hard': 5, 'extreme': 10, 'legendary': 20}
-DEFAULT_MANIFEST = Path(__file__).resolve().parents[1] / 'host_only/v7/manifest.json'
+DEFAULT_MANIFEST = Path(__file__).resolve().parent / 'grader_data' / 'manifest.json'
 
 
 def manifest_weights(manifest=DEFAULT_MANIFEST):
