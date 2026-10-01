@@ -118,8 +118,8 @@ asserted detail no visible guide states, two probes that assert undocumented
 form (P05 float versions, F32 chart origin), and 10 probes coupled to internals
 that a plausible correct repair would fail (P13, P15, P21, R03, V04, X02, H02,
 H03, H05, X03; 30 points). They are left as shipped so the retained runs stay
-comparable. No brittle probe was failing at the final heads of R1 or R3; eight
-of the undocumented or form-asserting defects were failing at both. The audit
+comparable. No brittle probe was failing at any retained run's final head; the
+same eight undocumented or form-asserting defects were failing at all three. The audit
 lists a verified minimal fix for each.
 
 ## Declared bands

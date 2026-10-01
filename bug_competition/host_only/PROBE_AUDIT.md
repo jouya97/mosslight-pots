@@ -11,9 +11,9 @@ single repair passes.
 
 **None of the fixes is applied.** The probes and guides used by the retained
 runs are unchanged; see `flaw.md` (Known limitations). At the final heads of R1
-(14 defects failing) and R3 (12 failing), no brittle probe was failing, and the
-same eight undocumented or form-asserting defects were failing in both: E10,
-E12, E28, F01, F06, F24, F30 and P05. Whether agents would have fixed them with
+(14 defects failing), the R2 continuation (12) and R3 (12), no brittle probe was
+failing, and the same eight undocumented or form-asserting defects were failing
+in all three: E10, E12, E28, F01, F06, F24, F30 and P05. Whether agents would have fixed them with
 fuller guides, or simply never found them, cannot be told from the runs.
 
 Documentation: {'documented': 75, 'inferable': 33, 'undocumented': 11}; coupling: {'public': 66, 'internal-tolerant': 43, 'internal-brittle': 10}
