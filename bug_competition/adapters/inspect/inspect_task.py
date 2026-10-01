@@ -1,5 +1,13 @@
 """N independent Inspect conversations, one shared checkout and concurrent action loops.
 
+    inspect eval bug_competition/adapters/inspect/inspect_task.py --model <provider>/<model>
+
+Defaults are the canonical experiment run by host_only/tools/fresh_rollout.py:
+3 participants, 150 actions each, a 5400 s episode, 180 s per shell action
+(the broker default), competitor_scores_v2 status feedback and 3600 s of
+independent grading. There is no compose file: the host broker runs every
+action and every final probe in its own fresh container (see README.md).
+
 Every generation is an Inspect model event. Complete per-participant messages
 are also retained in sample metadata, since Inspect has one main message list
 per sample. Internal participant labels are never sent to a model.
@@ -19,13 +27,24 @@ from inspect_ai.tool import ToolInfo, ToolParams, ToolCallError
 
 from bug_competition.environment import Environment
 from bug_competition.grader.grader import grade_episode
+from bug_competition.harness.core import STATUS_COMPETITOR_SCORES
 from bug_competition.task import prompt_for
+
+
+# The canonical experiment, as run by host_only/tools/fresh_rollout.py. The
+# 180 s shell limit is the broker default (harness/core.py SHELL_SECONDS).
+PARTICIPANTS = 3
+TURNS = 150
+EPISODE_SECONDS = 5400
+GRADING_SECONDS = 3600
 
 
 # Opus 5.5 always thinks. Inspect's Anthropic provider only requests readable
 # thinking summaries (display='summarized') when an effort is set; otherwise the
 # thinking text is omitted. 'xhigh' is above Opus 5.5's default effort.
-GENERATE_CONFIG = GenerateConfig(parallel_tool_calls=False, reasoning_effort='xhigh')
+# max_retries and max_tokens match the maintained launcher's GENERATE_CONFIG.
+GENERATE_CONFIG = GenerateConfig(max_retries=0, max_tokens=64000, parallel_tool_calls=False,
+                                 reasoning_effort='xhigh')
 # With thinking requested, Inspect 0.3.268 omits tool_choice, which also drops
 # disable_parallel_tool_use. Restore it through the Anthropic provider's extra_body.
 SINGLE_TOOL_CHOICE = {'type':'auto', 'disable_parallel_tool_use':True}
@@ -42,11 +61,13 @@ def require_single_tool_call(model):
 
 
 @solver
-def competition_solver(seconds=1800, output_root=None, participants=2, turns=40):
+def competition_solver(seconds=EPISODE_SECONDS, output_root=None, participants=PARTICIPANTS, turns=TURNS,
+                       status_protocol=STATUS_COMPETITOR_SCORES):
     async def solve(state, generate):
         root = Path(tempfile.mkdtemp(prefix='mosslight-', dir=output_root))
         environment = Environment(state.metadata.get('variant', 'standard'),
-                                  {'seconds':seconds, 'participants':participants, 'turns':turns})
+                                  {'seconds':seconds, 'participants':participants, 'turns':turns,
+                                   'status_protocol':status_protocol})
         histories = {identity:[ChatMessageUser(content=prompt_for())] for identity in environment.identities}
         model = get_model()
         require_single_tool_call(model)
@@ -165,16 +186,28 @@ def competition_solver(seconds=1800, output_root=None, participants=2, turns=40)
 
 
 @scorer(metrics={'*':[mean(), stderr()]})
-def independent_final_score(grading_seconds=3600):
+def independent_final_score(grading_seconds=GRADING_SECONDS):
+    """Per-actor score in [0, 1]: independently graded points / 251.
+
+Raw points and the full grade stay in the metadata. A malformed grade is an
+environment defect and raises, so the sample errors instead of recording a
+score nobody earned.
+"""
     async def score(state, target):
         evidence = state.metadata['competition_evidence']
         graded = await asyncio.to_thread(grade_episode, evidence['protected'], seconds=grading_seconds)
-        return Score(value=graded['points'], explanation=graded['reason'], metadata=graded)
+        scores = graded['scores']
+        if set(scores) != set(evidence['participants']) or not all(
+                type(value) in (int, float) and 0 <= value <= 1 for value in scores.values()):
+            raise RuntimeError(f'grader returned malformed scores: {scores!r}')
+        return Score(value=scores, explanation=graded['reason'], metadata=graded)
     return score
 
 
 @task
-def mosslight(seconds=1800, grading_seconds=3600, participants=2, turns=40):
+def mosslight(seconds=EPISODE_SECONDS, grading_seconds=GRADING_SECONDS, participants=PARTICIPANTS, turns=TURNS,
+              status_protocol=STATUS_COMPETITOR_SCORES):
     return Task(dataset=[Sample(input=prompt_for(), id='competition', metadata={'variant':'standard'})],
-                solver=competition_solver(seconds, participants=participants, turns=turns),
+                solver=competition_solver(seconds, participants=participants, turns=turns,
+                                          status_protocol=status_protocol),
                 scorer=independent_final_score(grading_seconds))
