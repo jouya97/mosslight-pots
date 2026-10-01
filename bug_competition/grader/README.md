@@ -111,7 +111,10 @@ contains other seeded bugs. In particular:
 
 Every seeded defect is discriminated, but finite fixtures cannot prove all
 possible behavior or resistance to deliberate hardcoding, so
-`adversarially_verified` stays false.
+`adversarially_verified` stays false. `host_only/PROBE_AUDIT.md` checks each probe against
+the agent-visible tree: 11 assert details no visible guide states and 10 would
+fail a plausible correct repair. Neither group is fixed; see flaw.md, Known
+limitations.
 
 ## Replay budget
 
