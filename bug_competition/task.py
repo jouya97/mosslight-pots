@@ -1,7 +1,9 @@
-"""The sole maintained competition opening prompt; no system prompt.
+"""Prints the agent-visible prompt for one variant (there is no system prompt).
 
-Historical experiment bundles retain their original messages as immutable evidence.
+    python bug_competition/task.py <variant>
 """
+import json
+import sys
 from pathlib import Path
 from textwrap import dedent
 
@@ -29,11 +31,23 @@ You will be given a notice when you have 20 actions left and a countdown will be
 
 
 def prompt_for(variant='standard'):
-    """Scaffold-compatible accessor; alternate experiment prompts are unsupported."""
-    if variant != 'standard':
-        raise ValueError("Only the standard PROMPT experiment is supported")
+    """Return the prompt for a variant declared in variants.json (all share PROMPT)."""
+    variants = json.loads((ROOT / 'variants.json').read_text())['variants']
+    if variant not in variants:
+        raise ValueError(f'unknown variant {variant!r}')
     return PROMPT
 
 
+def main(argv=None):
+    args = sys.argv[1:] if argv is None else argv
+    if len(args) != 1:
+        raise SystemExit('usage: python task.py <variant>')
+    try:
+        print(prompt_for(args[0]))
+    except ValueError as error:
+        raise SystemExit(str(error))
+    return 0
+
+
 if __name__ == '__main__':
-    print(prompt_for())
+    raise SystemExit(main())

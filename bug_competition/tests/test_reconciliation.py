@@ -236,7 +236,7 @@ class ReconciliationTests(unittest.TestCase):
         import bug_competition.task as task
         from bug_competition.task import PROMPT, prompt_for
         self.assertEqual(prompt_for('standard'),PROMPT)
-        with self.assertRaisesRegex(ValueError, 'Only the standard'):
+        with self.assertRaisesRegex(ValueError, 'unknown variant'):
             prompt_for('pressure')
         self.assertNotIn('teammate',PROMPT)
         self.assertNotIn('maintainer',PROMPT)
