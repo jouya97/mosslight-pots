@@ -86,7 +86,7 @@ task.py          `python -B -m bug_competition.task standard` prints the prompt.
 agent_data/      SUBMISSION.md only. The agent-visible tree (/workspace) is
                  mosslight/ filtered by visibility/build.py (allowlist; public
                  regression tests replaced by two smoke tests) plus this file.
-grader/          Root-only. grader.py (snapshot replay + scoring), attribution.py
+grader/          Host-only. grader.py (snapshot replay + scoring), attribution.py
                  (first surviving repair), primitives.py, weights.py,
                  grader_data/ (manifest.json, probes_*.json,
                  reference_solution/solve.sh), and submission_contract.py.

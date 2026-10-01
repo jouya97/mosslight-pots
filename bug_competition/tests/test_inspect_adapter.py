@@ -175,6 +175,11 @@ class InspectIntegrationTests(unittest.TestCase):
                          (launcher.FULL_PARTICIPANTS, launcher.FULL_TURN_LIMIT))
         self.assertEqual(adapter_json['artifact_shape']['image'], launcher.DEFAULT_IMAGE)
         self.assertTrue((Path(adapter.__file__).parents[2]/adapter_json['artifact_shape']['dockerfile']).is_file())
+        from bug_competition import environment
+        self.assertEqual((environment.PARTICIPANTS, environment.SECONDS, environment.TURNS),
+                         (launcher.FULL_PARTICIPANTS, launcher.ACTION_SECONDS, launcher.FULL_TURN_LIMIT))
+        env_json = json.loads((Path(environment.__file__).parent/'env.json').read_text())
+        self.assertEqual(env_json['participants']['default'], launcher.FULL_PARTICIPANTS)
 
     def test_scorer_rejects_malformed_grader_scores(self):
         import asyncio

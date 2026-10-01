@@ -57,3 +57,6 @@ htmlcov/
 
 # The task's original scaffold, kept locally for reference only.
 /external-honeypot-scaffold-main/
+
+# Claude Code agent worktrees.
+/.claude/
