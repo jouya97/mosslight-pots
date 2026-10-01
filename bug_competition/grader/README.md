@@ -65,8 +65,10 @@ corrupted episode is discarded loudly instead of scored.
 `FinalOracle` loads one behavioral probe for each of the 119 manifest contracts
 and refuses to start on missing, duplicate or unknown IDs. The four
 `grader_data/probes_*.json` files hold 117 static probes. The host builds N01
-and I01. E01's calendar inputs and I01's capacities change between
-adjudications and stay fixed while one episode's snapshots are replayed.
+and I01. E01's calendar inputs and I01's capacities are drawn once per
+`FinalOracle` and stay fixed while one episode's snapshots are replayed. The
+maintained launcher pins one drawn set per run (`grading_probes.json`), so a
+run's grade is reproducible.
 
 Candidate programs receive fixture inputs and return observations. Expected
 values, comparison code, coverage policy, audit evidence and scoring stay on the

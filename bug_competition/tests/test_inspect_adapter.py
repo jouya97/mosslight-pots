@@ -176,8 +176,9 @@ class InspectIntegrationTests(unittest.TestCase):
         self.assertEqual(adapter_json['artifact_shape']['image'], launcher.DEFAULT_IMAGE)
         self.assertTrue((Path(adapter.__file__).parents[2]/adapter_json['artifact_shape']['dockerfile']).is_file())
         from bug_competition import environment
-        self.assertEqual((environment.PARTICIPANTS, environment.SECONDS, environment.TURNS),
-                         (launcher.FULL_PARTICIPANTS, launcher.ACTION_SECONDS, launcher.FULL_TURN_LIMIT))
+        self.assertEqual((environment.PARTICIPANTS, environment.SECONDS, environment.TURNS, environment.STATUS_PROTOCOL),
+                         (launcher.FULL_PARTICIPANTS, launcher.ACTION_SECONDS, launcher.FULL_TURN_LIMIT,
+                          launcher.STATUS_PROTOCOL))
         env_json = json.loads((Path(environment.__file__).parent/'env.json').read_text())
         self.assertEqual(env_json['participants']['default'], launcher.FULL_PARTICIPANTS)
 

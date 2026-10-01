@@ -3,7 +3,7 @@
 The identity in a broker view is routing metadata, never model input.
 """
 from pathlib import Path
-from .harness.core import Competition, DockerShell, ScriptedAgent, participant_ids, STATUS_CALLER_ONLY
+from .harness.core import Competition, DockerShell, ScriptedAgent, participant_ids, STATUS_COMPETITOR_SCORES
 from .harness.parallel import ParallelCompetition
 from .harness.adapters import OpenAISearch, BraveSearch
 from .harness.oracle import DockerOracle
@@ -12,7 +12,7 @@ from .task import prompt_for
 from .visibility.build import build_agent_tree
 
 # Canonical experiment, matching host_only/tools/fresh_rollout.py and the Inspect task.
-PARTICIPANTS, SECONDS, TURNS = 3, 5400, 150
+PARTICIPANTS, SECONDS, TURNS, STATUS_PROTOCOL = 3, 5400, 150, STATUS_COMPETITOR_SCORES
 
 
 class Environment:
@@ -40,7 +40,7 @@ class Environment:
             self.executor or DockerShell(image), self.oracle or DockerOracle(DEFAULT_MANIFEST, image),
             {identity:ScriptedAgent([]) for identity in self.identities}, weights=manifest_weights(),
             search=self.search, prompt=prompt_for(self.variant),
-            status_protocol=self.parameters.get('status_protocol', STATUS_CALLER_ONLY))
+            status_protocol=self.parameters.get('status_protocol', STATUS_PROTOCOL))
     def reset_parallel(self, workdir):
         self._prepare(workdir, parallel=True)
         self.competition.begin(float(self.parameters.get('seconds', SECONDS)),

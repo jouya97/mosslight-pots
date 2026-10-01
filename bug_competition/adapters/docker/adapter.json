@@ -10,7 +10,7 @@
     "outer_cap_s": 9300,
     "notes": {
       "startup_s": "Docker daemon and image preflight; the runtime never pulls the image.",
-      "setup_s": "The baseline check (one probe container per defect) runs inside the episode budget; there is no separate setup timer.",
+      "setup_s": "Equal to episode_s: the baseline check (one probe container per defect) runs inside the episode budget, with no separate timer.",
       "tool_use_s": "Per shell action, capped by the time left in the episode.",
       "probe_s": "Per candidate container, live board and final grading.",
       "episode_s": "Wall-clock budget for all participants together; each also has 150 actions.",

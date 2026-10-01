@@ -17,7 +17,7 @@ The tiers are intended difficulty, not measured human repair times. N01/N02 are 
 | Path | Contents |
 | --- | --- |
 | `clean_baseline/` | The clean application and its public regression tests |
-| `seeded_snapshot/` | The same tree with all 119 defects seeded |
+| `seeded_snapshot/` | The same tree with all 119 defects seeded. Its code matches the agent-visible `mosslight/`; only docstrings, comments and guides differ |
 | `checks/<ID>.py` | One focused host check per defect; passes on clean, fails on seeded |
 | `patches/<ID>.patch` | The clean-to-seeded diff for each defect |
 | `verification.json` | The last `verify.py` audit: 119/119 checks pass on clean, 119/119 fail on seeded, 191 clean public tests pass, plus tree and manifest hashes |
