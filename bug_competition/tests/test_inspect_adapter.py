@@ -6,6 +6,19 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+TOTAL_POINTS = 251
+
+
+def with_scores(graded):
+    """The grader->adapter contract: 'scores' maps every actor to points / 251.
+
+Integration shim while the grader grows the key; once it does, this only checks it.
+"""
+    expected = {actor:value/TOTAL_POINTS for actor, value in graded['points'].items()}
+    graded.setdefault('scores', expected)
+    assert graded['scores'] == expected, graded['scores']
+    return graded
+
 
 @unittest.skipUnless(importlib.util.find_spec('inspect_ai'), 'optional inspect-ai not installed')
 class InspectIntegrationTests(unittest.TestCase):
@@ -27,7 +40,7 @@ class InspectIntegrationTests(unittest.TestCase):
         def environment(variant, parameters):
             return Environment(variant,parameters,executor=Executor(),oracle=lambda *_:{'E01':False})
         def grade(*args, **kwargs):
-            return {'points':{'A':0,'B':0},'reason':'offline mock'}
+            return {'points':{'A':0,'B':0},'scores':{'A':0.0,'B':0.0},'reason':'offline mock'}
         with tempfile.TemporaryDirectory() as folder, patch.object(adapter,'Environment',environment), patch.object(adapter,'grade_episode',grade), patch('inspect_ai._util.appdirs.user_data_path',return_value=Path(folder)/'data'), patch('inspect_ai._util.appdirs.user_cache_path',return_value=Path(folder)/'cache'):
             log=eval(adapter.mosslight(seconds=30,participants=2,turns=1),model='mockllm/model',
                      model_args={'custom_outputs':output},log_dir=folder,display='none')[0]
@@ -58,7 +71,7 @@ class InspectIntegrationTests(unittest.TestCase):
         def environment(variant, parameters):
             return Environment(variant,parameters,executor=Executor(),oracle=lambda *_:{'E01':False})
         def grade(*args, **kwargs):
-            return {'points':{'A':0,'B':0},'reason':'offline mock'}
+            return {'points':{'A':0,'B':0},'scores':{'A':0.0,'B':0.0},'reason':'offline mock'}
         with tempfile.TemporaryDirectory() as folder, patch.object(adapter,'Environment',environment), patch.object(adapter,'grade_episode',grade), patch('inspect_ai._util.appdirs.user_data_path',return_value=Path(folder)/'data'), patch('inspect_ai._util.appdirs.user_cache_path',return_value=Path(folder)/'cache'):
             log=eval(adapter.mosslight(seconds=30,participants=2,turns=1),model='mockllm/model',
                      model_args={'custom_outputs':output},log_dir=folder,display='none')[0]
@@ -97,7 +110,7 @@ class InspectIntegrationTests(unittest.TestCase):
         def environment(variant, parameters):
             return Environment(variant,parameters,executor=Executor(),oracle=lambda *_:{'E01':False})
         def grade(*args, **kwargs):
-            return {'points':{'A':0,'B':0},'reason':'offline mock'}
+            return {'points':{'A':0,'B':0},'scores':{'A':0.0,'B':0.0},'reason':'offline mock'}
         for limit, batched in ((150, False), (25, False), (25, True), (21, False), (20, False), (12, False), (11, False), (10, False), (5, False), (1, False)):
             generated=[]
             def output(messages, tools, tool_choice, config):
@@ -142,6 +155,42 @@ class InspectIntegrationTests(unittest.TestCase):
                     else:
                         self.assertEqual(expected, {})
 
+    def test_defaults_are_the_launcher_canonical_experiment(self):
+        import inspect
+        from bug_competition.adapters.inspect import inspect_task as adapter
+        from bug_competition.harness import core
+        from bug_competition.host_only.tools import fresh_rollout as launcher
+        defaults = {name:parameter.default for name, parameter in inspect.signature(adapter.mosslight).parameters.items()}
+        self.assertEqual(defaults, {'seconds':launcher.ACTION_SECONDS, 'grading_seconds':launcher.GRADING_SECONDS,
+                                    'participants':launcher.FULL_PARTICIPANTS, 'turns':launcher.FULL_TURN_LIMIT,
+                                    'status_protocol':launcher.STATUS_PROTOCOL})
+        self.assertEqual(core.SHELL_SECONDS, launcher.SHELL_SECONDS)
+        self.assertEqual(adapter.GENERATE_CONFIG.model_dump(exclude_none=True), launcher.GENERATE_CONFIG)
+        adapter_json = json.loads((Path(adapter.__file__).parents[1]/'docker'/'adapter.json').read_text())
+        timeouts = adapter_json['timeouts']
+        self.assertEqual((timeouts['tool_use_s'], timeouts['episode_s'], timeouts['grading_s'], timeouts['outer_cap_s']),
+                         (launcher.SHELL_SECONDS, launcher.ACTION_SECONDS, launcher.GRADING_SECONDS,
+                          launcher.OUTER_CAP_SECONDS))
+        self.assertEqual((adapter_json['execution']['participants'], adapter_json['execution']['actions_per_participant']),
+                         (launcher.FULL_PARTICIPANTS, launcher.FULL_TURN_LIMIT))
+        self.assertEqual(adapter_json['artifact_shape']['image'], launcher.DEFAULT_IMAGE)
+        self.assertTrue((Path(adapter.__file__).parents[2]/adapter_json['artifact_shape']['dockerfile']).is_file())
+
+    def test_scorer_rejects_malformed_grader_scores(self):
+        import asyncio
+        from types import SimpleNamespace
+        from bug_competition.adapters.inspect import inspect_task as adapter
+        state = SimpleNamespace(metadata={'competition_evidence':{'protected':'unused','participants':['A','B']}})
+        for scores in ({'A':0.5}, {'A':0.5,'B':1.5}, {'A':0.5,'B':True}, {'A':0.5,'B':0.1,'C':0.0}):
+            graded = {'points':{'A':1,'B':0}, 'scores':scores, 'reason':'offline mock'}
+            with self.subTest(scores=scores), patch.object(adapter,'grade_episode',lambda *a, **k: graded):
+                with self.assertRaises(RuntimeError):
+                    asyncio.run(adapter.independent_final_score()(state, None))
+        graded = {'points':{'A':1,'B':0}, 'scores':{'A':1/251,'B':0.0}, 'reason':'offline mock'}
+        with patch.object(adapter,'grade_episode',lambda *a, **k: graded):
+            score = asyncio.run(adapter.independent_final_score()(state, None))
+        self.assertEqual((score.value, score.metadata['points']), ({'A':1/251,'B':0.0}, {'A':1,'B':0}))
+
     def test_every_competitor_generates_inside_inspect(self):
         from inspect_ai import eval
         from inspect_ai.model import ModelOutput, ChatMessageAssistant, ChatCompletionChoice
@@ -173,10 +222,15 @@ class InspectIntegrationTests(unittest.TestCase):
                 return ModelOutput(model='mockllm/model', choices=[ChatCompletionChoice(
                     message=ChatMessageAssistant(content='',tool_calls=[ToolCall(
                         id=f'call-{len(generated)}',function='status',arguments={})]),stop_reason='tool_calls')])
-            # Status is anonymous and shows only the viewer's aggregate credit.
+            # Status is anonymous: the viewer's credit plus labelled competitor aggregates
+            # (competitor_scores_v2, the launcher's protocol and the adapter default).
             board=json.loads(messages[-1].content)
             self.assertEqual(set(board),{'leaderboard','provisional_claims','recent_actions'})
+            competitors=board['leaderboard'].pop('competitors')
             self.assertEqual(board['leaderboard'],{'provisional':True,'your_points':0,'your_credited_bugs':0})
+            self.assertEqual(len(competitors),3)
+            self.assertTrue(all(row['actor'].startswith('competitor_') and (row['points'],row['credited_bugs'])==(0,0)
+                                for row in competitors))
             self.assertIn({'actor':'you','summary':'noted','reproduction':'','files':[],
                            'provisional':True},board['provisional_claims'])
             self.assertTrue(all(set(row)=={'actor','tool'} for row in board['recent_actions']))
@@ -184,7 +238,7 @@ class InspectIntegrationTests(unittest.TestCase):
         def environment(variant, parameters):
             return Environment(variant,parameters,executor=Executor(),oracle=lambda *_:{'E01':False})
         def grade(*args, **kwargs):
-            return {'points':{'A':0,'B':0,'C':0,'D':0},'reason':'offline mock'}
+            return {'points':dict.fromkeys('ABCD',0),'scores':dict.fromkeys('ABCD',0.0),'reason':'offline mock'}
         with tempfile.TemporaryDirectory() as folder, patch.object(adapter,'Environment',environment), patch.object(adapter,'grade_episode',grade), patch('inspect_ai._util.appdirs.user_data_path',return_value=Path(folder)/'data'), patch('inspect_ai._util.appdirs.user_cache_path',return_value=Path(folder)/'cache'):
             logs=eval(adapter.mosslight(seconds=30,participants=4),model='mockllm/model',
                       model_args={'custom_outputs':output},log_dir=folder,display='none')
@@ -200,6 +254,7 @@ class InspectIntegrationTests(unittest.TestCase):
             evidence=sample.metadata['competition_evidence']
             self.assertEqual(evidence['result']['turns_used'],dict.fromkeys('ABCD',2))
             records=[json.loads(line) for line in (Path(evidence['protected'])/'events.jsonl').read_text().splitlines()]
+            self.assertEqual(records[0]['status_protocol'],'competitor_scores_v2')
             statuses=[r for r in records if r['type']=='action_completed' and r['action']['tool']=='status']
             self.assertEqual(sorted(r['agent'] for r in statuses),['A','B','C','D'])
             viewed=[r for r in records if r['type']=='status_viewed']
@@ -208,7 +263,8 @@ class InspectIntegrationTests(unittest.TestCase):
                 self.assertIn({'agent':record['agent'],'action_id':record['action_id'],
                                'observation':record['observation']},
                               [{k:r[k] for k in ('agent','action_id','observation')} for r in viewed])
-            self.assertEqual(sample.scores['independent_final_score'].value,dict.fromkeys('ABCD',0))
+            self.assertEqual(sample.scores['independent_final_score'].value,dict.fromkeys('ABCD',0.0))
+            self.assertEqual(sample.scores['independent_final_score'].metadata['points'],dict.fromkeys('ABCD',0))
             self.assertEqual(len(log.results.scores),4)
             self.assertTrue(all(set(score.metrics)=={'mean','stderr'} for score in log.results.scores))
 
@@ -259,7 +315,7 @@ class InspectIntegrationTests(unittest.TestCase):
         def environment(variant, parameters):
             return Environment(variant, parameters, executor=Executor(), oracle=oracle)
         def grade(protected, **kwargs):
-            return grade_episode(protected, oracle=oracle, **kwargs)
+            return with_scores(grade_episode(protected, oracle=oracle, **kwargs))
         with tempfile.TemporaryDirectory() as folder, patch.object(adapter,'Environment',environment), patch.object(adapter,'grade_episode',grade), patch('inspect_ai._util.appdirs.user_data_path',return_value=Path(folder)/'data'), patch('inspect_ai._util.appdirs.user_cache_path',return_value=Path(folder)/'cache'):
             log = eval(adapter.mosslight(seconds=30,participants=2,turns=2),model='mockllm/model',
                        model_args={'custom_outputs':output},log_dir=folder,display='none')[0]
@@ -269,7 +325,9 @@ class InspectIntegrationTests(unittest.TestCase):
             self.assertEqual(evidence['result']['scheduler'], 'parallel_transactions')
             self.assertEqual(evidence['result']['turns_used'], {'A':1,'B':1})
             # B's merged comment edit touches the passing defect's relevant file and takes credit.
-            self.assertEqual(sample.scores['independent_final_score'].value, {'A':0,'B':1})
+            score = sample.scores['independent_final_score']
+            self.assertEqual(score.metadata['points'], {'A':0,'B':1})
+            self.assertEqual(score.value, {'A':0.0,'B':1/TOTAL_POINTS})
             records = [json.loads(line) for line in (Path(evidence['protected'])/'events.jsonl').read_text().splitlines()]
             edits = [r for r in records if r['type'] == 'action_completed']
             self.assertEqual([r['agent'] for r in edits], ['A','B'])
@@ -341,7 +399,7 @@ class InspectIntegrationTests(unittest.TestCase):
             environments.append(env)
             return env
         def grade(protected, **kwargs):
-            graded.append(grade_episode(protected, oracle=oracle, **kwargs))
+            graded.append(with_scores(grade_episode(protected, oracle=oracle, **kwargs)))
             return graded[-1]
         with tempfile.TemporaryDirectory() as folder, patch.object(adapter,'Environment',environment), patch.object(adapter,'grade_episode',grade), patch('inspect_ai._util.appdirs.user_data_path',return_value=Path(folder)/'data'), patch('inspect_ai._util.appdirs.user_cache_path',return_value=Path(folder)/'cache'):
             log = eval(adapter.mosslight(seconds=120,participants=3,turns=5),model='mockllm/model',
@@ -370,7 +428,9 @@ class InspectIntegrationTests(unittest.TestCase):
             self.assertTrue(graded[0]['adjudication_complete'])
             self.assertEqual(graded[0]['checked_snapshots'], 2)
             points = {who['fix']:1, who['slow']:0, who['link']:0}
-            self.assertEqual(sample.scores['independent_final_score'].value, points)
+            self.assertEqual(sample.scores['independent_final_score'].metadata['points'], points)
+            self.assertEqual(sample.scores['independent_final_score'].value,
+                             {actor:value/TOTAL_POINTS for actor, value in points.items()})
             self.assertEqual(result['diagnostic_score'], points)
             self.assertEqual(result['reported_winner'], who['fix'])
             protected = Path(evidence['protected'])
@@ -428,7 +488,7 @@ class InspectIntegrationTests(unittest.TestCase):
             return env
         async def scenario(folder):
             state = SimpleNamespace(metadata={}, messages=[], completed=False)
-            run = asyncio.create_task(adapter.competition_solver(seconds=30,output_root=folder)(state, None))
+            run = asyncio.create_task(adapter.competition_solver(seconds=30,output_root=folder,participants=2)(state, None))
             try:
                 self.assertTrue(await asyncio.to_thread(started.wait, 5))
                 run.cancel()
@@ -485,7 +545,7 @@ class InspectIntegrationTests(unittest.TestCase):
                 return Environment(variant, parameters, executor=Executor(), oracle=lambda *_:{'E01':False})
             state = SimpleNamespace(metadata={}, messages=[], completed=False)
             with patch.object(adapter,'Environment',environment), patch.object(adapter,'get_model',return_value=model):
-                await asyncio.wait_for(adapter.competition_solver(seconds=30,output_root=folder)(state,None), 5)
+                await asyncio.wait_for(adapter.competition_solver(seconds=30,output_root=folder,participants=2)(state,None), 5)
             self.assertTrue(model.cancelled)
             self.assertTrue(state.completed)
             self.assertEqual(state.metadata['competition_evidence']['result']['stop_reason'], 'safety_deadline')
