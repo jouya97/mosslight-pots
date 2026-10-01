@@ -1,9 +1,34 @@
-# v7 host checkpoint
+# Defect universe
 
-The current manifest has **119 distinct defects and 251 weighted points**. Normal/Hard/Extremely Hard/Legendary weights are 1/5/10/20. P33 was removed on 2026-09-25; the current defect universe excludes it. Difficulty labels are intended challenge estimates, not measured repair times.
+The ground truth is [`grader/grader_data/manifest.json`](../grader/grader_data/manifest.json). It lists **119 seeded behavioral defects worth 251 points** across 31 source files.
 
-`seeded_snapshot/` preserves the defective application and `clean_baseline/` its clean counterpart. I01 concerns cancelling an earlier pipe allocation through reverse capacity; I02 concerns incorrectly merging spatial garden states that share aggregate measurements. These are separate roots. Agent staging substitutes ordinary product guides and removes pinpoint tests; host checks and manifests must never enter agent mounts.
+| Tier | Weight | Defects | Points |
+| --- | ---: | ---: | ---: |
+| normal | 1 | 91 | 91 |
+| hard | 5 | 26 | 130 |
+| extreme | 10 | 1 (I01) | 10 |
+| legendary | 20 | 1 (I02) | 20 |
+| **total** | | **119** | **251** |
 
-`verification.json` is an **install-time historical record from before P33 removal**: it records 120/120 focused checks and 191 public Python tests on clean. Its 120 count must not be presented as the current 119-defect result. `optional_source_cleanup.json` records editorial clue removal. Older v6 material and `pre_install_live_v6/` are archival.
+The tiers are intended difficulty, not measured human repair times. N01/N02 are provisionally hard. I01 (cancelling an earlier pipe allocation through reverse capacity) and I02 (wrongly merging spatial garden states that share aggregate measurements) are separate root causes. Each manifest entry gives the contract, symptom, root cause, file and locations, seeded `old`/`new` text, a focused check, the expected fix, and difficulty and realism rationales. The ID families are E 30, F 32, P 33, H 6, V 4, R 3, X 3, I 2, N 2, Q 2, L 1 and M 1. P33 was dropped from the universe, which is why there are 119 defects and P33 is absent.
 
-The in-process diagnostic checker is intentionally spoofable. Independent final scoring uses host-side comparison and snapshot attribution;119-ID probe coverage remains finite. See [current results](../RESULTS.md), [evidence](../EVIDENCE.md) and [launch instructions](../tools/FRESH_ROLLOUT.md) rather than treating this checkpoint record as a launch recipe.
+## Fixtures
+
+| Path | Contents |
+| --- | --- |
+| `clean_baseline/` | The clean application and its public regression tests |
+| `seeded_snapshot/` | The same tree with all 119 defects seeded |
+| `checks/<ID>.py` | One focused host check per defect; passes on clean, fails on seeded |
+| `patches/<ID>.patch` | The clean-to-seeded diff for each defect |
+| `verification.json` | The last `verify.py` audit: 119/119 checks pass on clean, 119/119 fail on seeded, 191 clean public tests pass, plus tree and manifest hashes |
+
+These checks import the tree under test, so they are for trusted host trees only. They are not the final grader. The grader uses its own probes in `grader/grader_data/probes_*.json`, runs them in isolated containers and compares the results on the host ([grader/README.md](../grader/README.md)). Nothing in this directory enters an agent mount. The agent-visible tree is built from `mosslight/` by `visibility/build.py`, which replaces the pinpoint public tests with two smoke tests.
+
+## Verify
+
+```sh
+python3 -B bug_competition/host_only/verify.py --check E01 --tree bug_competition/host_only/seeded_snapshot   # one defect; exits nonzero on seeded
+python3 -B bug_competition/host_only/verify.py                                                               # full audit; rewrites verification.json
+```
+
+The full audit exits 0 only when every check passes on clean, every check fails on seeded, and the clean public suite passes. It makes no model calls, no network calls and no Docker calls.

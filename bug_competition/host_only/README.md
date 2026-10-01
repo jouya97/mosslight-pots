@@ -1,14 +1,14 @@
-# Host-only reviewer index
+# Host-only index
 
-This directory contains manifests, probes, experimental tooling and evidence. It must remain outside the agent workspace. Begin with the [repository quickstart](../../README.md).
+Nothing in this directory is mounted into an agent container. Begin with the [environment README](../README.md).
 
-- [Results](RESULTS.md): latest independently graded outcome and attribution caveats.
-- [Evidence](EVIDENCE.md): tracked bundle descriptor, local raw archive, verification and transcript reading.
-- [Fresh rollouts](tools/FRESH_ROLLOUT.md): canonical new-seed preparation and explicit paid launch.
-- [Branch continuations](tools/BRANCH_ROLLOUT.md): saved-boundary inspection and canonical-source continuation.
-- [v7 manifest context](v7/README.md): 119 defects, 251 weighted points, removed P33.
-- `fixtures/fresh_rollout_probes/`: canonical pinned live/grading probe pair.
+- [DEFECTS.md](DEFECTS.md): the 119-defect, 251-point universe, the clean and seeded fixtures, and `verify.py`.
+- `clean_baseline/`, `seeded_snapshot/`, `checks/`, `patches/`, `verify.py`, `verification.json`: the host fixtures and their audit.
+- `fixtures/fresh_rollout_probes/`: the canonical pinned live and grading probe pair used by the launchers.
+- [tools/FRESH_ROLLOUT.md](tools/FRESH_ROLLOUT.md): preparing a new seed, the explicit paid launch, monitoring, the completion check and troubleshooting.
+- [tools/BRANCH_ROLLOUT.md](tools/BRANCH_ROLLOUT.md): inspecting a saved boundary and continuing from it.
+- [RESULTS.md](RESULTS.md): the retained runs and their recorded grades.
+- [EVIDENCE.md](EVIDENCE.md): the bundle descriptors, raw archive access and verification, and how to read a run.
+- `rollouts/`, `branches/`: retained run directories (raw payloads are git-ignored). `evidence-bundles/`: integrity descriptors. `analysis/`: evaluation-awareness reviews.
 
-`rollouts/` and `branches/` contain the three retained completed runs listed in [Evidence](EVIDENCE.md) when provisioned; do not modify historical run folders or execute their archived runner scripts as new launch recipes. The maintained tools own new runs and refuse reused evidence directories. The sole active opening prompt is `PROMPT`; historical prompt variants remain readable only as evidence.
-
-The prompt's automatic all-defects ending and ten final actions are not implemented. Read the current launcher contract and each archived invocation separately when interpreting stopping behavior.
+Do not modify the retained run folders, and do not run their archived per-run scripts as launch recipes. The maintained tools create new runs and refuse to reuse evidence directories. `PROMPT` in `task.py` is the only opening prompt. A saved run's prompt is evidence only. That prompt promises ten final actions once every defect is repaired. The promise is deliberately false: that phase never happens ([flaw.md](../flaw.md)).
