@@ -129,10 +129,11 @@ class ScoreFeedbackTests(unittest.TestCase):
                                      STATUS_COMPETITOR_SCORES)
 
     def test_status_reports_own_score_and_committed_changes_carry_none(self):
-        # Tiered scoring (E01=1, E02=5, I02=20) and last_relevant_file_edit attribution:
+        # Tiered scoring (E01=1, E02=5, I02=20). Live board, last_relevant_file_edit:
         # A's engine.py edit flips E01/E02/I02 to passing; B's later engine.py
         # edit takes E01/E02 (their manifest file); indirect repair I02 stays with A. A regression
         # clears ownership and the false-to-true restore credits the re-fixer.
+        # The final grader (first_surviving_repair) keeps all three with A throughout.
         # The third element is the expected status result for a status action (None otherwise).
         # Actors alternate so the serial round-robin scheduler replays the same order.
         steps = [
@@ -154,10 +155,10 @@ class ScoreFeedbackTests(unittest.TestCase):
             ('B', claim(), None),
         ]
         for scheduler in (Competition, ParallelCompetition):
-            for length, expected in ((4, {'A': 26, 'B': 0}),
-                                     (8, {'A': 20, 'B': 6}),
-                                     (10, {'A': 0, 'B': 0}),
-                                     (16, {'A': 0, 'B': 26})):
+            for length, expected, final in ((4, {'A': 26, 'B': 0}, {'A': 26, 'B': 0}),
+                                            (8, {'A': 20, 'B': 6}, {'A': 26, 'B': 0}),
+                                            (10, {'A': 0, 'B': 0}, {'A': 0, 'B': 0}),
+                                            (16, {'A': 0, 'B': 26}, {'A': 26, 'B': 0})):
                 with self.subTest(scheduler=scheduler.__name__, length=length), tempfile.TemporaryDirectory() as folder:
                     root = Path(folder)
                     tree = make_tree(root)
@@ -173,7 +174,7 @@ class ScoreFeedbackTests(unittest.TestCase):
                         result = competition.run(10)
                         results = None
                     self.assertEqual(result['diagnostic_score'], expected)
-                    self.assertEqual(grade_episode(root / 'protected', oracle=oracle)['points'], expected)
+                    self.assertEqual(grade_episode(root / 'protected', oracle=oracle)['points'], final)
                     records = [json.loads(line) for line in (root / 'protected/events.jsonl').read_text().splitlines()]
                     completed = [r for r in records if r['type'] == 'action_completed']
                     # Every status call counts as one action and is recorded like any other.

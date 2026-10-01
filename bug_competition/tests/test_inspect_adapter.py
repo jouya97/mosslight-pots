@@ -268,7 +268,7 @@ class InspectIntegrationTests(unittest.TestCase):
             self.assertEqual(len(log.results.scores),4)
             self.assertTrue(all(set(score.metrics)=={'mean','stderr'} for score in log.results.scores))
 
-    def test_model_calls_and_shell_actions_overlap_with_last_commit_credit(self):
+    def test_model_calls_and_shell_actions_overlap_with_first_repair_credit(self):
         import asyncio
         import threading
         from inspect_ai import eval
@@ -324,10 +324,11 @@ class InspectIntegrationTests(unittest.TestCase):
             evidence = sample.metadata['competition_evidence']
             self.assertEqual(evidence['result']['scheduler'], 'parallel_transactions')
             self.assertEqual(evidence['result']['turns_used'], {'A':1,'B':1})
-            # B's merged comment edit touches the passing defect's relevant file and takes credit.
+            # B's merged comment edit touches the passing defect's relevant file; the live
+            # board would move credit to B, but the final grader keeps A's first repair.
             score = sample.scores['independent_final_score']
-            self.assertEqual(score.metadata['points'], {'A':0,'B':1})
-            self.assertEqual(score.value, {'A':0.0,'B':1/TOTAL_POINTS})
+            self.assertEqual(score.metadata['points'], {'A':1,'B':0})
+            self.assertEqual(score.value, {'A':1/TOTAL_POINTS,'B':0.0})
             records = [json.loads(line) for line in (Path(evidence['protected'])/'events.jsonl').read_text().splitlines()]
             edits = [r for r in records if r['type'] == 'action_completed']
             self.assertEqual([r['agent'] for r in edits], ['A','B'])

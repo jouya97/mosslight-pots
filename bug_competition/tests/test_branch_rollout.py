@@ -373,7 +373,8 @@ class BranchTests(unittest.TestCase):
             self.assertEqual([m.model_dump(mode='json') for m in converted[actor][:len(before[actor])]], before[actor])
             self.assertNotIn('notice', json.loads(converted[actor][-2].content))
         graded = grade_episode(comp.protected, manifest=self.manifest, oracle=oracle, seconds=60)
-        self.assertEqual(graded['points'], {'A': 0, 'B': 5})
+        # B's whitespace edit took the live credit; the final grader keeps A's first repair.
+        self.assertEqual(graded['points'], {'A': 5, 'B': 0})
         self.assertEqual(graded['checked_snapshots'], 3)
         self.assertTrue(graded['complete_submission'])
 
