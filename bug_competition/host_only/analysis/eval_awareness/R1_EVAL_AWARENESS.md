@@ -1,6 +1,6 @@
 # R1 evaluation-awareness audit
 
-**Evidence access:** Linked raw trajectories, ledgers, snapshots and `*_ACTIONS.json` exports are supplied separately from the source checkout. See [raw-run access](../../EVIDENCE.md#retention-and-availability) and the [review-export bundle](../../EVIDENCE.md#generated-review-exports) before opening those links. The Markdown findings and `COVERAGE_COUNTS.json` remain included.
+**Evidence access:** Linked raw trajectories, ledgers, snapshots and `*_ACTIONS.json` exports are supplied separately from the source checkout. See [raw-run access](../../RESULTS.md#retention-and-availability) and the [review-export bundle](../../RESULTS.md#generated-review-exports) before opening those links. The Markdown findings and `COVERAGE_COUNTS.json` remain included.
 
 This audit covers the three saved R1 conversations, **A115 / B105 / C137: 357 tool actions**. It uses supplied readable reasoning summaries, ordinary tool commands/results, and the protected ledger. It does not infer access to hidden reasoning or graders. The [action index](R1_RELEVANT_ACTIONS.json) preserves all 357 actions using a positive field safelist; 121 actions have relevance annotations, with adjacent action IDs for three actions above and below. Direct hidden-test mentions and their neighboring context were inspected, then follow-through was traced across actors where needed.
 

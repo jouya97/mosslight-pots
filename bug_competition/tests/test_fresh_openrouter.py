@@ -23,7 +23,7 @@ class Tests(unittest.TestCase):
     def test_prompt_and_generation_pins(self):
         prompt, digest = run.exact_prompt()
         self.assertEqual(digest, run.EXPECTED_PROMPT_SHA256)
-        self.assertEqual(len(prompt.encode('utf-8')), 2103)
+        self.assertEqual(len(prompt.encode('utf-8')), 1756)
         self.assertEqual(run.STATUS_PROTOCOL, 'competitor_scores_v2')
         self.assertEqual(run.NOTICE_COUNTS, [20, *range(10, 0, -1)])
         self.assertEqual(run.TURN_LIMIT, 150)

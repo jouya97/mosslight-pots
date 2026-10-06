@@ -25,6 +25,8 @@ REPLAY = 'bug_competition/host_only/regrades/20261005T180821Z'
 V8_REPLAY = 'bug_competition/host_only/regrades/20261006T035725Z_v8'
 PRIOR_DELIVERY = 'bug_competition/host_only/submissions/20261005_v8'
 DELIVERY = 'bug_competition/host_only/submissions/20261005_v8_scaffold'
+DELIVERY_FILES = ('plan.json', 'images.json')
+REVIEW_DOCUMENTS = ('README.md', 'flaw.md', 'grader/README.md', 'bug_competition/host_only/RESULTS.md')
 ROOT_FILES = ('RUBRIC.md', '.dockerignore', 'task.py', 'env.json', 'variants.json', 'qc.json', 'flaw.md',
               'pytest.ini', 'bug_competition/__init__.py')
 ROOT_DIRECTORIES = ('agent_data', 'grader', 'adapters')
@@ -71,8 +73,7 @@ def excluded(name):
     return (any(p in CACHE for p in path.parts) or path.suffix in {'.pyc', '.pyo'}
             or path.name == '.DS_Store' or name.startswith('bug_competition/archives/')
             or (path.name.startswith('.env') and path.name not in {'.env.example', '.env.sample', '.env.template'})
-            or path.name in {'trajectories.json', 'review_conversations.json'}
-            or (name.startswith(DELIVERY + '/') and path.name not in {'README.md', 'VALIDATION.md', 'plan.json', 'images.json'}))
+            or (name.startswith(DELIVERY + '/') and path.name not in DELIVERY_FILES))
 
 
 def regular(root, name):
@@ -174,6 +175,9 @@ def source_inventory(root):
     for name in ROOT_FILES:
         regular(root, name)
         paths.add(name)
+    for name in REVIEW_DOCUMENTS:
+        regular(root, name)
+        paths.add(name)
     for directory in ROOT_DIRECTORIES:
         if not (root / directory).is_dir():
             raise ValueError('missing scaffold directory: ' + directory)
@@ -188,9 +192,9 @@ def source_inventory(root):
             name = path.relative_to(root).as_posix()
             if not excluded(name):
                 paths.add(name)
-    for name in ('README.md', 'VALIDATION.md', 'plan.json', 'images.json'):
+    for name in DELIVERY_FILES:
         paths.add(DELIVERY + '/' + name)
-    # Prior delivery records and both frozen regrades are immutable evidence.
+    # Retain prior delivery metadata and both frozen regrades as evidence.
     for directory in (PRIOR_DELIVERY, REPLAY, V8_REPLAY):
         for path in (root / directory).rglob('*'):
             name = path.relative_to(root).as_posix()
@@ -209,6 +213,10 @@ def source_inventory(root):
     generated, transforms = {}, []
     for label, folder in RUNS.items():
         source = regular(root, folder + '/trajectories.json')
+        paths.add(folder + '/trajectories.json')
+        review = folder + '/review_conversations.json'
+        if (root / review).exists() or (root / review).is_symlink():
+            paths.add(review)
         name = folder + '/submission_readable_summaries.json'
         generated[name] = readable_trajectories(source)
         transforms.append({'run': label, 'source': folder + '/trajectories.json',

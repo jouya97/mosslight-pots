@@ -147,18 +147,26 @@ def test_inventory_captures_untracked_root_scaffold_moves_and_both_regrades(tmp_
         path.write_text(content)
     for name in bundle.ROOT_FILES:
         write(name)
+    for name in bundle.REVIEW_DOCUMENTS:
+        write(name)
     for name in ('grader/grader.py', 'grader/grader_data/probes_example.json',
                  'adapters/docker/Dockerfile', 'agent_data/SUBMISSION.md',
                  'bug_competition/harness/new_module.py', 'README.md'):
         write(name)
-    for name in ('README.md', 'VALIDATION.md', 'plan.json', 'images.json'):
+    for name in bundle.DELIVERY_FILES:
         write(bundle.DELIVERY + '/' + name)
     write(bundle.DELIVERY + '/manifest.json')
     write(bundle.DELIVERY + '/acceptance.json')
     write(bundle.PRIOR_DELIVERY + '/manifest.json')
     write(bundle.REPLAY + '/R1/grade.json')
     write(bundle.V8_REPLAY + '/R1/grade.json')
-    monkeypatch.setattr(bundle, 'RUNS', {})
+    run = 'bug_competition/host_only/rollouts/retained-run'
+    raw = json.dumps([{'sample_id': 'one', 'conversations': {'A': [
+        {'role': 'assistant', 'content': [{'type': 'reasoning', 'reasoning': 'opaque-payload',
+                                          'signature': 'original-signature', 'summary': 'Readable summary.'}]}]}}])
+    write(run + '/trajectories.json', raw)
+    write(run + '/review_conversations.json', '{ "original": "review payload" }\n')
+    monkeypatch.setattr(bundle, 'RUNS', {'R1': run})
     monkeypatch.setattr(bundle, 'historical_integrity', lambda _: {'original_replay': {'inputs': {}}, 'version8_rescore': {}})
     def git(command, **kwargs):
         if command[1] == 'ls-files':
@@ -167,7 +175,7 @@ def test_inventory_captures_untracked_root_scaffold_moves_and_both_regrades(tmp_
             return 'base-revision\n'
         return b'?? grader/\x00'
     monkeypatch.setattr(bundle.subprocess, 'check_output', git)
-    paths, _, metadata = bundle.source_inventory(root)
+    paths, generated, metadata = bundle.source_inventory(root)
     assert 'grader/grader.py' in paths and 'adapters/docker/Dockerfile' in paths
     assert 'agent_data/SUBMISSION.md' in paths and 'task.py' in paths and 'env.json' in paths
     assert 'pytest.ini' in paths
@@ -178,7 +186,21 @@ def test_inventory_captures_untracked_root_scaffold_moves_and_both_regrades(tmp_
     assert bundle.PRIOR_DELIVERY + '/manifest.json' in paths
     assert bundle.DELIVERY + '/manifest.json' not in paths
     assert bundle.DELIVERY + '/acceptance.json' not in paths
+    assert set(bundle.REVIEW_DOCUMENTS) <= paths
+    assert bundle.DELIVERY + '/README.md' not in paths
+    assert bundle.DELIVERY + '/VALIDATION.md' not in paths
     assert metadata['git_dirty'] is True
+    assert run + '/trajectories.json' in paths
+    assert run + '/review_conversations.json' in paths
+    readable = run + '/submission_readable_summaries.json'
+    assert b'Readable summary.' in generated[readable]
+    assert b'opaque-payload' not in generated[readable]
+    archive, manifest = tmp_path / 'retained.tar.gz', tmp_path / 'retained.json'
+    bundle.create(root, archive, manifest, paths=paths, generated=generated, metadata=metadata)
+    bundle.extract(manifest, archive, tmp_path / 'extracted')
+    for name in ('trajectories.json', 'review_conversations.json'):
+        assert (tmp_path / 'extracted' / run / name).read_bytes() == (root / run / name).read_bytes()
+    assert (tmp_path / 'extracted' / readable).read_bytes() == generated[readable]
 
 
 def test_reviewability_counts_root_grader_and_executable_programs(tmp_path):

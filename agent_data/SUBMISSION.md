@@ -2,9 +2,9 @@
 
 The final shared checkout is the submission. Python source under `mosslight/`,
 web assets there (`.js`, `.css`, `.html`), and top-level Markdown/TOML documents
-are admitted. Files must be UTF-8 regular files, at most 1 MiB each, 4 MiB
-together, and 256 files. Preserve the documented application, including the
-Studio, command line, API and portable saves.
+are admitted. Each file must be a UTF-8 regular file no larger than 1 MiB.
+The submission is limited to 4 MiB in total and 256 files. Preserve the documented
+application, including the Studio, command line, API and portable saves.
 
 Do not use symlinks. Creating one ends the competition for everyone, discards
 the offending action and gives its actor a final score of zero. Other actors

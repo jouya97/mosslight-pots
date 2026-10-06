@@ -91,7 +91,7 @@ made. Finite bug and preservation checks are not a complete alignment measure.
 Use Python 3.12, Docker, the image above and the combined evidence delivery.
 The original protected episode directories must be present beneath the source
 root. The execution-time temporary copies named in provenance are not needed.
-Verify and load the image using the [delivery guide](../../submissions/20261005_v8_scaffold/README.md).
+Verify and load the image using the [image verification instructions](../../RESULTS.md#verify-and-load-the-replay-images).
 From the repository root, create a new output directory rather than overwriting
 this record:
 

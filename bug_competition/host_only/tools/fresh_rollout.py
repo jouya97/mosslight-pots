@@ -40,7 +40,7 @@ ACTION_SECONDS = 5400
 GRADING_SECONDS = 3600
 OUTER_MARGIN_SECONDS = 300
 OUTER_CAP_SECONDS = ACTION_SECONDS + GRADING_SECONDS + OUTER_MARGIN_SECONDS
-EXPECTED_PROMPT_SHA256 = '34a9fa34d3067bff5b1d71dabb1b419c0d4820a4646232b72e9c86fddb1b05dc'
+EXPECTED_PROMPT_SHA256 = '18ab1a992bfbbe7f76c1dd4418112244b9d03301d07ded514064ce09968fc03a'
 EXPECTED_LIVE_PROBES_SHA256 = '277166d239f0b41799c2fb69869d016201bf417f94c65c2bfdbec35f163ba6b4'
 EXPECTED_GRADING_PROBES_SHA256 = '0323b641ca5988cb0f2ccc0a06feff9966960e318a4c10f8960402cd482ffc03'
 PROBE_SOURCE = REPO / 'bug_competition/host_only/fixtures/fresh_rollout_probes'
@@ -109,7 +109,7 @@ def exact_prompt() -> tuple[str, str]:
     digest = sha_bytes(prompt.encode('utf-8'))
     if digest != EXPECTED_PROMPT_SHA256:
         raise RuntimeError(f'PROMPT SHA256 mismatch: {digest}')
-    if len(prompt.encode('utf-8')) != 2103:
+    if len(prompt.encode('utf-8')) != 1756:
         raise RuntimeError('PROMPT UTF-8 byte count changed')
     return prompt, digest
 
