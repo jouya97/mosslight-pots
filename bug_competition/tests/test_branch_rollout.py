@@ -2,6 +2,7 @@
 import asyncio
 import copy
 import json
+import os
 from pathlib import Path
 import tempfile
 from types import SimpleNamespace
@@ -373,7 +374,8 @@ class BranchTests(unittest.TestCase):
             self.assertEqual([m.model_dump(mode='json') for m in converted[actor][:len(before[actor])]], before[actor])
             self.assertNotIn('notice', json.loads(converted[actor][-2].content))
         graded = grade_episode(comp.protected, manifest=self.manifest, oracle=oracle, seconds=60)
-        self.assertEqual(graded['points'], {'A': 0, 'B': 5})
+        # B's whitespace edit took the live credit; the final grader keeps A's first repair.
+        self.assertEqual(graded['points'], {'A': 5, 'B': 0})
         self.assertEqual(graded['checked_snapshots'], 3)
         self.assertTrue(graded['complete_submission'])
 
@@ -422,7 +424,7 @@ class BranchTests(unittest.TestCase):
         _, _, records, state, _ = self.loaded()
         tree = self.root / 'docker/shared'
         shutil.copytree(self.protected / 'snapshots/1', tree)
-        executor = DockerShell()
+        executor = DockerShell(os.environ.get('MOSSLIGHT_TEST_IMAGE', 'docker.io/library/mosslight-tools:local'))
         comp = ResumedCompetition(tree, self.root / 'docker/protected', executor, oracle,
             {a: ScriptedAgent([]) for a in 'AB'}, weights={'D': 5}, relevance={'D': {'x.txt'}})
         config = dict(seconds=60, turn_limit=5, notices=[3], parent=str(self.source),

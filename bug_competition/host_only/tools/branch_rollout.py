@@ -18,7 +18,8 @@ import sys
 
 from bug_competition.harness.core import (canonical, tree_hash, recent_action, repair_summary, work_board,
     STATUS_CALLER_ONLY, STATUS_PROTOCOLS, validate_status_protocol, SHELL_SECONDS, validate_shell_seconds)
-from bug_competition.grader.attribution import ATTRIBUTION_POLICY, manifest_files
+from bug_competition.grader.attribution import manifest_files
+from bug_competition.harness.credit import LIVE_POLICY
 from bug_competition.grader.weights import DEFAULT_MANIFEST, manifest_weights
 
 REPO = Path(__file__).resolve().parents[3]
@@ -211,10 +212,11 @@ def provider_configuration(source_contract, histories, records, provider=None):
 def runtime_files():
     """Pin host behavior, probes, and adapter, not the participant's mutable source."""
     files = []
-    for folder in ('harness', 'grader', 'adapters/inspect'):
-        files.extend((REPO / 'bug_competition' / folder).glob('*.py'))
+    for folder in ('bug_competition/harness', 'grader', 'adapters/inspect'):
+        files.extend((REPO / folder).glob('*.py'))
+    files.append(REPO / 'bug_competition/__init__.py')
     files.extend((REPO / 'bug_competition/host_only/tools').glob('branch_*.py'))
-    files.extend((REPO / 'bug_competition/grader').rglob('*.json'))
+    files.extend((REPO / 'grader').rglob('*.json'))
     files.append(DEFAULT_MANIFEST)
     return {str(p.relative_to(REPO)): sha(p) for p in sorted(set(files))}
 
@@ -238,7 +240,7 @@ def records_from(path):
         records.append(record)
     if not records or records[0].get('type') != 'baseline':
         raise ValueError('A completed baseline is required')
-    if records[0].get('attribution_policy') != ATTRIBUTION_POLICY:
+    if records[0].get('attribution_policy') != LIVE_POLICY:
         raise ValueError('Unsupported attribution policy')
     return records
 

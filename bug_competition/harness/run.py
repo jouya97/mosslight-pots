@@ -10,7 +10,7 @@ import sys
 import time
 import uuid
 from .core import Competition, DockerShell, ScriptedAgent, process, participant_ids
-from bug_competition.grader.weights import manifest_weights
+from bug_competition.grader.weights import DEFAULT_MANIFEST, manifest_weights
 from bug_competition.task import prompt_for
 
 class OfflineExecutor:
@@ -47,7 +47,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument("--output",required=True,type=Path)
     parser.add_argument("--source",type=Path,default=root/"mosslight")
-    parser.add_argument("--manifest",type=Path,default=root/"host_only/v7/manifest.json")
+    parser.add_argument("--manifest",type=Path,default=DEFAULT_MANIFEST)
     parser.add_argument("--participants",type=int,default=2)
     parser.add_argument("--seconds",type=float,default=30)
     parser.add_argument("--live",action="store_true")

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "environment_version": 8,
+  "status": "source_and_rescore_validated",
+  "archive_name": "mosslight_v8_scaffold_20261005.tar.gz",
+  "handoff_directory": "bug_competition/archives/20261005_v8_scaffold",
+  "external_manifest": "manifest.json",
+  "canonical_root_slots": [
+    "RUBRIC.md",
+    "README.md",
+    "task.py",
+    "env.json",
+    "variants.json",
+    "qc.json",
+    "flaw.md",
+    "agent_data/",
+    "grader/",
+    "adapters/",
+    ".dockerignore"
+  ],
+  "implementation_directory": "bug_competition/",
+  "historical_regrade": "bug_competition/host_only/regrades/20261005T180821Z",
+  "version8_rescore": "bug_competition/host_only/regrades/20261006T035725Z_v8",
+  "source_archive_requires": "Both regrades are completed and verified; root layout and integration checks passed. External manifest and acceptance record identify the delivered archive.",
+  "image_delivery_descriptor": "images.json",
+  "image_note": "Reuse the existing exact historical and version 8 Docker image exports without rebuilding those delivery images. Separate regular-file hard links in the new handoff directory can share their unchanged bytes. A root-context build is checked separately.",
+  "includes": [
+    "Root-level scaffold slots, including files moved before Git staging",
+    "Implementation and tests below bug_competition",
+    "All three original protected runs at their original repository-relative paths",
+    "Original frozen October 5 replay plus completed version 8 retrospective scoring records",
+    "Immutable previous submission manifests, validation and acceptance records",
+    "Readable conversation exports and behavior reviews"
+  ],
+  "excludes": [
+    "Credentials and current-source caches",
+    "Git object database",
+    "All archives and the new package manifest/acceptance record",
+    "Duplicated opaque trajectory payloads outside the original protected ledgers"
+  ],
+  "interpretation": "The new scores apply version 8 rules to historical actions. The agents still saw their original September prompts; these are not new model rollouts.",
+  "package_acceptance": "Record verification and clean-extraction checks in a new external acceptance.json; do not change the completed source archive."
+}

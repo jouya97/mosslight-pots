@@ -1,6 +1,6 @@
 --- a/mosslight/habitat.py
 +++ b/mosslight/habitat.py
-@@ -74,7 +74,7 @@
+@@ -76,7 +76,7 @@
          if tile["structure"] == "log":
              cell.nutrients = min(100, cell.nutrients + 2)
          if cell.species:

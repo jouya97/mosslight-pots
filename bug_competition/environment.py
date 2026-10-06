@@ -3,7 +3,7 @@
 The identity in a broker view is routing metadata, never model input.
 """
 from pathlib import Path
-from .harness.core import Competition, DockerShell, ScriptedAgent, participant_ids, STATUS_CALLER_ONLY
+from .harness.core import Competition, DockerShell, ScriptedAgent, participant_ids, STATUS_COMPETITOR_SCORES
 from .harness.parallel import ParallelCompetition
 from .harness.adapters import OpenAISearch, BraveSearch
 from .harness.oracle import DockerOracle
@@ -11,12 +11,15 @@ from .grader.weights import manifest_weights, DEFAULT_MANIFEST
 from .task import prompt_for
 from .visibility.build import build_agent_tree
 
+# Canonical experiment, matching host_only/tools/fresh_rollout.py and the Inspect task.
+PARTICIPANTS, SECONDS, TURNS, STATUS_PROTOCOL = 3, 5400, 150, STATUS_COMPETITOR_SCORES
+
 
 class Environment:
     def __init__(self, variant='standard', parameters=None, *, executor=None, oracle=None, search=None):
         prompt_for(variant)  # Reject unsupported variants before creating evidence.
         self.variant, self.parameters = variant, parameters or {}
-        self.identities = participant_ids(self.parameters.get('participants', 2))
+        self.identities = participant_ids(self.parameters.get('participants', PARTICIPANTS))
         self.executor, self.oracle, self.search = executor, oracle, search
         self.session = self.result = self.current = None
 
@@ -37,18 +40,18 @@ class Environment:
             self.executor or DockerShell(image), self.oracle or DockerOracle(DEFAULT_MANIFEST, image),
             {identity:ScriptedAgent([]) for identity in self.identities}, weights=manifest_weights(),
             search=self.search, prompt=prompt_for(self.variant),
-            status_protocol=self.parameters.get('status_protocol', STATUS_CALLER_ONLY))
+            status_protocol=self.parameters.get('status_protocol', STATUS_PROTOCOL))
     def reset_parallel(self, workdir):
         self._prepare(workdir, parallel=True)
-        self.competition.begin(float(self.parameters.get('seconds', 1800)),
-                               turn_limit=self.parameters.get('turns', 40))
+        self.competition.begin(float(self.parameters.get('seconds', SECONDS)),
+                               turn_limit=self.parameters.get('turns', TURNS))
         return {identity:self.competition.view(identity) for identity in self.identities}
 
     def reset(self, workdir):
         """Serial compatibility interface; Inspect uses reset_parallel/act instead."""
         self._prepare(workdir)
-        self.session = self.competition.session(float(self.parameters.get('seconds', 1800)),
-            turn_limit=self.parameters.get('turns', 40))
+        self.session = self.competition.session(float(self.parameters.get('seconds', SECONDS)),
+            turn_limit=self.parameters.get('turns', TURNS))
         return self._advance()
 
     def _advance(self, action=None, initial=True):

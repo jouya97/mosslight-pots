@@ -7,10 +7,13 @@ failed edits preserve the previous garden.
 
 ## Saves and revisions
 
-Mosslight reads save versions 1 and 2 and writes version 2. Older gardens gain
+Mosslight reads save versions 1 and 2, represented as JSON integers, and writes
+version 2. Booleans and fractional JSON number forms such as `1.0` are not valid
+version fields. Older gardens gain
 neutral workbench defaults while retaining their original garden. Saves are
 validated when loaded, and unsupported versions or inconsistent data are
-rejected. Portable state includes the garden and notebook; server undo history
+rejected. Unknown workbench fields are rejected. Portable state includes the
+garden and notebook; server undo history
 belongs to the current studio session.
 
 Python's `to_dict` returns an independently editable save representation. Use it
@@ -70,7 +73,7 @@ to load, transform and place a blueprint.
 ## Archiving the notebook and artwork
 
 Markdown export records note text, dates, locations, tags, task completion and
-specimen labels. SVG illustrations and maps are standalone artwork; the
+specimen labels. Tasks appear in due-date order. SVG illustrations and maps are standalone artwork; the
 [field guide](FIELD_GUIDE.md#maps-illustrations-and-history-prints) explains their
 scales and accessibility. Authored content stays text in the studio and exports.
 
@@ -81,8 +84,9 @@ and [history exchange](HISTORY_EXCHANGE.md).
 ## Editing in the studio
 
 Revision checks help multiple browser tabs avoid overwriting each other's work.
-A mutation can include the revision it was based on; a stale revision receives
-HTTP 409 so the caller can refresh before trying again. The browser supplies
+A mutation can include the revision it was based on. Any value other than the
+current integer revision, including a future revision or a noninteger value,
+receives HTTP 409 so the caller can refresh before trying again. The browser supplies
 revisions for normal edits and imports. Legacy imports without a revision remain
 supported and retain the imported save's revision.
 

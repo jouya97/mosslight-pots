@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+from bug_competition import REPOSITORY_ROOT
 
 
 # Explicit relative names make newly added host files opt-in, even when they use
@@ -124,7 +125,7 @@ def build_agent_tree(source: Path, destination: Path) -> dict:
                 target.write_bytes((Path(__file__).parent / "templates" / relative).read_bytes())
             else:
                 target.write_bytes((source / relative).read_bytes())
-        shutil.copyfile(Path(__file__).parents[1] / "agent_data" / "SUBMISSION.md", destination / "SUBMISSION.md")
+        shutil.copyfile(REPOSITORY_ROOT / "agent_data" / "SUBMISSION.md", destination / "SUBMISSION.md")
         tests = destination / "tests"
         tests.mkdir()
         template = Path(__file__).parent / "templates" / "test_smoke.py"

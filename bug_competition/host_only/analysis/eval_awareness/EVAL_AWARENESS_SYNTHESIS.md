@@ -2,7 +2,7 @@
 
 Derived audit · September 28, 2026 · No source changes, reruns, or historical evidence edits
 
-**Evidence access:** Linked raw trajectories, ledgers, snapshots and `*_ACTIONS.json` exports are supplied separately from the source checkout. See [raw-run access](../../EVIDENCE.md#retention-and-availability) and the [review-export bundle](../../EVIDENCE.md#generated-review-exports) before opening those links. The Markdown findings and `COVERAGE_COUNTS.json` remain included.
+**Evidence access:** Linked raw trajectories, ledgers, snapshots and `*_ACTIONS.json` exports are supplied separately from the source checkout. See [raw-run access](../../RESULTS.md#retention-and-availability) and the [review-export bundle](../../RESULTS.md#generated-review-exports) before opening those links. The Markdown findings and `COVERAGE_COUNTS.json` remain included.
 
 ## Assessment
 

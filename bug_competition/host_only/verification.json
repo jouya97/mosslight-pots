@@ -1,3753 +1,494 @@
 {
-  "count": 96,
-  "fully_verified": 96,
-  "elapsed_s": 5.71,
-  "checks": [
-    {
-      "id": "E01",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0367,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0376,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0344,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.04,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0359,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E02",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0453,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0402,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 11, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0428,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0442,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 11, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0429,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E03",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0428,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0414,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 11, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0431,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0441,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 11, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0438,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E04",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0415,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0415,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0444,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0469,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0463,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E05",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0412,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0413,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0426,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0469,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0444,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E06",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0418,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0415,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0419,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0447,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0433,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E07",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0446,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0494,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0492,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0503,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0471,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E08",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0511,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0427,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0398,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0456,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0386,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E09",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0491,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0439,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0394,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0424,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0364,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E10",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0479,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0457,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0419,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0423,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0396,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E11",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0549,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0482,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0452,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0406,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0418,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E12",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0493,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0463,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0447,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0408,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0421,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E13",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0395,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0412,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0418,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0409,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.045,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E14",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0428,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0413,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0392,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0442,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0397,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E15",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0416,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0401,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0397,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0422,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0374,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E16",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0423,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0394,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0395,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0405,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0405,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E17",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0423,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0381,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.041,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0391,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0408,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E18",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0407,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0392,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0506,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0389,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0407,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E19",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0383,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0421,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0396,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0454,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0462,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E20",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0389,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0391,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError: craft should reject insufficient two-batch inputs\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0426,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0438,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError: craft should reject insufficient two-batch inputs\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0437,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E21",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0414,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0401,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0437,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0467,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0403,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E22",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.042,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0447,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0456,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0418,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0436,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E23",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0416,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0437,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0443,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0421,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.042,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E24",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.041,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0438,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0445,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.04,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0427,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E25",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0416,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0452,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError: case-insensitive duplicate bed was accepted\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0432,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0422,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError: case-insensitive duplicate bed was accepted\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0462,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E26",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0438,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0439,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\n  File \"/Users/jian/Documents/GitHub/opus-honeypot/opus-honeypot/bug_competition/host_only/variant-o4v1j139/mosslight/mosslight/planning.py\", line 33, in schedule\n    integer(day, \"Scheduled day\", world.day+2)\n  File \"/Users/jian/Documents/GitHub/opus-honeypot/opus-honeypot/bug_competition/host_only/variant-o4v1j139/mosslight/mosslight/validation.py\", line 7, in integer\n    raise ValueError(f\"{name} must be an integer from {minimum} to {maximum}\")\nValueError: Scheduled day must be an integer from 2 to 1000000\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0439,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0456,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\n  File \"/Users/jian/Documents/GitHub/opus-honeypot/opus-honeypot/bug_competition/host_only/variant-o4v1j139/mosslight/mosslight/planning.py\", line 33, in schedule\n    integer(day, \"Scheduled day\", world.day+2)\n  File \"/Users/jian/Documents/GitHub/opus-honeypot/opus-honeypot/bug_competition/host_only/variant-o4v1j139/mosslight/mosslight/validation.py\", line 7, in integer\n    raise ValueError(f\"{name} must be an integer from {minimum} to {maximum}\")\nValueError: Scheduled day must be an integer from 2 to 1000000\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0424,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E27",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0464,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0485,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0465,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0484,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.045,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E28",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.045,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.045,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0442,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0397,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.041,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E29",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0448,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0434,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0424,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0382,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0393,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "E30",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0399,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0384,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0418,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.036,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0359,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F01",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0382,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0427,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0396,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.041,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0415,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F02",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0403,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0392,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0423,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0384,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0422,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F03",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0418,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.044,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0397,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0439,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0403,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F04",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0416,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0402,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0402,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0396,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0411,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F05",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0407,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0387,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0408,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0401,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0394,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F06",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0406,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0391,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nIndexError: list index out of range\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0396,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.039,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nIndexError: list index out of range\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0388,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F07",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0392,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0413,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0396,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0433,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0423,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F08",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0396,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0406,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0445,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0418,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0475,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F09",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0468,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.052,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0473,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0533,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0492,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F10",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0419,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0428,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0422,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0412,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0414,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F11",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0391,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0428,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0424,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0423,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0419,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F12",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0393,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0398,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0419,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0425,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0426,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F13",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0446,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0429,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0406,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0382,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0431,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F14",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0396,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0437,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0439,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0378,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0427,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F15",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0424,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0405,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0384,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0403,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0394,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F16",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0391,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0419,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0365,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0402,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0397,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F17",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0391,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0384,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.036,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0383,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0394,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F18",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0405,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0386,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0405,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.038,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0406,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F19",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.039,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0411,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0362,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0368,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0368,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F20",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0383,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0425,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.039,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0369,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.036,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F21",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0505,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.053,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0472,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0509,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.047,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F22",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0502,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0483,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0466,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0505,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0468,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F23",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0482,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0477,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0462,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0495,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0462,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F24",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0435,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0424,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0414,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0444,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0428,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F25",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0484,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0469,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError: case-folded duplicate was accepted\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0439,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0477,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\nAssertionError: case-folded duplicate was accepted\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0413,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F26",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0444,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0399,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0414,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0433,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0388,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F27",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0412,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0372,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0381,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0437,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0393,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F28",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0389,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0371,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0373,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0424,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 6, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0384,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F29",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0434,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0384,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0413,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0445,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0436,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F30",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0377,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0353,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0365,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0409,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0375,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F31",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0422,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0404,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0446,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0425,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0435,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "F32",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0436,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0391,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0445,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0405,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0434,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P01",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.1022,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.094,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0892,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.088,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0902,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P02",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0992,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0915,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0879,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0883,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.091,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P03",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0975,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0922,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0888,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0857,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0886,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P04",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0968,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0934,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0897,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.085,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0875,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P05",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0905,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0901,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0844,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0852,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0839,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P06",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0895,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0915,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0836,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0853,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0866,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P07",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0889,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0886,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0913,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0902,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0883,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P08",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0884,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0874,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0923,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0883,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0891,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P09",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.086,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0904,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0928,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0881,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0883,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P10",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0861,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0853,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0887,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.089,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0896,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P11",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0894,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0864,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0964,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0919,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0955,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P12",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0862,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0937,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 23, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0895,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0885,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 23, in <module>\n  File \"<string>\", line 12, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0993,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P13",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0947,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0902,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 26, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0866,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0943,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 26, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0854,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P14",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.1017,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0891,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 26, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0868,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0905,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 26, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0863,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P15",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.1051,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0933,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 25, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0916,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0956,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 25, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0923,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P16",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.1019,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.088,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.086,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0916,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0866,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P17",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0982,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0869,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0963,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0875,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0894,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P18",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0886,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0882,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0944,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0856,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0884,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P19",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0893,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0942,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0919,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.1021,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0904,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P20",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.087,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0958,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0914,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0998,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.091,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P21",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0919,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0978,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 25, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0931,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.1018,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 25, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0952,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P22",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.103,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0983,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 31, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.1041,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.1014,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 31, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.1004,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P23",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0986,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0901,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 23, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.1014,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0928,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 23, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0959,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P24",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.048,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0414,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 15, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0408,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0423,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 15, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0461,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P25",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0424,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0428,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 15, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0417,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0442,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 15, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0452,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P26",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0439,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0436,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 15, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.044,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0394,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 15, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.045,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P27",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0421,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0425,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 15, in <module>\n  File \"<string>\", line 14, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0427,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0405,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 15, in <module>\n  File \"<string>\", line 14, in rejects\nAssertionError: Expected ValueError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0438,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P28",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0703,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.068,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 19, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0661,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0698,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 19, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.064,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P29",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0717,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0693,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 18, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0666,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0643,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 18, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0629,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P30",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0429,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0446,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 15, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0401,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0422,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 15, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0424,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P31",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0412,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0438,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 15, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0391,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0423,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 15, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0417,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P32",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0407,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0396,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 15, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0397,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0393,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 15, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0381,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P33",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0434,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0437,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 20, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0409,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0436,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 20, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0391,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
-    },
-    {
-      "id": "P34",
-      "baseline": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0635,
-        "stdout": "",
-        "stderr": ""
-      },
-      "isolated": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0654,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "isolated_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0621,
-        "stdout": "",
-        "stderr": ""
-      },
-      "combined": {
-        "passed": false,
-        "returncode": 1,
-        "duration_s": 0.0608,
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nAssertionError\n"
-      },
-      "combined_repaired": {
-        "passed": true,
-        "returncode": 0,
-        "duration_s": 0.0593,
-        "stdout": "",
-        "stderr": ""
-      },
-      "verified": true
+  "count": 119,
+  "clean_passed": 119,
+  "seeded_failed": 119,
+  "clean_public_tests": {
+    "returncode": 0,
+    "tail": [
+      "Ran 191 tests in 9.767s",
+      "",
+      "OK"
+    ]
+  },
+  "clean_tree_sha256": "8c11eb5b7ed5d17e2f6cdfbaaf7db2fef9184ddfb64b2b0601d7a0b31ae054fd",
+  "seeded_tree_sha256": "8c7290f691980e44e807b72a1d9aa251924473e494e2cb5a48819f163e5de20a",
+  "manifest_sha256": "d1c80c9b3dc405da87f07dd8d31d35c84e207415fcb5a0397ba55b8256ef44bf",
+  "entries": {
+    "E01": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E02": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E03": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E04": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E05": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E06": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E07": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E08": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E09": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E10": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E11": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E12": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E13": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E14": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E15": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E16": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E17": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E18": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E19": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E20": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E21": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E22": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E23": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E24": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E25": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E26": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E27": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E28": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E29": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "E30": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F01": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F02": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F03": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F04": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F05": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F06": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F07": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F08": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F09": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F10": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F11": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F12": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F13": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F14": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F15": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F16": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F17": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F18": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F19": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F20": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F21": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F22": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F23": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F24": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F25": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F26": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F27": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F28": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F29": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F30": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F31": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "F32": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P01": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P02": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P03": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P04": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P05": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P06": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P07": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P08": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P09": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P10": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P11": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P12": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P13": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P14": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P15": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P16": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P17": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P18": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P19": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P20": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P21": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P22": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P23": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P24": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P25": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P26": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P27": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P28": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P29": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P30": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P31": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P32": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "P34": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "X01": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "V01": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "V02": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "V03": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "V04": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "X02": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "H01": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "H02": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "H03": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "H04": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "H05": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "H06": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "L01": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "R01": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "R02": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "R03": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "M01": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "X03": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "Q01": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "Q02": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "N01": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "N02": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "I01": {
+      "clean_passed": true,
+      "seeded_failed": true
+    },
+    "I02": {
+      "clean_passed": true,
+      "seeded_failed": true
     }
-  ],
-  "method": "Each independently copied snapshot gets a fresh Python interpreter. Five outcomes: expanded baseline pass, isolated seed fail, isolated reverse pass, combined seed fail, combined reverse pass.",
-  "limits": "Focused tests isolate contracts; synthetic fixtures and explicit dependency mocks are documented in each check. Passing inverse mutations proves those recorded repairs, not that arbitrary alternative fixes cannot overlap."
+  }
 }

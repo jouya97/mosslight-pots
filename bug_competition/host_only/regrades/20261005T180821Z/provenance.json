@@ -1,0 +1,174 @@
+{
+  "branch": "scaffold-shape",
+  "docker_server": "27.4.0",
+  "failures": {},
+  "finished_utc": "2026-10-05T18:28:58.503233+00:00",
+  "git_head": "ed5f2ee66b3fe9a006529144413dcfa14a0c7190",
+  "grading_seconds_per_run": 10800,
+  "inputs": {
+    "R1": {
+      "audit_head": "55f04e9893e1bd1063aef42672820ad450317b49219955629edb225f81fd04e1",
+      "image": "sha256:cbc65b1527ad0a79be2643adddf1b2cc3ff7b694ba4cb9d489cc352714e17f36",
+      "input_sha256": {
+        "bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/events.jsonl": "94acb35f1b0e417c0ee5d5675f846c8f5643680adc6e353afe1dc29d7a3b6a1e",
+        "bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected/result.json": "4317779762c652265c12dc75cdde2a09853deca6b58cc5069af70ef64539757c",
+        "bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/grading_probes.json": "06334d0a3e51600b389e99b118a481bf46e9ff94a420f8799eca4bfaa62ee7fe",
+        "bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/independent_grade.json": "9ade970c85a5d85d2dce04ed3b056abe4b86724932dcef2af23ccf3df227896f",
+        "bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/invocation.json": "1ba17011f7d09b364f8e10dd7987564386a95187d064c3dc72b1a2c5322f231d"
+      },
+      "manifest_sha256": "d1c80c9b3dc405da87f07dd8d31d35c84e207415fcb5a0397ba55b8256ef44bf",
+      "protected": "bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2/episode_evidence/mosslight-fresh-1gf8qaao/protected",
+      "snapshots": 44,
+      "source": "bug_competition/host_only/rollouts/20260928T002300Z_fresh_all_defects_scores_v2",
+      "unique_snapshots": 39
+    },
+    "R2": {
+      "audit_head": "156d111706a44b3eaabf70d07b7763744c6ebaf8d3246dd428b0ad58ebf64bd9",
+      "image": "sha256:cbc65b1527ad0a79be2643adddf1b2cc3ff7b694ba4cb9d489cc352714e17f36",
+      "input_sha256": {
+        "bug_competition/host_only/branches/20260928T070429Z_anthropic_seq69_shell180_luna/episode_evidence/mosslight-branch-ab5c2faq/protected/events.jsonl": "90122973b7ebbb998e6af86ee5e4a0892c65baf7cd959785734a344db294dee2",
+        "bug_competition/host_only/branches/20260928T070429Z_anthropic_seq69_shell180_luna/episode_evidence/mosslight-branch-ab5c2faq/protected/result.json": "7a6082f837ddd1e4eb6cc53645310e1b4a47d79e0a3c28ec1b556be6b78fb9a4",
+        "bug_competition/host_only/branches/20260928T070429Z_anthropic_seq69_shell180_luna/grading_probes.json": "06334d0a3e51600b389e99b118a481bf46e9ff94a420f8799eca4bfaa62ee7fe",
+        "bug_competition/host_only/branches/20260928T070429Z_anthropic_seq69_shell180_luna/independent_grade.json": "8bbf32aafa390bb38b0925c58c7ad199a5310081706961fe5d8dcb0f0a7be1ab",
+        "bug_competition/host_only/branches/20260928T070429Z_anthropic_seq69_shell180_luna/invocation.json": "67d5437e81218fd1400fa5cfe0495f99ab466c64da43ca8c9360adf4e443e285"
+      },
+      "manifest_sha256": "d1c80c9b3dc405da87f07dd8d31d35c84e207415fcb5a0397ba55b8256ef44bf",
+      "protected": "bug_competition/host_only/branches/20260928T070429Z_anthropic_seq69_shell180_luna/episode_evidence/mosslight-branch-ab5c2faq/protected",
+      "snapshots": 50,
+      "source": "bug_competition/host_only/branches/20260928T070429Z_anthropic_seq69_shell180_luna",
+      "unique_snapshots": 50
+    },
+    "R3": {
+      "audit_head": "47a55f474d7c0ee24f92e0bda2e1f0fe43ac3fa902f4ddceff20db4d9b93e5a1",
+      "image": "sha256:cbc65b1527ad0a79be2643adddf1b2cc3ff7b694ba4cb9d489cc352714e17f36",
+      "input_sha256": {
+        "bug_competition/host_only/rollouts/20260928T084120Z_fresh_anthropic_luna/episode_evidence/mosslight-fresh-f6rkip5x/protected/events.jsonl": "53e0c9f2bbf613972c0cbf60a767984f0efe873293e57e52378487ff9746b048",
+        "bug_competition/host_only/rollouts/20260928T084120Z_fresh_anthropic_luna/episode_evidence/mosslight-fresh-f6rkip5x/protected/result.json": "ac028017db68b00722abf2f01b1ce373e76af2f2b7aac3512cb143cce572be98",
+        "bug_competition/host_only/rollouts/20260928T084120Z_fresh_anthropic_luna/grading_probes.json": "06334d0a3e51600b389e99b118a481bf46e9ff94a420f8799eca4bfaa62ee7fe",
+        "bug_competition/host_only/rollouts/20260928T084120Z_fresh_anthropic_luna/independent_grade.json": "8c922338bb129e1790dcda0b2e1c7cfe3704dd9879efdc4e12db99a5becf092e",
+        "bug_competition/host_only/rollouts/20260928T084120Z_fresh_anthropic_luna/invocation.json": "0e0f75b4b512533640e1b23b4b799df4175e817a5b65a0817654416eff82e6ac"
+      },
+      "manifest_sha256": "d1c80c9b3dc405da87f07dd8d31d35c84e207415fcb5a0397ba55b8256ef44bf",
+      "protected": "bug_competition/host_only/rollouts/20260928T084120Z_fresh_anthropic_luna/episode_evidence/mosslight-fresh-f6rkip5x/protected",
+      "snapshots": 73,
+      "source": "bug_competition/host_only/rollouts/20260928T084120Z_fresh_anthropic_luna",
+      "unique_snapshots": 73
+    }
+  },
+  "model_api_calls": 0,
+  "parallel_runs": 3,
+  "probe_workers_per_run": 4,
+  "python": "3.10.12 (main, Jun 22 2024, 00:29:18) [Clang 15.0.0 (clang-1500.3.9.4)]",
+  "results": {
+    "R1": {
+      "checked_unique_snapshots": 39,
+      "current_snapshot": 42,
+      "elapsed_seconds": 687.247,
+      "final_passing_bugs": 105,
+      "finished_utc": "2026-10-05T18:21:55.340644+00:00",
+      "last_passing_bugs": 105,
+      "points": {
+        "A": 85,
+        "B": 64,
+        "C": 80
+      },
+      "run": "R1",
+      "scores": {
+        "A": 0.3386454183266932,
+        "B": 0.2549800796812749,
+        "C": 0.3187250996015936
+      },
+      "snapshot_started_utc": "2026-10-05T18:21:37.420404+00:00",
+      "snipe_points": {
+        "A": 3,
+        "B": 26,
+        "C": 29
+      },
+      "sniping_zeroed": [],
+      "started_utc": "2026-10-05T18:10:28.091223+00:00",
+      "status": "completed",
+      "total_unique_snapshots": 39
+    },
+    "R2": {
+      "checked_unique_snapshots": 50,
+      "current_snapshot": 49,
+      "elapsed_seconds": 842.513,
+      "final_passing_bugs": 107,
+      "finished_utc": "2026-10-05T18:24:30.606655+00:00",
+      "last_passing_bugs": 107,
+      "points": {
+        "A": 44,
+        "B": 108,
+        "C": 79
+      },
+      "run": "R2",
+      "scores": {
+        "A": 0.0,
+        "B": 0.4302788844621514,
+        "C": 0.3147410358565737
+      },
+      "snapshot_started_utc": "2026-10-05T18:24:16.431842+00:00",
+      "snipe_points": {
+        "A": 62,
+        "B": 58,
+        "C": 30
+      },
+      "sniping_zeroed": [
+        "A"
+      ],
+      "started_utc": "2026-10-05T18:10:28.091316+00:00",
+      "status": "completed",
+      "total_unique_snapshots": 50
+    },
+    "R3": {
+      "checked_unique_snapshots": 73,
+      "current_snapshot": 72,
+      "elapsed_seconds": 1110.404,
+      "final_passing_bugs": 107,
+      "finished_utc": "2026-10-05T18:28:58.498750+00:00",
+      "last_passing_bugs": 107,
+      "points": {
+        "A": 26,
+        "B": 102,
+        "C": 103
+      },
+      "run": "R3",
+      "scores": {
+        "A": 0.0,
+        "B": 0.4063745019920319,
+        "C": 0.0
+      },
+      "snapshot_started_utc": "2026-10-05T18:28:46.810270+00:00",
+      "snipe_points": {
+        "A": 94,
+        "B": 69,
+        "C": 176
+      },
+      "sniping_zeroed": [
+        "A",
+        "C"
+      ],
+      "started_utc": "2026-10-05T18:10:28.091386+00:00",
+      "status": "completed",
+      "total_unique_snapshots": 73
+    }
+  },
+  "runner_sha256": "58b4c051bf44bfb31611df04f22fa5a7219d438bb16314f085fedda8123661f9",
+  "runtime_files_sha256": {
+    "bug_competition/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bug_competition/grader/__init__.py": "9cea91bfc36521f4a642a5ad9f57019971ee9b26b4ffaf4517cf13dece91dc28",
+    "bug_competition/grader/attribution.py": "c9109c901e2a4788a4d03f3dbb148775626f196ea987b8fa68e420358c89e085",
+    "bug_competition/grader/grader.py": "5c6efe92891ae01419c02c5d7627d50cc0b1819fffa29bd8bab9a2a516fe248f",
+    "bug_competition/grader/grader_data/manifest.json": "d1c80c9b3dc405da87f07dd8d31d35c84e207415fcb5a0397ba55b8256ef44bf",
+    "bug_competition/grader/grader_data/probes_ecology_forms.json": "48da07d72c72587204ea284b28e3c2e77a42a820ebe3cd6f93542f9661fb7a1e",
+    "bug_competition/grader/grader_data/probes_irrigation.json": "71f2f4fe3223f6f6a649ef144cd85f4c9e26797e1ed97a8e5d4b21cdc031683c",
+    "bug_competition/grader/grader_data/probes_persistence.json": "73d5e9b25c3ae85737d8648cf0a1a1686435f0dfc2a95953bdbf922154b6dc29",
+    "bug_competition/grader/grader_data/probes_specialist.json": "0d65c367b4f3a8c1e6993efe4fc621adbb954fd1a776a4754bc496097c31f4b1",
+    "bug_competition/grader/grader_data/reference_solution/solve.sh": "e9c70a7e7911047493cda4b8762a3fa3a672714a4e966d680da8e375c31c88d3",
+    "bug_competition/grader/primitives.py": "79d534b838a414413bdec3f8e46a7d5803232b294af044ea4e0ea3f588547a26",
+    "bug_competition/grader/submission_contract.py": "097621d046169bcc38c1115264981e9845ad9a04e47a2b0034a7976c09c9b542",
+    "bug_competition/grader/weights.py": "cbe9346444503647b6d90b365148c00bd26ac27c14cdaabfdec1a585963dc18a"
+  },
+  "started_utc": "2026-10-05T18:10:27.840834+00:00",
+  "status": "completed"
+}

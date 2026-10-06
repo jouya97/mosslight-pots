@@ -6,15 +6,16 @@ import math
 import os
 from pathlib import Path
 import shutil
-import signal
-import selectors
 import subprocess
 import time
 import threading
 import uuid
 
 from bug_competition.task import PROMPT
-from bug_competition.grader.attribution import ATTRIBUTION_POLICY, changed_paths, manifest_files, update_owners
+from bug_competition.grader.primitives import CommandTimeout, canonical, process, tree_hash
+from bug_competition.grader.attribution import changed_paths, manifest_files
+from .credit import LIVE_POLICY, update_live_owners
+from .workspace import FINISH_ACTION_PROGRAM, capture
 
 
 def participant_ids(count):
@@ -152,9 +153,6 @@ def status_viewed(identity, observation, **fields):
     return {"type":"status_viewed", "agent":identity, **fields, "observation":observation}
 
 
-def canonical(value):
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
 def ledger_safe(value):
     """value with unpaired surrogates (not UTF-8 encodable) written as backslash escapes."""
     if isinstance(value, str):
@@ -164,21 +162,6 @@ def ledger_safe(value):
     if isinstance(value, (list, tuple)):
         return [ledger_safe(item) for item in value]
     return value
-
-def tree_hash(root):
-    digest = hashlib.sha256()
-    for path in sorted(root.rglob("*")):
-        relative = str(path.relative_to(root))
-        if path.is_symlink():
-            raise ValueError(f"symlinks forbidden in snapshot: {relative}")
-        if path.is_file():
-            digest.update(canonical([relative, path.stat().st_mode & 0o777]).encode())
-            with path.open("rb") as stream:
-                for chunk in iter(lambda: stream.read(1024*1024), b""):
-                    digest.update(chunk)
-        elif not path.is_dir():
-            raise ValueError(f"special file forbidden: {relative}")
-    return digest.hexdigest()
 
 class Audit:
     """Append-only, hash-linked host ledger; never mounted inside tool containers."""
@@ -213,60 +196,29 @@ class Audit:
 
 SHELL_SECONDS = 180
 
+RETAINED_SNAPSHOT_BYTES = 2 * 1024 * 1024 * 1024
+RETAINED_SNAPSHOT_ENTRIES = 250_000
+
+
+class SnapshotBudgetExceeded(ValueError):
+    pass
+
+
+def snapshot_usage(tree):
+    """Logical regular-file bytes and all entries, including the snapshot root."""
+    size, entries = 0, 1
+    for folder, directories, files in os.walk(tree):
+        entries += len(directories) + len(files)
+        size += sum((Path(folder) / name).stat(follow_symlinks=False).st_size for name in files)
+    return size, entries
+
+
 
 def validate_shell_seconds(value):
     if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
         raise ValueError("shell_seconds must be finite and positive")
     return value
 
-
-class CommandTimeout(TimeoutError):
-    """A command overran its own time limit; carries the output read before it was killed."""
-    def __init__(self, message, output="", truncated=False):
-        super().__init__(message)
-        self.output, self.truncated = output, truncated
-
-def process(command, seconds, *, cwd=None, env=None):
-    if seconds <= 0:
-        raise TimeoutError("wall clock exhausted")
-    child = subprocess.Popen(command, cwd=cwd, env=env, stdout=subprocess.PIPE,
-                             stderr=subprocess.STDOUT, start_new_session=True)
-    deadline = time.monotonic() + seconds
-    output = bytearray()
-    truncated = False
-    selector = selectors.DefaultSelector()
-    selector.register(child.stdout, selectors.EVENT_READ)
-    def overrun():
-        return CommandTimeout("command deadline", output.decode("utf8", "replace"), truncated)
-    try:
-        while selector.get_map():
-            remaining = deadline - time.monotonic()
-            if remaining <= 0:
-                raise overrun()
-            for key, _ in selector.select(min(remaining, .1)):
-                chunk = os.read(key.fileobj.fileno(), 65536)
-                if not chunk:
-                    selector.unregister(key.fileobj)
-                else:
-                    output.extend(chunk)
-                    truncated = truncated or len(output) > 24000
-                    del output[:-24000]
-        try:
-            child.wait(timeout=max(.001, deadline-time.monotonic()))
-        except subprocess.TimeoutExpired:
-            # The command closed its output but kept running past its limit.
-            raise overrun() from None
-        return {"exit_code":child.returncode,"output":output.decode("utf8", "replace"),"truncated":truncated}
-
-    finally:
-        # Includes descendants even if the immediate parent has exited.
-        try:
-            os.killpg(child.pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        child.wait()
-        selector.close()
-        child.stdout.close()
 
 class DockerShell:
     secure = True
@@ -282,16 +234,38 @@ class DockerShell:
             raise RuntimeError("Build the tool image first; runtime never pulls images")
     def shell(self, tree, command, seconds):
         name = "mosslight-" + uuid.uuid4().hex
+        deadline = time.monotonic() + seconds
+        def checked(command):
+            result = process(command, deadline-time.monotonic())
+            if result['exit_code']:
+                raise RuntimeError('isolated workspace setup failed: ' + result.get('output', '')[:500])
+            return result
         with self.active_lock:
             self.active.add(name)
         try:
-            return process(["docker","run","--name",name,"--network","none",
+            # Export admits 64 MiB logical bytes and 4096 entries. Extra tmpfs
+            # pages/inodes cover allocation rounding, directories and the root,
+            # so every accepted head can be seeded into the next action.
+            checked(["docker","run","-d","--name",name,"--network","none",
                 "--label", "mosslight.run=" + os.environ.get("MOSSLIGHT_RUN_ID", "library"),
                 "--read-only","--cap-drop","ALL","--security-opt","no-new-privileges",
-                "--pids-limit","128","--memory","1g","--cpus","1","--user",f"{os.getuid()}:{os.getgid()}",
-                "--tmpfs","/tmp:rw,nosuid,nodev,size=128m","--mount",f"type=bind,src={tree},dst=/workspace",
+                "--pids-limit","128","--memory","1g","--cpus","1","--user","0:0",
+                "--tmpfs","/tmp:rw,nosuid,nodev,size=128m,nr_inodes=4096",
+                "--tmpfs","/workspace:rw,nosuid,nodev,size=128m,nr_inodes=8192,mode=1777",
+                "--mount",f"type=bind,src={tree},dst=/seed,readonly",
                 "--workdir","/workspace","--env","HOME=/tmp","--env","PYTHONDONTWRITEBYTECODE=1",
-                self.image,"sh","-c",command], seconds)
+                self.image,"sleep","infinity"])
+            checked(["docker","exec","--user","65534:65534",name,"cp","-R","/seed/.","/workspace/"])
+            result = process(["docker","exec","--user","65534:65534",name,"sh","-c",command], deadline-time.monotonic())
+            # Linux kill(-1) excludes its caller and namespace PID1; without any
+            # capabilities it kills only the participant's processes. The trusted
+            # root PID1 remains alive, and a new bounded exporter can read tmpfs.
+            frozen = process(["docker","exec","--user","65534:65534",name,
+                "/usr/local/bin/python3","-I","-S","-c",
+                FINISH_ACTION_PROGRAM], deadline-time.monotonic())
+            if frozen['exit_code']:
+                return {**result, 'workspace_rejected':'Action container stopped before workspace export.'}
+            return {**result, **capture(name, Path(tree), deadline-time.monotonic())}
         finally:
             # Removing the container also kills everything the command started inside it.
             try:
@@ -342,13 +316,38 @@ class Competition:
         self.claims, self.recent, self.transitions = [], [], []
         self.last_observation = {}
         self.counter = 0
+    def snapshot_cost(self, tree):
+        # Continuations restore their snapshots before acting. Initialize here,
+        # not in __init__, so the retained prefix is included in their budget.
+        if getattr(self, '_snapshot_usage', None) is None:
+            totals = [0, 0]
+            folder = self.protected / 'snapshots'
+            for snapshot in folder.iterdir() if folder.exists() else ():
+                cost = snapshot_usage(snapshot)
+                totals = [a+b for a,b in zip(totals,cost)]
+            self._snapshot_usage = tuple(totals)
+        cost = snapshot_usage(tree)
+        if any(used+added > limit for used,added,limit in
+               zip(self._snapshot_usage,cost,(RETAINED_SNAPSHOT_BYTES,RETAINED_SNAPSHOT_ENTRIES))):
+            raise SnapshotBudgetExceeded('Retained snapshot limit (2 GiB or 250,000 entries) reached; '
+                                         "this action's changes were not applied.")
+        return cost
+    def retained_snapshot(self, cost):
+        self._snapshot_usage = tuple(a+b for a,b in zip(self._snapshot_usage,cost))
     def snapshot(self):
+        cost = self.snapshot_cost(self.tree)
         before = tree_hash(self.tree)
         target = self.protected / "snapshots" / str(self.counter)
+        try:
+            shutil.copytree(self.tree,target,symlinks=False)
+            if tree_hash(target) != before:
+                raise RuntimeError("tree changed during snapshot")
+        except BaseException:
+            if target.exists():
+                shutil.rmtree(target)
+            raise
         self.counter += 1
-        shutil.copytree(self.tree,target,symlinks=False)
-        if tree_hash(target) != before:
-            raise RuntimeError("tree changed during snapshot")
+        self.retained_snapshot(cost)
         return target, before
     def session(self, seconds, turn_limit=None):
         """Yield one actor view per turn; wall time is a safety limit."""
@@ -365,6 +364,7 @@ class Competition:
         pending_identity = pending_action = None
         current, owners = {}, {}
         reason = "agents_exhausted"
+        stop_actor = None
         try:
             snapshot, current_hash = self.snapshot()
             baseline = self.oracle(snapshot, deadline-time.monotonic())
@@ -375,7 +375,7 @@ class Competition:
             committed_current = current.copy()
             owners = {}
             self.audit.append({"type":"baseline","tree":current_hash,"oracle":baseline,
-                               "attribution_policy":ATTRIBUTION_POLICY, "status_protocol":self.status_protocol})
+                               "attribution_policy":LIVE_POLICY, "status_protocol":self.status_protocol})
             while active:
                 for identity, agent in self.agents.items():
                     if identity not in active:
@@ -405,10 +405,26 @@ class Competition:
                     self.last_observation.pop(identity, None)
                     self.audit.append({"type":"action_started","agent":identity,"action":action,"before":before,"provider_response":getattr(agent,"last_response",None)})
                     invalid = argument_error(tool, args) if known_tool(tool) else None
+                    rejection = None
                     if invalid is not None:
                         observation = {"error":invalid}  # Nothing runs; the call still uses a turn.
                     elif tool == "shell":
                         observation = self.executor.shell(self.tree,args["command"],min(self.shell_seconds,deadline-time.monotonic()))
+                        links = observation.get('symlinks', [])
+                        if links:
+                            action_id = uuid.uuid4().hex
+                            self.audit.append({'type':'action_ended_competition','agent':identity,
+                                               'action_id':action_id,'action':action,'symlinks':links,
+                                               'before':before,'after':before,'changed_paths':[]})
+                            self.audit.append({'type':'competition_stopped','stop_reason':'symlink',
+                                               'actor':identity,'action_id':action_id})
+                            self.last_observation[identity] = {'message':'The competition has ended.'}
+                            turns_used[identity] += 1
+                            reason, stop_actor = 'symlink', identity
+                            active.clear()
+                            break
+                        if observation.get('workspace_rejected'):
+                            observation['error'] = observation['workspace_rejected']
                     elif tool == "claim":
                         self.claims.append({"agent":identity,"provisional":True,**{k:args[k] for k in ("summary","reproduction","files") if k in args}})
                         observation = {"recorded":True,"provisional":True,
@@ -432,6 +448,15 @@ class Competition:
                     delta = {}
                     edited_paths = []
                     if current_hash != before:
+                        try:
+                            self.snapshot_cost(self.tree)
+                        except SnapshotBudgetExceeded as exc:
+                            rejection = {'reason':'snapshot_budget', 'error':str(exc)}
+                            observation = {**observation, 'error':str(exc)}
+                            shutil.rmtree(self.tree)
+                            shutil.copytree(committed_snapshot, self.tree)
+                            current_hash = before
+                    if current_hash != before:
                         snapshot, current_hash = self.snapshot()
                         verdict = self.oracle(snapshot,deadline-time.monotonic())
                         if time.monotonic() >= deadline:
@@ -439,13 +464,13 @@ class Competition:
                         if set(verdict) != set(baseline) or any(type(v) is not bool for v in verdict.values()):
                             raise ValueError("oracle contract changed")
                         edited_paths = sorted(changed_paths(committed_snapshot, snapshot))
-                        update_owners(baseline, current, verdict, owners, identity,
+                        update_live_owners(baseline, current, verdict, owners, identity,
                                       edited_paths, self.relevance)
                         for bug, passed in verdict.items():
                             if passed != current[bug]:
                                 delta[bug] = passed
                         current = verdict
-                    self.audit.append({"type":"action_completed","agent":identity,"action":action,"before":before,"after":current_hash,"oracle_transitions":delta,"changed_paths":edited_paths,"observation":observation})
+                    self.audit.append({"type":"action_completed","agent":identity,"action":action,"before":before,"after":current_hash,"oracle_transitions":delta,"changed_paths":edited_paths,"observation":observation,"rejection":rejection})
                     if tool == "status" and invalid is None:
                         self.audit.append(status_viewed(identity, observation, action_number=turns_used[identity]+1))
                     committed_hash = current_hash
@@ -460,7 +485,7 @@ class Competition:
                     if turn_limit is not None and turns_used[identity] >= turn_limit:
                         active.remove(identity)
                         capped.add(identity)
-            if capped:
+            if capped and reason == 'agents_exhausted':
                 reason = "turn_limit"
             grade = {identity:sum(self.weights.get(bug,1) for bug, owner in owners.items() if owner == identity and current[bug]) for identity in self.agents}
         except (TimeoutError,subprocess.TimeoutExpired):
@@ -504,8 +529,8 @@ class Competition:
                 final_tree_hash = tree_hash(self.tree)
             except (ValueError, OSError):
                 final_tree_hash = None
-            result = {"participants":list(self.agents),"stop_reason":reason,"final_tree_hash":final_tree_hash,
-                      "turn_limit":turn_limit,"turns_used":turns_used,"attribution_policy":ATTRIBUTION_POLICY,
+            result = {"participants":list(self.agents),"stop_reason":reason,"stop_actor":stop_actor,"final_tree_hash":final_tree_hash,
+                      "turn_limit":turn_limit,"turns_used":turns_used,"attribution_policy":LIVE_POLICY,
                       "verified_score":None if no_oracle else grade if trusted else None,
                       "diagnostic_score":None if no_oracle or trusted else grade,
                       "reported_winner":winner,

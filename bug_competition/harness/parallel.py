@@ -20,10 +20,11 @@ import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 
-from .core import (Competition, SHELL_SECONDS, TOOLS, UNKNOWN_TOOL, WEB_SEARCH_FAILED, WEB_SEARCH_UNCONFIGURED,
+from .core import (Competition, SnapshotBudgetExceeded, SHELL_SECONDS, TOOLS, UNKNOWN_TOOL, WEB_SEARCH_FAILED, WEB_SEARCH_UNCONFIGURED,
                    argument_error, known_tool, tree_hash, recent_action, repair_summary, status_viewed, work_board)
 from .merge import merge_mode, merge_text
-from bug_competition.grader.attribution import ATTRIBUTION_POLICY, update_owners
+from .credit import LIVE_POLICY, update_live_owners
+from .workspace import WORKSPACE_BYTES, WORKSPACE_ENTRIES
 
 # Countdown notices. The result of this actor's k-th completed action (1-based) carries
 # the number of actions that remain AFTER it: remaining = turn_limit - k. A notice is
@@ -122,6 +123,7 @@ def file_inventory(tree):
     Callers check symlinks first (find_symlinks); one found here is a plain ValueError.
     """
     result = {}
+    total_bytes = entry_count = 0
     pending = [tree]
     while pending:
         folder = pending.pop()
@@ -136,6 +138,9 @@ def file_inventory(tree):
                 raise WorkspaceRejected(PATH_LENGTH_REJECTION, where) from None
             raise
         for entry in entries:
+            entry_count += 1
+            if entry_count > WORKSPACE_ENTRIES:
+                raise WorkspaceRejected('Workspace exceeds 4096 entries; changes were not applied.', '.')
             path = Path(entry.path)
             relative = path.relative_to(tree).as_posix()
             try:
@@ -160,6 +165,9 @@ def file_inventory(tree):
                 raise WorkspaceRejected(SPECIAL_FILE_REJECTION, relative)
             digest = hashlib.sha256()
             try:
+                total_bytes += entry.stat(follow_symlinks=False).st_size
+                if total_bytes > WORKSPACE_BYTES:
+                    raise WorkspaceRejected('Workspace exceeds 64 MiB; changes were not applied.', relative)
                 with path.open('rb') as stream:
                     for chunk in iter(lambda: stream.read(1024 * 1024), b''):
                         digest.update(chunk)
@@ -296,7 +304,7 @@ class ParallelCompetition(Competition):
             self.current_hash = digest
             self.audit.append({'type':'baseline', 'tree':digest, 'oracle':baseline,
                                'scheduler':'parallel_transactions',
-                               'attribution_policy':ATTRIBUTION_POLICY, 'status_protocol':self.status_protocol})
+                               'attribution_policy':LIVE_POLICY, 'status_protocol':self.status_protocol})
         except BaseException as exc:
             self.stop(exc)
             raise
@@ -430,9 +438,13 @@ class ParallelCompetition(Competition):
                                    'truncated':bool(getattr(exc, 'truncated', False)), 'error':f'Command timed out after {self.shell_seconds:g} seconds.'}
                     rejection = {'reason':'timeout', 'seconds':self.shell_seconds}
                 # DockerShell removes the entire container before returning, including descendants.
-                symlinks = find_symlinks(workspace)
+                symlinks = observation.get('symlinks', []) if isinstance(observation, dict) else []
+                symlinks = symlinks or find_symlinks(workspace)
                 if symlinks:
                     return self._end_for_symlink(identity, action_id, action, base_hash, symlinks, observation)
+                if isinstance(observation, dict) and observation.get('workspace_rejected'):
+                    rejection = {'reason':'workspace', 'error':observation['workspace_rejected']}
+                    observation = {**observation, 'error':observation['workspace_rejected']}
                 if rejection is None:
                     try:
                         after_files = file_inventory(workspace)
@@ -486,16 +498,34 @@ class ParallelCompetition(Competition):
                     latest_files = file_inventory(candidate)
                     merged_paths, conflicted_paths = integrate_files(
                         candidate, workspace, base_tree, changed, before_files, after_files, latest_files)
-                    candidate_files = file_inventory(candidate)
+                    try:
+                        candidate_files = file_inventory(candidate)
+                    except WorkspaceRejected as exc:
+                        # Two individually valid concurrent actions can exceed the
+                        # cap when combined. Reject this merge, retaining a loadable head.
+                        rejection = {'reason':'workspace', 'error':exc.error, 'path':exc.path}
+                        observation = {**observation, 'error':exc.error}
+                        shutil.rmtree(candidate)
+                        shutil.copytree(self.tree, candidate)
+                        candidate_files = latest_files
+                        merged_paths, conflicted_paths = [], []
                     committed_paths = sorted(p for p in latest_files.keys() | candidate_files.keys()
                                              if latest_files.get(p) != candidate_files.get(p))
                     after = tree_hash(candidate)
+                    if after != before:
+                        try:
+                            snapshot_cost = self.snapshot_cost(candidate)
+                        except SnapshotBudgetExceeded as exc:
+                            rejection = {'reason':'snapshot_budget', 'error':str(exc)}
+                            observation = {**observation, 'error':str(exc)}
+                            committed_paths, merged_paths, conflicted_paths = [], [], []
+                            after = before
                     if after != before:
                         verdict = self.oracle(candidate, self.remaining())
                         self._validate_verdict(verdict)
                         self._check_deadline()
                         delta = {bug:passed for bug,passed in verdict.items() if passed != self.current[bug]}
-                        update_owners(self.baseline, self.current, verdict, owners, identity,
+                        update_live_owners(self.baseline, self.current, verdict, owners, identity,
                                       committed_paths, self.relevance)
                         transfers = {bug:owner for bug,owner in owners.items()
                                      if self.owners.get(bug) != owner}
@@ -549,6 +579,7 @@ class ParallelCompetition(Competition):
                             shutil.rmtree(snapshot)
                         raise
                     if snapshot is not None:
+                        self.retained_snapshot(snapshot_cost)
                         self.current_hash = after
                         self.current, self.owners = verdict, owners
                         self.counter += 1
@@ -594,7 +625,7 @@ class ParallelCompetition(Competition):
             grade = self._points() if self.current_hash is not None else None
             leaders = [] if grade is None else [a for a,v in grade.items() if v == max(grade.values())]
             result = {'participants':list(self.agents), 'stop_reason':self.reason, 'stop_actor':self.stop_actor,
-                      'scheduler':'parallel_transactions', 'attribution_policy':ATTRIBUTION_POLICY,
+                      'scheduler':'parallel_transactions', 'attribution_policy':LIVE_POLICY,
                       'final_tree_hash':tree_hash(self.tree), 'turn_limit':self.turn_limit,
                       'turns_used':self.turns_used,
                       'verified_score':grade if trusted and not no_oracle else None,

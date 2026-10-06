@@ -635,7 +635,7 @@ class ParallelTests(unittest.TestCase):
 
 
     def test_last_relevant_file_edit_attribution_and_transfers(self):
-        # Both the live board and final replay credit a later edit of the relevant file.
+        # The live board credits a later edit of the relevant file; the final replay does not.
         from bug_competition.grader.grader import grade_episode
         class Executor:
             secure = False
@@ -666,7 +666,9 @@ class ParallelTests(unittest.TestCase):
                 done = [r for r in records if r['type'] == 'action_completed']
                 self.assertEqual([r['ownership_transfers'] for r in done],
                                  [transfers for _, _, transfers in steps[:length]])
-                self.assertEqual(grade_episode(c.protected, manifest=manifest, oracle=oracle)['points'], expected)
+                # The final grader (first_surviving_repair) keeps A's first repair.
+                self.assertEqual(grade_episode(c.protected, manifest=manifest, oracle=oracle)['points'],
+                                 {'A':int(length != 3), 'B':0, 'C':0})
 
     def test_stale_base_flip_is_credited_to_the_committer(self):
         # B started before A's unrelated commit; B's merged commit flips the defect.
@@ -778,6 +780,132 @@ class ParallelTests(unittest.TestCase):
         c, a, b = self.run_stale_pair({'other':'same'}, {'other':'same'})
         self.assertEqual(b, {'output':'B', 'notice':'[Notice: 1 action remaining.]'})
 
+    def test_retained_snapshot_limits_reject_only_the_action_and_account_for_actual_commits(self):
+        cases=[('bytes',36,100,'value'),('entries',1024,9,'extra')]
+        for label,byte_cap,entry_cap,bloat_path in cases:
+            with self.subTest(cap=label), tempfile.TemporaryDirectory() as folder, \
+                 patch('bug_competition.harness.core.RETAINED_SNAPSHOT_BYTES',byte_cap), \
+                 patch('bug_competition.harness.core.RETAINED_SNAPSHOT_ENTRIES',entry_cap):
+                class Executor:
+                    secure=False
+                    def close(self): pass
+                    def shell(self,tree,command,seconds):
+                        if command=='bloat':
+                            (tree/bloat_path).write_text('x'*20)
+                        else:
+                            (tree/'value').write_text(command)
+                        return {'output':command}
+                c=self.make(Path(folder),Executor(),turn_limit=4)
+                self.addCleanup(c.finish)
+                c.act('A',shell('fixed-A'))
+                before_usage=c._snapshot_usage
+                accepted=c.current_hash
+                rejected=c.act('B',shell('bloat'))
+                self.assertIn('Retained snapshot limit',rejected['error'])
+                self.assertFalse(c.stopping)
+                self.assertEqual(c.current_hash,accepted)
+                self.assertEqual(c._snapshot_usage,before_usage)
+                self.assertEqual((c.tree/'value').read_text(),'fixed-A')
+                self.assertFalse((c.tree/'extra').exists())
+                self.assertEqual(len(list((c.protected/'snapshots').iterdir())),2)
+                self.assertNotIn('error',c.act('B',shell('fixed')))
+                self.assertEqual(len(list((c.protected/'snapshots').iterdir())),3)
+                result=c.finish()
+                self.assertEqual(result['stop_reason'],'agents_exhausted')
+                self.assertEqual(result['turns_used'],{'A':1,'B':2})
+                rejected_record=[r for r in self.ledger(c) if r['type']=='action_completed'][1]
+                self.assertEqual(rejected_record['rejection']['reason'],'snapshot_budget')
+                self.assertEqual(rejected_record['before'],rejected_record['after'])
+                from bug_competition.harness.core import snapshot_usage
+                costs=[snapshot_usage(p) for p in (c.protected/'snapshots').iterdir()]
+                self.assertEqual(c._snapshot_usage,tuple(sum(cost[i] for cost in costs) for i in range(2)))
+
+    def test_snapshot_budget_lazily_includes_restored_prefix(self):
+        from bug_competition.harness.core import Competition,SnapshotBudgetExceeded
+        with tempfile.TemporaryDirectory() as folder:
+            c=object.__new__(Competition); c.protected=Path(folder)/'protected'
+            for number in (0,1):
+                snapshot=c.protected/'snapshots'/str(number); snapshot.mkdir(parents=True)
+                (snapshot/'file').write_text('12345')
+            tree=Path(folder)/'candidate'; tree.mkdir(); (tree/'file').write_text('12345')
+            with patch('bug_competition.harness.core.RETAINED_SNAPSHOT_BYTES',14):
+                with self.assertRaises(SnapshotBudgetExceeded): c.snapshot_cost(tree)
+            self.assertEqual(c._snapshot_usage,(10,4))
+            with patch('bug_competition.harness.core.RETAINED_SNAPSHOT_BYTES',15):
+                self.assertEqual(c.snapshot_cost(tree),(5,2))
+            # Checking eligibility never reserves or consumes space.
+            self.assertEqual(c._snapshot_usage,(10,4))
+
+    def test_inventory_rejects_limit_breach_before_reading_file_contents(self):
+        from bug_competition.harness.parallel import file_inventory,WorkspaceRejected
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder); (root/'oversize').write_bytes(b'x'*11)
+            with patch('bug_competition.harness.parallel.WORKSPACE_BYTES',10), \
+                 patch.object(Path,'open',side_effect=AssertionError('oversized contents were opened')):
+                with self.assertRaisesRegex(WorkspaceRejected,'64 MiB'):
+                    file_inventory(root)
+            with patch('bug_competition.harness.parallel.WORKSPACE_ENTRIES',0), \
+                 patch.object(Path,'open',side_effect=AssertionError('entry limit was checked too late')):
+                with self.assertRaisesRegex(WorkspaceRejected,'4096 entries'):
+                    file_inventory(root)
+
+    def test_concurrent_valid_additions_cannot_publish_an_oversized_merged_head(self):
+        cases=[('bytes',32,20,{'A':('a.bin','a'*16),'B':('b.bin','b'*16)},'64 MiB'),
+               ('entries',1024,4,{'A':('a/item','a'),'B':('b/item','b')},'4096 entries')]
+        for label,byte_cap,entry_cap,additions,message in cases:
+            with self.subTest(cap=label), tempfile.TemporaryDirectory() as folder, \
+                 patch('bug_competition.harness.parallel.WORKSPACE_BYTES',byte_cap), \
+                 patch('bug_competition.harness.parallel.WORKSPACE_ENTRIES',entry_cap):
+                barrier,release=threading.Barrier(2),threading.Event()
+                observed={}
+                class Executor:
+                    secure=False
+                    def close(self): pass
+                    def shell(self,tree,command,seconds):
+                        if command=='repair':
+                            (tree/'value').write_text('fixed')
+                            return {'output':'repaired'}
+                        barrier.wait(3)
+                        relative,content=additions[command]
+                        path=tree/relative; path.parent.mkdir(parents=True,exist_ok=True)
+                        path.write_text(content)
+                        entries=list(tree.rglob('*'))
+                        observed[command]=(sum(p.stat().st_size for p in entries if p.is_file()),len(entries))
+                        if command=='B' and not release.wait(3):
+                            raise TimeoutError('A did not commit')
+                        return {'output':command}
+                c=self.make(Path(folder),Executor(),turn_limit=3)
+                self.addCleanup(c.finish)
+                with ThreadPoolExecutor(max_workers=2) as pool:
+                    first=pool.submit(c.act,'A',shell('A'))
+                    second=pool.submit(c.act,'B',shell('B'))
+                    try:
+                        self.assertNotIn('error',first.result(5))
+                        accepted_hash=c.current_hash
+                    finally:
+                        release.set()
+                    refused=second.result(5)
+                self.assertTrue(all(size<=byte_cap and count<=entry_cap for size,count in observed.values()))
+                self.assertIn(message,refused['error'])
+                self.assertFalse(c.stopping)
+                self.assertEqual(c.current_hash,accepted_hash)
+                self.assertEqual((c.tree/additions['A'][0]).read_text(),additions['A'][1])
+                self.assertFalse((c.tree/additions['B'][0]).exists())
+                self.assertEqual(len(list((c.protected/'snapshots').iterdir())),2)
+                done=[r for r in self.ledger(c) if r['type']=='action_completed']
+                self.assertEqual(done[1]['rejection']['reason'],'workspace')
+                self.assertEqual(done[1]['before'],done[1]['after'])
+                self.assertEqual(done[1]['changed_paths'],[])
+                self.assertEqual(done[1]['merged_paths'],[])
+                # Rejection uses one action; a later valid repair still commits.
+                self.assertNotIn('error',c.act('B',shell('repair')))
+                result=c.finish()
+                self.assertEqual(result['stop_reason'],'agents_exhausted')
+                self.assertEqual(result['turns_used'],{'A':1,'B':2})
+                self.assertEqual(result['verified_score'],{'A':0,'B':1})
+                self.assertEqual((c.tree/'value').read_text(),'fixed')
+                self.assertEqual(len(list((c.protected/'snapshots').iterdir())),3)
+
     def test_concurrent_disjoint_edits_merge_without_stealing_credit(self):
         barrier, release = threading.Barrier(2), threading.Event()
         class Executor:
@@ -858,6 +986,7 @@ class ParallelTests(unittest.TestCase):
             calls.append((command, seconds))
             return {'exit_code': 0, 'output': 'ok', 'truncated': False}
         with patch('bug_competition.harness.core.process', side_effect=fake), \
+             patch('bug_competition.harness.core.capture', return_value={}) as capture, \
              tempfile.TemporaryDirectory() as folder:
             executor = DockerShell()
             competition = self.make(Path(folder), executor, seconds=3600)
@@ -865,9 +994,13 @@ class ParallelTests(unittest.TestCase):
             competition.finish()
         self.assertEqual(observation['exit_code'], 0)
         self.assertEqual([command[:2] for command, _ in calls],
-                         [['docker', 'info'], ['docker', 'image'], ['docker', 'run'], ['docker', 'rm']])
-        self.assertEqual([seconds for _, seconds in calls], [10, 10, 180, 5])
-        self.assertEqual(calls[2][0][-3:], ['sh', '-c', 'printf ok'])
+                         [['docker', 'info'], ['docker', 'image'], ['docker', 'run'],
+                          ['docker', 'exec'], ['docker', 'exec'], ['docker', 'exec'], ['docker', 'rm']])
+        self.assertEqual([calls[index][1] for index in (0,1,6)], [10,10,5])
+        budgets=[seconds for _, seconds in calls[2:6]]+[capture.call_args.args[2]]
+        self.assertTrue(all(0<seconds<=180 for seconds in budgets))
+        self.assertEqual(budgets,sorted(budgets,reverse=True))
+        self.assertEqual(calls[4][0][-3:], ['sh', '-c', 'printf ok'])
         self.assertFalse(executor.active)
 
     def test_cleanup_failure_refuses_to_commit_and_retains_container_for_retry(self):
@@ -875,7 +1008,8 @@ class ParallelTests(unittest.TestCase):
         def fake(command, seconds, **kwargs):
             commands.append(command)
             return {'exit_code':int(command[:3] == ['docker','rm','-f']), 'output':''}
-        with patch('bug_competition.harness.core.process', side_effect=fake):
+        with patch('bug_competition.harness.core.process', side_effect=fake), \
+             patch('bug_competition.harness.core.capture', return_value={}):
             executor = DockerShell()
             with self.assertRaisesRegex(RuntimeError, 'cleanup failed'):
                 executor.shell(Path('/tmp/workspace'), 'true', 3)
@@ -887,7 +1021,8 @@ class ParallelTests(unittest.TestCase):
             if command[:3] == ['docker', 'rm', '-f']:
                 raise CommandTimeout('command deadline')
             return {'exit_code': 0, 'output': ''}
-        with patch('bug_competition.harness.core.process', side_effect=fake):
+        with patch('bug_competition.harness.core.process', side_effect=fake), \
+             patch('bug_competition.harness.core.capture', return_value={}):
             executor = DockerShell()
             with self.assertRaisesRegex(RuntimeError, 'tool container cleanup timed out') as caught:
                 executor.shell(Path('/tmp/workspace'), 'true', 180)
@@ -917,6 +1052,9 @@ class ParallelTests(unittest.TestCase):
             self.assertEqual(result['verified_score'], {'A':1,'B':0})
             self.assertEqual(result['turns_used'], {'A':1,'B':0})
             self.assertEqual(len(list((c.protected / 'snapshots').iterdir())), 2)
+            from bug_competition.harness.core import snapshot_usage
+            costs=[snapshot_usage(p) for p in (c.protected/'snapshots').iterdir()]
+            self.assertEqual(c._snapshot_usage,tuple(sum(cost[i] for cost in costs) for i in range(2)))
 
 
 class LineMergeTests(unittest.TestCase):

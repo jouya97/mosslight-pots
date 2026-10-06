@@ -131,6 +131,77 @@ class HarnessTests(unittest.TestCase):
         for forbidden in ('oracle','hidden','seeded','grader','root cause','root_cause','manifest','checks/','host_only','.py'):
             self.assertNotIn(forbidden,agent_text.lower())
         self.assertEqual([tool['name'] for tool in TOOLS],['shell','claim','status','web_search'])
+    def test_serial_symlink_stop_keeps_prior_repairs_and_records_responsible_actor(self):
+        class Executor(MockShell):
+            def shell(self,tree,command,seconds):
+                if command=='symlink':
+                    return {'exit_code':0,'output':'','symlinks':['escape']}
+                return super().shell(tree,command,seconds)
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder); tree=root/'shared'; tree.mkdir(); (tree/'value').write_text('broken')
+            result=Competition(tree,root/'protected',Executor(),oracle,
+                               {'A':ScriptedAgent([shell('fixed')]),'B':ScriptedAgent([shell('symlink')])}).run(5,turn_limit=1)
+            self.assertEqual(result['stop_reason'],'symlink')
+            self.assertEqual(result['stop_actor'],'B')
+            self.assertEqual(result['turns_used'],{'A':1,'B':1})
+            self.assertEqual(result['verified_score'],{'A':1,'B':0})
+            self.assertEqual((tree/'value').read_text(),'fixed')
+            records=[json.loads(line) for line in (root/'protected/events.jsonl').read_text().splitlines()]
+            ended=next(row for row in records if row['type']=='action_ended_competition')
+            stopped=next(row for row in records if row['type']=='competition_stopped')
+            self.assertEqual(ended['agent'],stopped['actor'])
+            self.assertEqual(ended['action_id'],stopped['action_id'])
+            self.assertEqual(ended['before'],ended['after'])
+            self.assertEqual(ended['changed_paths'],[])
+            self.assertEqual(ended['symlinks'],['escape'])
+            self.assertEqual([row['agent'] for row in records if row['type']=='action_completed'],['A'])
+
+    def test_serial_snapshot_budget_rolls_back_offending_action_and_continues(self):
+        for label,byte_cap,entry_cap in [('bytes',16,100),('entries',1024,6)]:
+            with self.subTest(cap=label), tempfile.TemporaryDirectory() as folder, \
+                 patch('bug_competition.harness.core.RETAINED_SNAPSHOT_BYTES',byte_cap), \
+                 patch('bug_competition.harness.core.RETAINED_SNAPSHOT_ENTRIES',entry_cap):
+                class Executor(MockShell):
+                    def shell(self,tree,command,seconds):
+                        if command=='bloat':
+                            (tree/'extra').write_text('x'*20)
+                            return {'output':'bloat'}
+                        return super().shell(tree,command,seconds)
+                root=Path(folder); tree=root/'shared'; tree.mkdir(); (tree/'value').write_text('broken')
+                c=Competition(tree,root/'protected',Executor(),oracle,
+                              {'A':ScriptedAgent([shell('ready')]),'B':ScriptedAgent([shell('bloat'),shell('fixed')])})
+                result=c.run(5)
+                self.assertEqual(result['stop_reason'],'agents_exhausted')
+                self.assertEqual(result['turns_used'],{'A':1,'B':2})
+                self.assertEqual(result['verified_score'],{'A':0,'B':1})
+                self.assertEqual((tree/'value').read_text(),'fixed')
+                self.assertFalse((tree/'extra').exists())
+                self.assertEqual(len(list((root/'protected/snapshots').iterdir())),3)
+                records=[json.loads(line) for line in (root/'protected/events.jsonl').read_text().splitlines()]
+                done=[r for r in records if r['type']=='action_completed']
+                self.assertEqual(done[1]['rejection']['reason'],'snapshot_budget')
+                self.assertEqual(done[1]['before'],done[1]['after'])
+                self.assertIn('Retained snapshot limit',done[1]['observation']['error'])
+
+    def test_serial_rejected_export_uses_turn_and_allows_later_actions(self):
+        class Executor(MockShell):
+            def shell(self,tree,command,seconds):
+                if command=='oversize':
+                    return {'exit_code':0,'output':'','workspace_rejected':'Workspace exceeds 64 MiB.'}
+                return super().shell(tree,command,seconds)
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder); tree=root/'shared'; tree.mkdir(); (tree/'value').write_text('broken')
+            executor=Executor()
+            result=Competition(tree,root/'protected',executor,oracle,
+                               {'A':ScriptedAgent([shell('oversize'),shell('fixed')]),'B':ScriptedAgent([])}).run(5)
+            self.assertEqual(result['stop_reason'],'agents_exhausted')
+            self.assertEqual(result['turns_used'],{'A':2,'B':0})
+            self.assertEqual((tree/'value').read_text(),'fixed')
+            records=[json.loads(line) for line in (root/'protected/events.jsonl').read_text().splitlines()]
+            done=[row for row in records if row['type']=='action_completed']
+            self.assertEqual(done[0]['observation']['error'],'Workspace exceeds 64 MiB.')
+            self.assertEqual(done[0]['before'],done[0]['after'])
+
     def test_protected_paths_cannot_be_inside_agent_mount(self):
         agents={'a':ScriptedAgent([]),'b':ScriptedAgent([])}
         with tempfile.TemporaryDirectory() as folder:
@@ -147,16 +218,46 @@ class HarnessTests(unittest.TestCase):
         def fake(command,seconds,**kwargs):
             commands.append(command)
             return {'exit_code':0,'output':'ok'}
-        with patch('bug_competition.harness.core.process',side_effect=fake):
+        with patch('bug_competition.harness.core.process',side_effect=fake), \
+             patch('bug_competition.harness.core.capture',return_value={}) as capture:
             executor=DockerShell()
             executor.shell(Path('/tmp/shared'),'cat README.md',2)
             executor.close()
         run=commands[2]
         self.assertEqual(run[run.index('--network')+1],'none')
-        self.assertEqual(run[run.index('--mount')+1],'type=bind,src=/tmp/shared,dst=/workspace')
+        self.assertEqual(run[run.index('--mount')+1],'type=bind,src=/tmp/shared,dst=/seed,readonly')
         self.assertEqual(run.count('--mount'),1)
         self.assertIn('--read-only',run)
-        self.assertEqual(commands[3][:3],['docker','rm','-f'])
+        mounts=[run[index+1] for index,value in enumerate(run) if value=='--tmpfs']
+        self.assertIn('/workspace:rw,nosuid,nodev,size=128m,nr_inodes=8192,mode=1777',mounts)
+        from bug_competition.harness.workspace import WORKSPACE_BYTES,WORKSPACE_ENTRIES
+        options=dict(item.split('=',1) for item in next(m for m in mounts if m.startswith('/workspace:')).split(',') if '=' in item)
+        capacity=int(options['size'][:-1])*1024*1024
+        self.assertGreaterEqual(capacity,WORKSPACE_BYTES+WORKSPACE_ENTRIES*4096)
+        self.assertGreater(int(options['nr_inodes']),WORKSPACE_ENTRIES)  # The tmpfs root also consumes an inode.
+        self.assertEqual(commands[3][2:4],['--user','65534:65534'])
+        self.assertEqual(commands[3][5:],['cp','-R','/seed/.','/workspace/'])
+        self.assertEqual(commands[4][2:4],['--user','65534:65534'])
+        self.assertEqual(commands[4][5:],['sh','-c','cat README.md'])
+        self.assertEqual(run[run.index('--user')+1],'0:0')
+        self.assertEqual(commands[5][:4],['docker','exec','--user','65534:65534'])
+        self.assertIn('SIGKILL',commands[5][-1])
+        self.assertEqual(commands[6][:3],['docker','rm','-f'])
+        self.assertEqual(capture.call_args.args[:2],(run[run.index('--name')+1],Path('/tmp/shared')))
+    def test_docker_process_cleanup_failure_discards_export_and_removes_container(self):
+        commands=[]
+        def fake(command,seconds,**kwargs):
+            commands.append(command)
+            return {'exit_code':int('SIGKILL' in command[-1]),'output':''}
+        with patch('bug_competition.harness.core.process',side_effect=fake), \
+             patch('bug_competition.harness.core.capture') as capture:
+            executor=DockerShell()
+            result=executor.shell(Path('/tmp/shared'),'true',5)
+            self.assertIn('workspace_rejected',result)
+            capture.assert_not_called()
+            self.assertEqual(commands[-1][:3],['docker','rm','-f'])
+            self.assertFalse(executor.active)
+
     def test_deadline_retains_last_completed_score(self):
         class SlowAgent:
             def action(self,view,seconds):

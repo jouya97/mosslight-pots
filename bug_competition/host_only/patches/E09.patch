@@ -7,5 +7,5 @@
 -    if tile["structure"] == "rain_barrel" and rain:
 +    if tile["structure"] == "rain_barrel":
          gain += 6
-     x, y = index % world.width, index // world.width
-     pond_neighbors = sum(
+         from .semantics import barrel_adjustment
+         gain += barrel_adjustment(before)

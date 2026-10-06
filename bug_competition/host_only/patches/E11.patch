@@ -1,6 +1,6 @@
 --- a/mosslight/habitat.py
 +++ b/mosslight/habitat.py
-@@ -80,7 +80,7 @@
+@@ -82,7 +82,7 @@
      healthy_clover = sum(c.species == "clover" and c.vitality >= 50 for c in world.cells)
      houses = sum(t["structure"] == "bee_house" for t in world.workbench["tiles"])
      glowing = sum(c.species == "glowcap" and c.vitality >= 40 for c in world.cells)

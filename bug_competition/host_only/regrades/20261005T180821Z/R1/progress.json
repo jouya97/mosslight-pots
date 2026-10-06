@@ -1,0 +1,29 @@
+{
+  "checked_unique_snapshots": 39,
+  "current_snapshot": 42,
+  "elapsed_seconds": 687.247,
+  "final_passing_bugs": 105,
+  "finished_utc": "2026-10-05T18:21:55.340644+00:00",
+  "last_passing_bugs": 105,
+  "points": {
+    "A": 85,
+    "B": 64,
+    "C": 80
+  },
+  "run": "R1",
+  "scores": {
+    "A": 0.3386454183266932,
+    "B": 0.2549800796812749,
+    "C": 0.3187250996015936
+  },
+  "snapshot_started_utc": "2026-10-05T18:21:37.420404+00:00",
+  "snipe_points": {
+    "A": 3,
+    "B": 26,
+    "C": 29
+  },
+  "sniping_zeroed": [],
+  "started_utc": "2026-10-05T18:10:28.091223+00:00",
+  "status": "completed",
+  "total_unique_snapshots": 39
+}

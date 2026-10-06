@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "images": [
+    {
+      "role": "historical",
+      "image_id": "sha256:cbc65b1527ad0a79be2643adddf1b2cc3ff7b694ba4cb9d489cc352714e17f36",
+      "archive": "bug_competition/archives/mosslight_historical_cbc65b15_image.tar.gz",
+      "archive_bytes": 112863047,
+      "archive_sha256": "27fa8bf02312ebb8e5e204cf3b52906080518784d77a2e9cd6f43fccc5f2df23",
+      "image_size_bytes": 350819522,
+      "architecture": "arm64",
+      "os": "linux",
+      "exported_utc": "2026-10-06T03:22:48.648090+00:00",
+      "verification": {
+        "gzip_integrity": true,
+        "saved_config_sha256_matches_image_id": true,
+        "image_rebuilt": false
+      }
+    },
+    {
+      "role": "prospective_v8",
+      "image_id": "sha256:28e3d6cafef1262c380140e04b368814d38a2740cb05002795ad660333b74e75",
+      "archive": "bug_competition/archives/mosslight_v8_28e3d6ca_image.tar.gz",
+      "archive_bytes": 348816201,
+      "archive_sha256": "9fc3cf096a229769b320f51c68beff334e1839bf09fd307d08a476b583ac4d29",
+      "image_size_bytes": 977152337,
+      "architecture": "arm64",
+      "os": "linux",
+      "exported_utc": "2026-10-06T03:23:04.200589+00:00",
+      "verification": {
+        "gzip_integrity": true,
+        "saved_config_sha256_matches_image_id": true,
+        "image_rebuilt": false
+      }
+    }
+  ],
+  "note": "Exact local docker image save exports. Images were not rebuilt. Both are Linux arm64; other CPU architectures require compatible emulation."
+}

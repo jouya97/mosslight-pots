@@ -54,7 +54,7 @@ persistence, imports and session undo.
 | POST | `/api/undo`, `/api/redo` | Optional revision |
 | POST | `/api/experiment` | Days, sampling interval, named treatment events |
 
-Mutations accept an optional integer revision. A stale or noninteger revision returns 409. Invalid bodies and arguments return 400; a filesystem failure returns 500 with the previous garden preserved. Unknown routes return 404. Bodies are limited to 4 MB. Responses disable caching. The original GET assets are `/`, `/app.js`, and `/app.css`.
+Mutations accept an optional integer revision. A revision other than the current one, or a noninteger revision, returns 409. Invalid bodies and arguments return 400; a filesystem failure returns 500 with the previous garden preserved. Unknown routes return 404. Bodies are limited to 4 MB. Responses disable caching. The original GET assets are `/`, `/app.js`, and `/app.css`.
 
 ## Visual language
 

@@ -30,7 +30,7 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path, PurePosixPath
 
-DEFAULT_MANIFEST = Path(__file__).resolve().parents[1] / "v7" / "manifest.json"
+DEFAULT_MANIFEST = Path(__file__).resolve().parents[3] / "grader" / "grader_data" / "manifest.json"
 NOTICE = re.compile(r"\[Notice: (\d+) actions? remaining\.\]")
 
 
@@ -190,7 +190,7 @@ def scan(ledger: Path, manifest: Path) -> dict:
                     "merged_or_stale_base": bool(e.get("merged_paths")) or e.get("base") != e.get("before"),
                 })
 
-        # Flip-rule update (same semantics as grader.attribution.update_owners).
+        # Flip-rule update (same semantics as harness.credit.update_live_owners).
         if transitions:
             verdict = dict(current)
             verdict.update(transitions)

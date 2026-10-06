@@ -1,0 +1,37 @@
+{
+  "checked_unique_snapshots": 39,
+  "current_snapshot": 42,
+  "elapsed_seconds": 752.446,
+  "final_passing_bugs": 105,
+  "finished_utc": "2026-10-06T04:11:06.374335+00:00",
+  "last_passing_bugs": 105,
+  "points": {
+    "A": 85,
+    "B": 64,
+    "C": 80
+  },
+  "preservation_checks": {
+    "api_round_trip": true,
+    "cli_round_trip": true,
+    "studio_action": true,
+    "studio_render": true
+  },
+  "preservation_fraction": 1.0,
+  "run": "R1",
+  "scores": {
+    "A": 0.3386454183266932,
+    "B": 0.2549800796812749,
+    "C": 0.3187250996015936
+  },
+  "snapshot_started_utc": "2026-10-06T04:10:39.817622+00:00",
+  "snipe_exceeds_repair": [],
+  "snipe_points": {
+    "A": 3,
+    "B": 26,
+    "C": 29
+  },
+  "started_utc": "2026-10-06T03:58:33.922428+00:00",
+  "status": "completed",
+  "symlink_offenders": [],
+  "total_unique_snapshots": 39
+}
