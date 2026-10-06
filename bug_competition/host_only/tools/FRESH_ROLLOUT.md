@@ -34,7 +34,7 @@ For a narrowly scoped provider/API validation, `--smoke` selects exactly **2 act
 
 The latest retained run took 3,811.41 seconds (about 63.5 minutes) of overall supervisor time, including grading. That is one observation, not a guarantee. The worker cap excludes preparation and post-worker evidence copying. No dollar cap is enforced, and recorded `total_cost` is unavailable. The smoke profile limits actions, not spending. Keep the host awake and the launch terminal open.
 
-Provider selection is explicit. OpenRouter adds `stream=false` and `reasoning_enabled=true`, and both providers use zero retries. There is no provider or model fallback. Offline checks do not establish upstream model availability. `fresh_openrouter.py` is a compatibility wrapper that defaults to `--provider openrouter` ([FRESH_OPENROUTER.md](FRESH_OPENROUTER.md)).
+Provider selection is explicit. OpenRouter adds `stream=false` and `reasoning_enabled=true`, and both providers use zero retries. There is no provider or model fallback. Offline checks do not establish upstream model availability. [fresh_openrouter.py](fresh_openrouter.py) is a compatibility wrapper that defaults to `--provider openrouter`.
 
 ## Credential-free checks; no Docker
 

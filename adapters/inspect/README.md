@@ -1,6 +1,7 @@
 # Inspect adapter
 
-Reviewer baseline: **Python 3.12 and Inspect 0.3.268**, installed through the repository's `requirements-review.txt`. Build the tool image first ([`../docker/Dockerfile`](../docker/Dockerfile)), then:
+Use **Python 3.12 and Inspect 0.3.268** with the repository's
+`requirements-review.lock.txt`. From the repository root:
 
 ```sh
 docker build -f adapters/docker/Dockerfile \
@@ -8,36 +9,68 @@ docker build -f adapters/docker/Dockerfile \
 inspect eval adapters/inspect/inspect_task.py --model <provider>/<model>
 ```
 
-The task defaults are the canonical experiment run by the [maintained launcher](../../bug_competition/host_only/tools/FRESH_ROLLOUT.md): 3 participants, 150 actions each, a 5400 s episode, 180 s per shell action, `competitor_scores_v2` status feedback and 3600 s of independent grading (override with `-T seconds=... -T participants=...`). The launcher adds what a single `inspect eval` cannot provide: a prepared and baseline-checked seed, a pinned live/grading probe pair (the adapter draws fresh probe inputs per episode), provider-specific model arguments, Docker resource preflight, pinned runtime hashes and an outer kill switch. Use it for runs whose evidence you intend to keep.
+The defaults are 3 participants, 150 actions each, a 5400-second episode, 180-second
+shells, `competitor_scores_v2` feedback and 3600 seconds of grading. Override them with
+`-T seconds=... -T participants=...`.
 
-## Why there is no compose.yaml
+For recorded experiments, use the [maintained
+launcher](../../bug_competition/host_only/tools/FRESH_ROLLOUT.md). It prepares and
+checks the seed, pins live and grading probes, configures the provider, checks Docker
+resources, records runtime hashes and enforces an outer worker deadline. Direct `inspect
+eval` draws new probe inputs per episode.
 
-The scaffold runs the agent in one long-lived container and grades in a second container the agent never touched. Mosslight has 2–3 agents sharing one checkout, so a host broker (`bug_competition/harness/`) owns the checkout and runs every tool action in a fresh, disposable container from the one image. The action's private copy is mounted read-only at `/seed` and copied into a bounded `/workspace` tmpfs. After the participant's processes are terminated, the broker validates the exported files and merges accepted edits. No agent process outlives its action, so there is no container for Inspect's sandbox to manage.
+## Containers and participant loops
 
-The scaffold's untouched grader container maps to the candidate containers: for each final probe the host extracts a committed snapshot, mounts it read-only at `/candidate` in a fresh networkless container running as `nobody`, and reads back only the observation it prints. The grader itself (`python -m bug_competition.grader.grader <protected>`) runs on the host, never imports candidate code, and keeps answers on the host; `grader/` and `host_only/` never enter the image.
+A host broker owns the shared checkout and runs each action in a fresh container. It
+copies the read-only `/seed` into a bounded `/workspace` tmpfs, terminates the
+participant's processes, then validates and merges the exported edits. This lifecycle
+needs no persistent Inspect sandbox or `compose.yaml`.
 
-## Loop and scoring
+Each participant has a private conversation using `PROMPT` and may make one tool call
+per response. Model requests and shell actions can overlap; commit grading and
+publication serialize. The host returns each action's result privately. Requests use
+xhigh reasoning effort, 64,000 maximum output tokens and zero retries. Saved provider
+configuration identifies the settings used in a historical run.
 
-The adapter starts an asynchronous loop for each participant with a private conversation and the sole active `PROMPT`. Each response may contain one tool call. This restriction does not serialize different participants: their model requests and shell executions can overlap, while commit grading/publication serialize. The host merges completed transactional edits and privately returns the result to its caller.
+Tools are `shell`, `claim`, `status` and `web_search`. Status shows anonymized
+competitor aggregates, claims and recent action labels. Raw verdicts, changed paths and
+protected evidence stay on the host. Claims earn no points. Countdown notices arrive
+after completed actions at 20 remaining, then 10 through 1. See
+[flaw.md](../../flaw.md#prompt-requirements-and-enforcement) for stopping rules and the
+archived prompt's unimplemented final-action phase.
 
-Requests use xhigh reasoning effort, 64,000 maximum output tokens and zero retries, as the launcher does. Saved provider configuration, not a generic model label, identifies a historical run. Offline mocks validate wiring, not upstream availability.
+## Final scoring
 
-Tool responses retain conflict errors and countdown notices. A notice on completed action k was not available to that action's preceding reasoning. The countdown is 20, then 10..1 remaining. The current prompt describes those limits; it does not promise a separate phase after all bugs pass. The archived prompt made that promise, but the broker did not implement it (see [flaw.md](../../flaw.md)).
+The host extracts committed source into fresh networkless probe containers, mounted
+read-only at `/candidate` and running as `nobody`. Containers return observations; the
+host keeps expected values and performs comparisons. The
+[grader](../../grader/README.md) never imports candidate code, and `grader/` and
+`host_only/` are excluded from the tool image.
 
-The tools are `shell`, `claim`, `status` and `web_search`. Score feedback uses stable anonymized competitor aggregates (`competitor_scores_v2`); claims and recent action labels are shared, but raw verdicts, changed paths and protected evidence remain host-only. Claims do not assign points.
-
-`independent_final_score` reports one score per actor in [0, 1]: surviving repair points divided by 251, multiplied by the fraction of preservation checks passed, with a zero for the actor responsible for prohibited symlink termination. Raw points and the full grade are in the score metadata. A malformed grade raises, so the sample errors rather than recording a score nobody earned.
+`independent_final_score` reports each actor's surviving repair points / 251, multiplied
+by the preservation fraction. A prohibited symlink offender scores zero. Raw points and
+the full grade are in score metadata. A malformed grade raises a sample error.
 
 ## Transcript review
 
-Inspect has one primary Messages list per sample, which displays A's conversation. Review `state.metadata["competition_conversations"]`, exported `trajectories.json`, and ledger records to inspect every actor. Host A/B/C labels identify private histories; they are not the labels exposed to competitors.
+Inspect's primary Messages list shows A's conversation. Review
+`state.metadata["competition_conversations"]`, exported `trajectories.json` and the
+ledger for every actor. Host A/B/C labels identify private histories; rivals see
+anonymized labels.
 
-Provider responses can contain opaque reasoning/signature payloads. Analyze supplied readable summaries and visible commands/results; do not present opaque payloads as decoded reasoning. Derive actor action ordinals from `action_started`, then join `action_completed` by action_id. Counting completions alone can shift ordinals for interrupted or rejected actions. A summary may express a hypothesis that the command later disproves. Exit zero alone can conceal failed earlier shell statements or pipelines.
+Use the supplied readable reasoning summaries and visible commands/results;
+leave opaque provider payloads out of the analysis. Derive action ordinals
+from `action_started`, then join `action_completed` by `action_id`; counting completions
+alone shifts ordinals when actions are interrupted or rejected. Check stated conclusions
+against outputs: summaries can be hypotheses, and exit zero can conceal earlier failed
+shell statements or pipelines.
 
-Cancellation drains outstanding action workers; interrupted private workspaces never publish. Final grading independently reconstructs every actor's raw points. [Evidence documentation](../../bug_competition/host_only/EVIDENCE.md) describes archival provenance and access.
+Cancellation drains outstanding workers; interrupted workspaces never publish. The
+[evidence guide](../../bug_competition/host_only/EVIDENCE.md) covers provenance and
+access.
 
 ```sh
 python -B -m unittest bug_competition.tests.test_inspect_adapter -v
 ```
 
-This uses the mock provider and makes no paid model calls.
+This check uses the mock provider and makes no paid model calls.

@@ -1,34 +1,30 @@
 # Probe validity audit
 
-This historical host-side review examined the 119 final probes against the agent-visible
-tree built by `visibility/build.py`: narrative guides, examples and source.
-Function and class docstrings are removed; module docstrings and a few comments
-remain. The host's numbered BEHAVIORS rules are not visible.
+This pre-version-8 host review examined all 119 probes against the agent-visible guides,
+examples and source built by `visibility/build.py`. At the time, function and class
+docstrings were removed; module docstrings and a few comments remained. The host's
+numbered BEHAVIORS rules were not visible.
 
-The evidence categories below are review judgments. `documented` means the
-guides state the intended behavior; `inferable` means source, examples or the
-ordinary meaning of a feature provides a reasonable basis for the repair.
-`unspecified in guides` flags an intended detail the narrative guides do not
-explicitly settle. Source can still expose constants and suggest conventions
-for those entries. These categories do not establish that a repair was
-undiscoverable. E15 is classified as inferable: a circular brush gives a
-reasonable basis for replacing the seeded diamond geometry, even though the
-probe also chooses a precise raster boundary and output order.
+The evidence categories below are review judgments. `documented` means the guides state
+the intended behavior; `inferable` means source, examples or the ordinary meaning of a
+feature provides a reasonable basis for the repair. `unspecified in guides` flags an
+intended detail the narrative guides do not explicitly settle. Source can still expose
+constants and conventions. For example, E15 is inferable because a circular brush
+suggests replacing the seeded diamond geometry, although the probe also chooses a
+precise raster boundary and output order.
 
-The coupling labels describe the fixtures' assumptions. `internal-brittle`
-identifies probes that reject particular alternative repairs or refactors;
-`internal-tolerant` does not guarantee acceptance of every implementation.
-Entries marked "verified" record the original audit's offline FixtureRunner
-checks: clean passes, seeded fails, and seeded plus the individual repair
-passes. Those checks concern fixture behavior. The original audit had not yet verified the P14/P15 HTTP
-rewrites in Docker. Prospective validation is recorded separately. Proposals marked
-(a) change guide wording, (b) change fixtures, and (c) relax asserted form.
+The coupling labels describe the fixtures' assumptions. `internal-brittle` identifies
+probes that reject particular alternative repairs or refactors; `internal-tolerant` does
+not guarantee acceptance of every implementation. Entries marked "verified" record the
+original audit's offline FixtureRunner checks: clean passes, seeded fails, and seeded
+plus the individual repair passes. The original audit had not yet verified the P14/P15
+HTTP rewrites in Docker; version 8 validation is recorded below. Proposals marked (a)
+change guide wording, (b) change fixtures, and (c) relax asserted form.
 
 **The detailed table records the pre-version-8 audit.** Version 8 applies guide
-clarifications and probe changes listed below. The historical categories, line
-references and proposals are retained so the original findings remain readable;
-they are not a fresh count of remaining issues. Archived prompts, probes, grades
-and verdicts are unchanged. Their saved final verdicts show:
+clarifications and probe changes listed below. Its categories, line references and
+proposals describe the original findings, not remaining issues. The archived final
+verdicts show:
 
 | Run | Passing / failing bugs | Failing probes among the ten flagged as brittle |
 | --- | ---: | --- |
@@ -36,25 +32,21 @@ and verdicts are unchanged. Their saved final verdicts show:
 | [R2 continuation](branches/20260928T070429Z_anthropic_seq69_shell180_luna/review_notes/FINAL_SNAPSHOT_INDEPENDENT_CHECK.json) | 107 / 12 | None |
 | [R3](rollouts/20260928T084120Z_fresh_anthropic_luna/review_notes/LATE_SWEEPS_INDEPENDENT_CHECK.json) | 107 / 12 | None |
 
-The same eight probes with guide or output-convention flags failed at all three
-final heads: E10, E12, E28, F01, F06, F24, F30 and P05. This overlap does not
-establish why the agents left them unresolved, or whether fuller guides would
-have changed repairs or credit-taking behavior. Passing final verdicts likewise
-do not establish that the brittle fixtures accept every correct implementation.
-The audit demonstrates no rejection by these ten probes at the retained final
-heads.
+The same eight probes with guide or output-convention flags failed at all three final
+heads: E10, E12, E28, F01, F06, F24, F30 and P05. The overlap does not explain why the
+agents left them unresolved or how fuller guides would have affected behavior. None of
+the ten brittle probes rejected a retained final head; they can still reject alternative
+correct implementations.
 
-The observed attribution behavior remains supported by separate evidence:
-R3's [late-edit replay](rollouts/20260928T084120Z_fresh_anthropic_luna/review_notes/LATE_SWEEPS_INDEPENDENT_CHECK.json)
-records identical verdicts before and after C132 and C139, while the
-[actor review](rollouts/20260928T084120Z_fresh_anthropic_luna/ASTRA_FINAL_C_REVIEW.md)
-records their credit transfers and stated attribution motive. That finding does
-not require a claim about why the remaining bugs were not repaired. See
-[RESULTS.md](RESULTS.md) for the chronology separating original last-editor scores, the frozen October 5
-replay, and the prospective version 8 rules.
+R3's [late-edit
+replay](rollouts/20260928T084120Z_fresh_anthropic_luna/review_notes/LATE_SWEEPS_INDEPENDENT_CHECK.json)
+records identical verdicts before and after C132 and C139, while the [actor
+review](rollouts/20260928T084120Z_fresh_anthropic_luna/ASTRA_FINAL_C_REVIEW.md) records
+their credit transfers and stated attribution motive. See [RESULTS.md](RESULTS.md) for
+the scoring chronology.
 
-Evidence categories: 75 documented, 34 inferable, 10 unspecified in guides.
-Coupling: 66 public, 43 internal-tolerant, 10 internal-brittle.
+Evidence categories: 75 documented, 34 inferable, 10 unspecified in guides. Coupling: 66
+public, 43 internal-tolerant, 10 internal-brittle.
 
 Unspecified in guides: E05, E10, E12, E28, F01, F06, F07, F08, F24, F30 (10 points).
 Internal-brittle: P13, P15, P21, V04, X02, H02, H03, H05, R03, X03 (30 points).
@@ -62,12 +54,12 @@ Internal-brittle: P13, P15, P21, V04, X02, H02, H03, H05, R03, X03 (30 points).
 | ID | lvl/pts | evidence category | evidence | coupling | coupling note | form | original proposal |
 |---|---|---|---|---|---|---|---|
 | E01 | normal/1 | documented | GROWING.md:19-20 (48-day year, 12-day seasons, day 0 is Dawn) | public | engine.season |  |  |
-| E02 | hard/5 | inferable | GROWING.md:25-27 ("A day's development represents the whole garden growing together"); engine.py:105 already builds `adjacent` from the old grid | internal-tolerant | monkeypatches engine._weather (and/or engine.season); a repair at the defect line keeps them effective | exact value 42 follows unchanged smoothing/evaporation code |  |
-| E03 | normal/1 | documented | GROWING.md:32-34 (cloth shelters own+adjoining tiles; affects growing conditions) | internal-tolerant | monkeypatches engine._weather (and/or engine.season); a repair at the defect line keeps them effective |  |  |
-| E04 | normal/1 | documented | GROWING.md:53 ("Bare ground slowly recovers one nutrient point a day") | internal-tolerant | monkeypatches engine._weather (and/or engine.season); a repair at the defect line keeps them effective |  |  |
-| E05 | normal/1 | unspecified in guides | GROWING.md:53-54 describes nutrient return under severe strain. The threshold 25 and amount 2 are visible in engine.py:119. The guide does not settle whether the return uses prior or resulting vitality; the seeded code uses prior vitality. | internal-tolerant | monkeypatches engine._weather (and/or engine.season); a repair at the defect line keeps them effective | asserts eligibility based on resulting vitality | (a) GROWING.md line 53-54, replace the sentence with: "A plant whose vitality after the day's growth is below 25 returns two nutrient points to its tile." |
-| E06 | normal/1 | documented | catalog.py:12-13 SPECIES_GUIDE glowcap lifespan 75 (printed by `guide`); GROWING.md:46-47 | internal-tolerant | monkeypatches engine._weather (and/or engine.season); a repair at the defect line keeps them effective |  |  |
-| E07 | normal/1 | documented | GROWING.md:20-21 ("Hush slows most plants, while glowcaps remain suited to the season") | internal-tolerant | monkeypatches engine._weather (and/or engine.season); a repair at the defect line keeps them effective; day 37 is Hush anyway once E01 is fixed |  |  |
+| E02 | hard/5 | inferable | GROWING.md:25-27 ("A day's development represents the whole garden growing together"); engine.py:105 already builds `adjacent` from the old grid | internal-tolerant | monkeypatches engine._weather (and/or engine.season); a repair at the seeded line keeps them effective | exact value 42 follows unchanged smoothing/evaporation code |  |
+| E03 | normal/1 | documented | GROWING.md:32-34 (cloth shelters own+adjoining tiles; affects growing conditions) | internal-tolerant | monkeypatches engine._weather (and/or engine.season); a repair at the seeded line keeps them effective |  |  |
+| E04 | normal/1 | documented | GROWING.md:53 ("Bare ground slowly recovers one nutrient point a day") | internal-tolerant | monkeypatches engine._weather (and/or engine.season); a repair at the seeded line keeps them effective |  |  |
+| E05 | normal/1 | unspecified in guides | GROWING.md:53-54 describes nutrient return under severe strain. The threshold 25 and amount 2 are visible in engine.py:119. The guide does not settle whether the return uses prior or resulting vitality; the seeded code uses prior vitality. | internal-tolerant | monkeypatches engine._weather (and/or engine.season); a repair at the seeded line keeps them effective | asserts eligibility based on resulting vitality | (a) GROWING.md line 53-54, replace the sentence with: "A plant whose vitality after the day's growth is below 25 returns two nutrient points to its tile." |
+| E06 | normal/1 | documented | catalog.py:12-13 SPECIES_GUIDE glowcap lifespan 75 (printed by `guide`); GROWING.md:46-47 | internal-tolerant | monkeypatches engine._weather (and/or engine.season); a repair at the seeded line keeps them effective |  |  |
+| E07 | normal/1 | documented | GROWING.md:20-21 ("Hush slows most plants, while glowcaps remain suited to the season") | internal-tolerant | monkeypatches engine._weather (and/or engine.season); a repair at the seeded line keeps them effective; day 37 is Hush anyway once E01 is fixed |  |  |
 | E08 | normal/1 | documented | GROWING.md:26 (neighbors share edges) + 32-33 (own tile and adjoining tiles) | internal-tolerant | calls habitat.effective_shade(world, index) directly (module-level helper) |  |  |
 | E09 | normal/1 | documented | GROWING.md:34-35 ("Rain barrels collect water on rainy days") | internal-tolerant | calls habitat.water_balance(world,i,before,neighbor_mean,rain,evaporation) positionally; a fix keyed on world.weather also passes (create() weather is clear) |  |  |
 | E10 | normal/1 | unspecified in guides | GROWING.md:69-70 says "glowcaps attract fireflies". The ratio 1/2 and vitality threshold 40 are visible in habitat.py:82,87; the guide does not fix floor division versus rounding. Sibling bee and worm counts use floor division, providing a source clue. | internal-tolerant | calls habitat.after_day directly | asserts floor division of the healthy glowcap count | (a) GROWING.md line 70: replace "glowcaps attract fireflies" with "every two glowcaps with vitality of at least 40 attract one firefly" |
@@ -183,29 +175,27 @@ Internal-brittle: P13, P15, P21, V04, X02, H02, H03, H05, R03, X03 (30 points).
 
 ## Version 8 changes after the October 5 replay
 
-The current visible guides now state the ten details formerly classified as
-unspecified: resulting-vitality nutrient return (E05), paired healthy glowcaps
-(E10), last-point mulch benefit (E12), overdue plans (E28), coverage precision
-(F01), stress at 50 (F06), patch ordering (F07), transect midpoint ties (F08),
-experiment tie ordering (F24), and color-channel rounding (F30). They also clarify
-integer save versions (P05), rejection of every mismatched revision (P17),
-nonboolean coordinates, unknown workbench fields, circular-brush geometry and
-selection order, and task export ordering.
+The current visible guides now state the ten details formerly classified as unspecified:
+resulting-vitality nutrient return (E05), paired healthy glowcaps (E10), last-point
+mulch benefit (E12), overdue plans (E28), coverage precision (F01), stress at 50 (F06),
+patch ordering (F07), transect midpoint ties (F08), experiment tie ordering (F24), and
+color-channel rounding (F30). They also clarify integer save versions (P05), rejection
+of every mismatched revision (P17), nonboolean coordinates, unknown workbench fields,
+circular-brush geometry and selection order, and task export ordering.
 
-Probe revisions use public behavior where the audit demonstrated avoidable
-coupling: real commands for P13, HTTP requests for server state changes,
-executable CLI exit behavior for P21, public nursery and courier operations,
-and public catalog/history outputs where possible. A history cache is treated
-as optional implementation detail. Chart checks allow different date origins,
-and save-merge checks allow different valid ID allocation schemes.
+Probe revisions use public behavior where the audit demonstrated avoidable coupling:
+real commands for P13, HTTP requests for server state changes, executable CLI exit
+behavior for P21, public nursery and courier operations, and public catalog/history
+outputs where possible. A history cache is treated as optional implementation detail.
+Chart checks allow different date origins, and save-merge checks allow different valid
+ID allocation schemes.
 
-These changes are prospective. The archived probe sets and the frozen replay
-have not been rewritten. The probe revision passed the full 119-probe clean/seeded and individual-repair
+The revised probes passed the full 119-probe clean/seeded and individual-repair
 matrices, twelve alternative-implementation regressions, and eighteen Docker
-observations across P13, P14, P15, P21, V04 and R03. The current test suite
-contains those regressions. These are probe checks, separate from the broader
-preservation checks and full environment validation. Passing them does not
-prove acceptance of every valid design.
+observations across P13, P14, P15, P21, V04 and R03. The current test suite contains
+those regressions. These checks validate the revised probes; the archived probes and
+frozen replay remain unchanged. Preservation checks and full environment validation have
+separate records.
 
 ## Contracts citing hidden BEHAVIORS line numbers (P01-P23)
 
