@@ -23,7 +23,7 @@ run on the host. Agents stop when they finish or reach their action limit. The s
 is bounded by its deadline and declared stop conditions. [flaw.md](flaw.md) explains the experiment, the
 scoring limits and the prompt-to-grader mapping.
 
-## Review the submission
+## Read results
 
 | Document | What to review |
 | --- | --- |
