@@ -12,23 +12,29 @@ python3 -B -m mosslight recommend garden.json glowcap --limit 5
 ```
 
 The census reports population, coverage, soil conditions and plant vitality.
-Coverage is the percentage of selected ground occupied by plants. Soil averages
+Coverage is the percentage of selected ground occupied by plants, rounded to
+two decimal places. Soil averages
 include bare ground; vitality averages describe living plants. An empty selection
 has no living vitality. Richness counts present species, while diversity uses
 Shannon entropy with natural logarithms to reflect the balance of their populations.
 The ordinary shade average measures the ground's base shade.
 
 Reports also identify plants that need attention, such as those short of water,
-nutrients or vigor. Planting advice accounts for species preferences, soil
+nutrients or vigor, or with stress of 50 or more. Planting advice accounts for
+species preferences, soil
 resources and shelter from structures. Recommendations rank suitable plantable
 locations and normally omit occupied ground. The [growing guide](GROWING.md)
 introduces the species and their habitats.
 
-Patch surveys show connected areas of plants. Cells connect along shared edges;
+Patch surveys show connected areas of plants, largest first. Equal sizes are
+ordered by their topmost, then leftmost, tile. Cells connect along shared edges;
 a diagonal touch does not join them. A species filter narrows the survey, and
 perimeter measures the exposed edges of each patch. A transect instead follows
 a straight line through tile centers from one selected endpoint to the other,
-including both ends and preserving the chosen direction.
+including both ends and preserving the chosen direction. Transects use integer
+Bresenham steps. At an exact midpoint tie, advance toward the destination on the
+minor axis. For example, `(0,0)` to `(1,2)` samples `(0,0), (1,1), (1,2)`; the
+reverse direction samples `(1,2), (0,1), (0,0)`.
 
 From Python, use `analysis.patches` and `analysis.transect`. The studio API also
 accepts `/api/transect?x1=0&y1=0&x2=3&y2=3` for a diagonal survey.
@@ -81,6 +87,7 @@ shelter and extra watering.
 Results include each branch's timeline, final census and differences from
 control. Initial and final observations are always included. Rank branches by
 coverage, richness, diversity or mean vitality using `experiments.rank_experiment`.
+Branches with equal values keep their experiment order.
 An experiment leaves the source unchanged even if a treatment cannot be completed.
 For work across sessions, see [campaigns](CAMPAIGNS.md), [ensembles](ENSEMBLES.md)
 and [staged studies](STUDIES.md).
@@ -89,8 +96,9 @@ and [staged studies](STUDIES.md).
 
 SVG artwork represents every tile and preserves authored titles as text.
 Interactive maps support keyboard navigation. Measurement maps share a fixed
-0–100 scale from sand (`#dab76d`) to teal (`#369294`), so colors can be compared
-between gardens and days. Shade maps show the shelter plants experience,
+0–100 scale from sand (`#dab76d`) to teal (`#369294`). Interpolate each color
+channel and round to the nearest integer, with exact halves going to the even
+integer, so colors can be compared between gardens and days. Shade maps show the shelter plants experience,
 including structures. Terrain maps use distinct categorical colors.
 
 History charts place observations at their actual dates. Percentage axes span

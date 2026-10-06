@@ -179,7 +179,8 @@ class InspectIntegrationTests(unittest.TestCase):
         self.assertEqual((environment.PARTICIPANTS, environment.SECONDS, environment.TURNS, environment.STATUS_PROTOCOL),
                          (launcher.FULL_PARTICIPANTS, launcher.ACTION_SECONDS, launcher.FULL_TURN_LIMIT,
                           launcher.STATUS_PROTOCOL))
-        env_json = json.loads((Path(environment.__file__).parent/'env.json').read_text())
+        from bug_competition import REPOSITORY_ROOT
+        env_json = json.loads((REPOSITORY_ROOT/'env.json').read_text())
         self.assertEqual(env_json['participants']['default'], launcher.FULL_PARTICIPANTS)
 
     def test_scorer_rejects_malformed_grader_scores(self):

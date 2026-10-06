@@ -8,8 +8,10 @@ Start with the studio controls or the [command recipes](COMMANDS.md). The live
 
 Water raises moisture, compost enriches soil, and planting introduces a young
 plant. These basic tools are freely available. Ponds and stones cannot be planted.
-Use rectangles or diamond, circular and square brushes to tend larger areas;
-selections stop at garden edges, and radius zero selects one tile.
+Use rectangles or diamond, circular and square brushes to tend larger areas.
+A circle selects tile centers whose squared distance from its center is at most
+the radius squared. Selections are returned in row order, from top to bottom
+and left to right. They stop at garden edges, and radius zero selects one tile.
 
 ```json
 {"op":"tend_many","args":{"tiles":[[0,0],[1,0]],"action":"water"}}
@@ -77,7 +79,8 @@ A care plan begins on a future day and can repeat a finite number of times. For
 example, a plan starting on day 5 with interval 3 and four runs is due on days 5,
 8, 11 and 14. Scheduled care prepares the garden for that day's growth. Cancel a
 pending plan to stop its remaining runs. Failed plans show their error for review;
-other plans can still proceed.
+other plans can still proceed. A pending plan whose day has already passed, for
+example in an imported save, runs with the next day's care.
 
 Conditional rules respond to moisture, nutrients or vitality after the day's
 growth. Choose a tile selection, a threshold and an action. “Below” and “above”

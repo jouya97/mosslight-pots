@@ -1,0 +1,49 @@
+{
+  "container_runtime": "docker",
+  "timeouts": {
+    "startup_s": 30,
+    "setup_s": 5400,
+    "tool_use_s": 180,
+    "probe_s": 30,
+    "episode_s": 5400,
+    "grading_s": 3600,
+    "outer_cap_s": 9300,
+    "notes": {
+      "startup_s": "Docker daemon and image preflight; the runtime never pulls the image.",
+      "setup_s": "Equal to episode_s: the baseline check (one probe container per defect) runs inside the episode budget, with no separate timer.",
+      "tool_use_s": "Per shell action, capped by the time left in the episode.",
+      "probe_s": "Per candidate container, live board and final grading.",
+      "episode_s": "Wall-clock budget for all participants together; each also has 150 actions.",
+      "outer_cap_s": "Launcher kill switch: episode_s + grading_s + 300 s margin."
+    }
+  },
+  "execution": {
+    "output_directory": "/workspace",
+    "network": false,
+    "broker": "Host broker (bug_competition/harness). Each action uses a disposable container with a 128 MiB, 8192-inode /workspace tmpfs seeded from read-only /seed. Participant processes run as UID 65534 and are terminated before bounded export. The broker validates and merges accepted edits, limited to 64 MiB of logical contents and 4096 entries. Extra temporary capacity covers allocation rounding and directory overhead. Web search is a host proxy.",
+    "participants": 3,
+    "actions_per_participant": 150,
+    "retained_snapshots": {
+      "max_logical_bytes": 2147483648,
+      "max_entries_including_directories": 250000,
+      "includes_restored_prefix": true,
+      "on_limit": "Reject the action; preserve the last accepted head and continue."
+    }
+  },
+  "artifact_shape": {
+    "grader_entrypoint": "python -m bug_competition.grader.grader <protected>",
+    "grader_runs_on": "host; it never imports candidate code",
+    "image": "docker.io/library/mosslight-tools:local",
+    "dockerfile": "adapters/docker/Dockerfile",
+    "context": ".",
+    "mounts": {
+      "/seed": "read-only; action's starting checkout",
+      "/workspace": "read-write tmpfs; 128 MiB and 8192 inodes; accepted exports/merged heads limited to 64 MiB logical bytes and 4096 entries; participant uid 65534",
+      "/candidate": "read-only; candidate container, one per probe, uid 65534, freshly extracted committed snapshot"
+    },
+    "excluded_from_image": [
+      "grader/",
+      "bug_competition/host_only/"
+    ]
+  }
+}

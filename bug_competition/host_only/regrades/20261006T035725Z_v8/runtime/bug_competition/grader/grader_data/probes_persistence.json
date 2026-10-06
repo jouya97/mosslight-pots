@@ -1,0 +1,619 @@
+[
+  {
+    "id": "P01",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\n\ndef world():\n    return World(7, 4, 4, cells=[Cell(50, 50, 50) for _ in range(16)])\n\ndef outcome(fn):\n    try:\n        value = fn()\n        return {'value': value} if isinstance(value, (str, int, float, bool, list, dict, type(None))) else {'returned_type': type(value).__name__}\n    except Exception as exc:\n        return {'exception': type(exc).__name__}\nresult = [outcome(lambda x=x, y=y: world().index(x, y)) for (x, y) in [(True, 0), (0, False), (False, True), (0, 0), (3, 3)]]\n",
+    "expected": [
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "value": 0
+      },
+      {
+        "value": 15
+      }
+    ]
+  },
+  {
+    "id": "P02",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\n\ndef world():\n    return World(7, 4, 4, cells=[Cell(50, 50, 50) for _ in range(16)])\n\ndef outcome(fn):\n    try:\n        value = fn()\n        return {'value': value} if isinstance(value, (str, int, float, bool, list, dict, type(None))) else {'returned_type': type(value).__name__}\n    except Exception as exc:\n        return {'exception': type(exc).__name__}\nw = world()\nw.journal = [{'day': 0, 'text': 'original'}, {'day': 0, 'text': 'second'}]\nd = w.to_dict()\nd['journal'][0]['text'] = 'changed'\nd['journal'].append({'day': 0, 'text': 'extra'})\nresult = copy.deepcopy(w.journal)\nw.journal[1]['text'] = 'world changed'\nresult.append({'export_second': d['journal'][1]['text']})\n",
+    "expected": [
+      {
+        "day": 0,
+        "text": "original"
+      },
+      {
+        "day": 0,
+        "text": "second"
+      },
+      {
+        "export_second": "second"
+      }
+    ]
+  },
+  {
+    "id": "P03",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\n\ndef world():\n    return World(7, 4, 4, cells=[Cell(50, 50, 50) for _ in range(16)])\n\ndef outcome(fn):\n    try:\n        value = fn()\n        return {'value': value} if isinstance(value, (str, int, float, bool, list, dict, type(None))) else {'returned_type': type(value).__name__}\n    except Exception as exc:\n        return {'exception': type(exc).__name__}\nd = world().to_dict()\nd['journal'] = [{'day': 0, 'text': 'original'}, {'day': 0, 'text': 'second'}]\nw = World.from_dict(d)\nd['journal'][0]['text'] = 'changed'\nresult = copy.deepcopy(w.journal)\nw.journal[1]['text'] = 'world changed'\nresult.append({'input_second': d['journal'][1]['text']})\n",
+    "expected": [
+      {
+        "day": 0,
+        "text": "original"
+      },
+      {
+        "day": 0,
+        "text": "second"
+      },
+      {
+        "input_second": "second"
+      }
+    ]
+  },
+  {
+    "id": "P04",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\n\ndef world():\n    return World(7, 4, 4, cells=[Cell(50, 50, 50) for _ in range(16)])\n\ndef outcome(fn):\n    try:\n        value = fn()\n        return {'value': value} if isinstance(value, (str, int, float, bool, list, dict, type(None))) else {'returned_type': type(value).__name__}\n    except Exception as exc:\n        return {'exception': type(exc).__name__}\nresult = []\nfor (age, vitality) in [(2, 0), (0, 9), (2, 9), (0, 0)]:\n    d = world().to_dict()\n    d['cells'][0].update(age=age, vitality=vitality)\n    result.append(outcome(lambda : World.from_dict(d).cells[0].age))\n",
+    "expected": [
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": "P05",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\n\ndef world():\n    return World(7, 4, 4, cells=[Cell(50, 50, 50) for _ in range(16)])\n\ndef outcome(fn):\n    try:\n        value = fn()\n        return {'value': value} if isinstance(value, (str, int, float, bool, list, dict, type(None))) else {'returned_type': type(value).__name__}\n    except Exception as exc:\n        return {'exception': type(exc).__name__}\nresult = []\nfor version in [True, False, 1.0, 2.0, 0, 3, 1, 2]:\n    d = world().to_dict()\n    d['version'] = version\n    result.append(outcome(lambda : World.from_dict(d).day))\n",
+    "expected": [
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "value": 0
+      },
+      {
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": "P06",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\n\ndef world():\n    return World(7, 4, 4, cells=[Cell(50, 50, 50) for _ in range(16)])\n\ndef outcome(fn):\n    try:\n        value = fn()\n        return {'value': value} if isinstance(value, (str, int, float, bool, list, dict, type(None))) else {'returned_type': type(value).__name__}\n    except Exception as exc:\n        return {'exception': type(exc).__name__}\nresult = []\nfor key in ['titel', 'unknown', 'extra_field']:\n    d = world().to_dict()\n    d['workbench'][key] = 'lost'\n    result.append(outcome(lambda : World.from_dict(d).day))\nresult.append(outcome(lambda : World.from_dict(world().to_dict()).day))\n",
+    "expected": [
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": "P07",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\n\ndef world():\n    return World(7, 4, 4, cells=[Cell(50, 50, 50) for _ in range(16)])\n\ndef outcome(fn):\n    try:\n        value = fn()\n        return {'value': value} if isinstance(value, (str, int, float, bool, list, dict, type(None))) else {'returned_type': type(value).__name__}\n    except Exception as exc:\n        return {'exception': type(exc).__name__}\nresult = []\nfor (note_id, task_id) in [(1, 1), (7, 7), (1, 2)]:\n    d = world().to_dict()\n    b = d['workbench']\n    b['next_id'] = 10\n    b['notes'] = [{'id': note_id, 'day': 0, 'text': 'note', 'tags': [], 'tile': None}]\n    b['tasks'] = [{'id': task_id, 'day': 0, 'text': 'task', 'due': 1, 'done': False}]\n    result.append(outcome(lambda : World.from_dict(d).day))\n",
+    "expected": [
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": "P08",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\n\ndef world():\n    return World(7, 4, 4, cells=[Cell(50, 50, 50) for _ in range(16)])\n\ndef outcome(fn):\n    try:\n        value = fn()\n        return {'value': value} if isinstance(value, (str, int, float, bool, list, dict, type(None))) else {'returned_type': type(value).__name__}\n    except Exception as exc:\n        return {'exception': type(exc).__name__}\nresult = []\nfor next_id in [1, 6, 7, 8]:\n    d = world().to_dict()\n    b = d['workbench']\n    b['next_id'] = next_id\n    b['notes'] = [{'id': 7, 'day': 0, 'text': 'note', 'tags': [], 'tile': None}]\n    result.append(outcome(lambda : World.from_dict(d).day))\n",
+    "expected": [
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": "P09",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\n\ndef world():\n    return World(7, 4, 4, cells=[Cell(50, 50, 50) for _ in range(16)])\n\ndef outcome(fn):\n    try:\n        value = fn()\n        return {'value': value} if isinstance(value, (str, int, float, bool, list, dict, type(None))) else {'returned_type': type(value).__name__}\n    except Exception as exc:\n        return {'exception': type(exc).__name__}\nresult = []\nfor days in [[0, 0], [1, 0], [0, 1, 1], [0, 1, 2]]:\n    d = world().to_dict()\n    d['day'] = 2\n    d['workbench']['history'] = [{'day': day, 'occupied': 0, 'births': 0, 'losses': 0, 'moisture': 50, 'nutrients': 50, 'vitality': 0} for day in days]\n    result.append(outcome(lambda : World.from_dict(d).day))\n",
+    "expected": [
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "value": 2
+      }
+    ]
+  },
+  {
+    "id": "P10",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\n\ndef world():\n    return World(7, 4, 4, cells=[Cell(50, 50, 50) for _ in range(16)])\n\ndef outcome(fn):\n    try:\n        value = fn()\n        return {'value': value} if isinstance(value, (str, int, float, bool, list, dict, type(None))) else {'returned_type': type(value).__name__}\n    except Exception as exc:\n        return {'exception': type(exc).__name__}\nresult = []\nfor terrain in ['stone', 'pond', 'soil']:\n    d = world().to_dict()\n    d['cells'][0].update(species='moss', age=1, vitality=60)\n    d['workbench']['tiles'][0]['terrain'] = terrain\n    result.append(outcome(lambda : World.from_dict(d).cells[0].species))\n",
+    "expected": [
+      {
+        "exception": "ValueError"
+      },
+      {
+        "exception": "ValueError"
+      },
+      {
+        "value": "moss"
+      }
+    ]
+  },
+  {
+    "id": "P11",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\n\ndef world():\n    return World(7, 4, 4, cells=[Cell(50, 50, 50) for _ in range(16)])\n\ndef outcome(fn):\n    try:\n        value = fn()\n        return {'value': value} if isinstance(value, (str, int, float, bool, list, dict, type(None))) else {'returned_type': type(value).__name__}\n    except Exception as exc:\n        return {'exception': type(exc).__name__}\nd = world().to_dict()\nw = World.from_dict(d)\nd['workbench']['inventory']['fiber'] = 99\nd['workbench']['tiles'][0]['terrain'] = 'stone'\nresult = [w.workbench['inventory']['fiber'], w.workbench['tiles'][0]['terrain']]\nw.workbench['inventory']['fiber'] = 12\nresult.append(d['workbench']['inventory']['fiber'])\n",
+    "expected": [
+      0,
+      "soil",
+      99
+    ]
+  },
+  {
+    "id": "P12",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\n\ndef world():\n    return World(7, 4, 4, cells=[Cell(50, 50, 50) for _ in range(16)])\n\ndef outcome(fn):\n    try:\n        value = fn()\n        return {'value': value} if isinstance(value, (str, int, float, bool, list, dict, type(None))) else {'returned_type': type(value).__name__}\n    except Exception as exc:\n        return {'exception': type(exc).__name__}\nfrom mosslight.commands import execute\nresult = []\nfor key in ['argz', 'unexpected']:\n    w = world()\n    observed = outcome(lambda : execute(w, {'op': 'rename', 'args': {'title': 'A'}, key: {}}))\n    result.append([observed, w.revision])\n",
+    "expected": [
+      [
+        {
+          "exception": "ValueError"
+        },
+        0
+      ],
+      [
+        {
+          "exception": "ValueError"
+        },
+        0
+      ]
+    ]
+  },
+  {
+    "id": "P13",
+    "program": "from mosslight.model import World, Cell\ndef world():\n    return World(7,4,4,cells=[Cell(50,50,50) for _ in range(16)])\nfrom mosslight.commands import execute\ncommands = [\n    {'op':'rename','args':{'title':'Fern room'}},\n    {'op':'grow','args':{'days':3}},\n    {'op':'tend_many','args':{'tiles':[[0,0],[1,0],[2,0]],'action':'water'}},\n    {'op':'note','args':{'content':'New frond'}},\n]\nresult=[]\nfor command in commands:\n    w=world(); w.revision=5\n    execute(w,command)\n    result.append(w.revision)\n",
+    "expected": [
+      6,
+      6,
+      6,
+      6
+    ]
+  },
+  {
+    "id": "P14",
+    "program": "from mosslight.model import World, Cell\ndef world():\n    return World(7,4,4,cells=[Cell(50,50,50) for _ in range(16)])\nimport json, threading\nfrom contextlib import contextmanager\nfrom http.client import HTTPConnection\nfrom mosslight.server import make_server\n@contextmanager\ndef running(save_path=None):\n    server=make_server(world(),0,save_path)\n    thread=threading.Thread(target=server.serve_forever,kwargs={'poll_interval':0.01},daemon=True)\n    thread.start()\n    try:\n        yield server\n    finally:\n        server.shutdown(); server.server_close(); thread.join(2)\ndef request(server,path,body=None):\n    conn=HTTPConnection('127.0.0.1',server.server_address[1],timeout=5)\n    try:\n        conn.request('GET' if body is None else 'POST',path,None if body is None else json.dumps(body),{'Content-Type':'application/json'})\n        response=conn.getresponse()\n        return response.status,json.loads(response.read())\n    finally:\n        conn.close()\nimport tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    blocked=Path(folder)/'regular_file'; blocked.write_text('not a directory')\n    with running(blocked/'garden.json') as server:\n        _,before=request(server,'/api/world')\n        status,_=request(server,'/api/command',{'command':{'op':'rename','args':{'title':'unsaved edit'}}})\n        _,after=request(server,'/api/world')\n        result=[status,after['world']==before['world'],after['undo'],after['redo']]\n",
+    "expected": [
+      500,
+      true,
+      0,
+      0
+    ]
+  },
+  {
+    "id": "P15",
+    "program": "from mosslight.model import World, Cell\ndef world():\n    return World(7,4,4,cells=[Cell(50,50,50) for _ in range(16)])\nimport json, threading\nfrom contextlib import contextmanager\nfrom http.client import HTTPConnection\nfrom mosslight.server import make_server\n@contextmanager\ndef running(save_path=None):\n    server=make_server(world(),0,save_path)\n    thread=threading.Thread(target=server.serve_forever,kwargs={'poll_interval':0.01},daemon=True)\n    thread.start()\n    try:\n        yield server\n    finally:\n        server.shutdown(); server.server_close(); thread.join(2)\ndef request(server,path,body=None):\n    conn=HTTPConnection('127.0.0.1',server.server_address[1],timeout=5)\n    try:\n        conn.request('GET' if body is None else 'POST',path,None if body is None else json.dumps(body),{'Content-Type':'application/json'})\n        response=conn.getresponse()\n        return response.status,json.loads(response.read())\n    finally:\n        conn.close()\nwith running() as server:\n    for index in range(35):\n        status,_=request(server,'/api/command',{'command':{'op':'rename','args':{'title':'T'+str(index)}}})\n        if status != 200:\n            raise ValueError('edit rejected')\n    titles=[]\n    for _ in range(36):\n        status,state=request(server,'/api/undo',{})\n        if status in (400,409):\n            break\n        if status != 200:\n            raise ValueError('undo failed')\n        titles.append(state['world']['workbench']['title'])\n    result=titles\n",
+    "expected": [
+      "T33",
+      "T32",
+      "T31",
+      "T30",
+      "T29",
+      "T28",
+      "T27",
+      "T26",
+      "T25",
+      "T24",
+      "T23",
+      "T22",
+      "T21",
+      "T20",
+      "T19",
+      "T18",
+      "T17",
+      "T16",
+      "T15",
+      "T14",
+      "T13",
+      "T12",
+      "T11",
+      "T10",
+      "T9",
+      "T8",
+      "T7",
+      "T6",
+      "T5",
+      "T4"
+    ]
+  },
+  {
+    "id": "P16",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\nfrom mosslight.server import GardenServer, GardenHandler\ndef world():\n    return World(7,4,4,cells=[Cell(50,50,50) for _ in range(16)])\ndef outcome(fn):\n    try:\n        value=fn()\n        return {\"value\":value} if isinstance(value,(str,int,float,bool,list,dict,type(None))) else {\"returned_type\":type(value).__name__}\n    except Exception as exc:\n        return {\"exception\":type(exc).__name__}\ndef server():\n    s=object.__new__(GardenServer)\n    s.world=world(); s.save_path=None; s.lock=threading.RLock(); s.undo_stack=[]; s.redo_stack=[]\n    return s\ndef post(s,path,body):\n    raw=json.dumps(body).encode()\n    h=object.__new__(GardenHandler); h.server=s; h.path=path; h.headers={\"Content-Length\":str(len(raw))}; h.rfile=io.BytesIO(raw)\n    h._json=lambda status,data:(status,data)\n    return h.do_POST()\nresult=[]\nfor count in [1,3]:\n    s=server(); s.redo_stack=[world().to_dict() for _ in range(count)]\n    s.publish(world()); result.append(len(s.redo_stack))\n",
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "id": "P17",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\nfrom mosslight.server import GardenServer, GardenHandler\ndef world():\n    return World(7,4,4,cells=[Cell(50,50,50) for _ in range(16)])\ndef outcome(fn):\n    try:\n        value=fn()\n        return {\"value\":value} if isinstance(value,(str,int,float,bool,list,dict,type(None))) else {\"returned_type\":type(value).__name__}\n    except Exception as exc:\n        return {\"exception\":type(exc).__name__}\ndef server():\n    s=object.__new__(GardenServer)\n    s.world=world(); s.save_path=None; s.lock=threading.RLock(); s.undo_stack=[]; s.redo_stack=[]\n    return s\ndef post(s,path,body):\n    raw=json.dumps(body).encode()\n    h=object.__new__(GardenHandler); h.server=s; h.path=path; h.headers={\"Content-Length\":str(len(raw))}; h.rfile=io.BytesIO(raw)\n    h._json=lambda status,data:(status,data)\n    return h.do_POST()\nresult=[]\nfor revision in [4,6,100]:\n    s=server(); s.world.revision=5\n    code,data=post(s,\"/api/import\",{\"world\":world().to_dict(),\"revision\":revision})\n    result.append([code,s.world.revision])\n",
+    "expected": [
+      [
+        409,
+        5
+      ],
+      [
+        409,
+        5
+      ],
+      [
+        409,
+        5
+      ]
+    ]
+  },
+  {
+    "id": "P18",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\nfrom mosslight.server import GardenServer, GardenHandler\ndef world():\n    return World(7,4,4,cells=[Cell(50,50,50) for _ in range(16)])\ndef outcome(fn):\n    try:\n        value=fn()\n        return {\"value\":value} if isinstance(value,(str,int,float,bool,list,dict,type(None))) else {\"returned_type\":type(value).__name__}\n    except Exception as exc:\n        return {\"exception\":type(exc).__name__}\ndef server():\n    s=object.__new__(GardenServer)\n    s.world=world(); s.save_path=None; s.lock=threading.RLock(); s.undo_stack=[]; s.redo_stack=[]\n    return s\ndef post(s,path,body):\n    raw=json.dumps(body).encode()\n    h=object.__new__(GardenHandler); h.server=s; h.path=path; h.headers={\"Content-Length\":str(len(raw))}; h.rfile=io.BytesIO(raw)\n    h._json=lambda status,data:(status,data)\n    return h.do_POST()\nresult=[]\nfor current,revision in [(0,False),(1,True)]:\n    s=server(); s.world.revision=current\n    code,data=post(s,\"/api/import\",{\"world\":world().to_dict(),\"revision\":revision})\n    result.append([code,s.world.revision])\n",
+    "expected": [
+      [
+        409,
+        0
+      ],
+      [
+        409,
+        1
+      ]
+    ]
+  },
+  {
+    "id": "P19",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\nfrom mosslight.server import GardenServer, GardenHandler\ndef world():\n    return World(7,4,4,cells=[Cell(50,50,50) for _ in range(16)])\ndef outcome(fn):\n    try:\n        value=fn()\n        return {\"value\":value} if isinstance(value,(str,int,float,bool,list,dict,type(None))) else {\"returned_type\":type(value).__name__}\n    except Exception as exc:\n        return {\"exception\":type(exc).__name__}\ndef server():\n    s=object.__new__(GardenServer)\n    s.world=world(); s.save_path=None; s.lock=threading.RLock(); s.undo_stack=[]; s.redo_stack=[]\n    return s\ndef post(s,path,body):\n    raw=json.dumps(body).encode()\n    h=object.__new__(GardenHandler); h.server=s; h.path=path; h.headers={\"Content-Length\":str(len(raw))}; h.rfile=io.BytesIO(raw)\n    h._json=lambda status,data:(status,data)\n    return h.do_POST()\nresult=[]\nfor saved in [0,17,43]:\n    s=server(); s.world.revision=5; d=world().to_dict(); d[\"revision\"]=saved\n    code,data=post(s,\"/api/import\",{\"world\":d}); result.append([code,s.world.revision])\n",
+    "expected": [
+      [
+        200,
+        0
+      ],
+      [
+        200,
+        17
+      ],
+      [
+        200,
+        43
+      ]
+    ]
+  },
+  {
+    "id": "P20",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\nfrom mosslight.server import GardenServer, GardenHandler\ndef world():\n    return World(7,4,4,cells=[Cell(50,50,50) for _ in range(16)])\ndef outcome(fn):\n    try:\n        value=fn()\n        return {\"value\":value} if isinstance(value,(str,int,float,bool,list,dict,type(None))) else {\"returned_type\":type(value).__name__}\n    except Exception as exc:\n        return {\"exception\":type(exc).__name__}\ndef server():\n    s=object.__new__(GardenServer)\n    s.world=world(); s.save_path=None; s.lock=threading.RLock(); s.undo_stack=[]; s.redo_stack=[]\n    return s\ndef post(s,path,body):\n    raw=json.dumps(body).encode()\n    h=object.__new__(GardenHandler); h.server=s; h.path=path; h.headers={\"Content-Length\":str(len(raw))}; h.rfile=io.BytesIO(raw)\n    h._json=lambda status,data:(status,data)\n    return h.do_POST()\nresult=[]\nfor route,stack in [(\"/api/undo\",\"undo_stack\"),(\"/api/redo\",\"redo_stack\")]:\n    s=server(); s.world.revision=8; d=world().to_dict(); d[\"revision\"]=2; d[\"day\"]=3\n    setattr(s,stack,[d]); code,data=post(s,route,{})\n    result.append([code,s.world.revision,s.world.day,len(s.undo_stack),len(s.redo_stack)])\n",
+    "expected": [
+      [
+        200,
+        9,
+        3,
+        0,
+        1
+      ],
+      [
+        200,
+        9,
+        3,
+        1,
+        0
+      ]
+    ]
+  },
+  {
+    "id": "P21",
+    "program": "import contextlib, io, runpy, sys, tempfile\nfrom pathlib import Path\nresult=[]\nwith tempfile.TemporaryDirectory() as folder:\n    for flag in ('--width','--height'):\n        sys.argv=['mosslight','new',str(Path(folder)/'unused.json'),flag,'3']\n        stdout,stderr=io.StringIO(),io.StringIO()\n        with contextlib.redirect_stdout(stdout),contextlib.redirect_stderr(stderr):\n            try:\n                runpy.run_module('mosslight',run_name='__main__')\n            except SystemExit as exc:\n                code=exc.code\n            else:\n                code=0\n        result.append([code,bool(stderr.getvalue().strip()),Path(sys.argv[2]).exists()])\n",
+    "expected": [
+      [
+        2,
+        true,
+        false
+      ],
+      [
+        2,
+        true,
+        false
+      ]
+    ]
+  },
+  {
+    "id": "P22",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\n\ndef world():\n    return World(7, 4, 4, cells=[Cell(50, 50, 50) for _ in range(16)])\n\ndef outcome(fn):\n    try:\n        value = fn()\n        return {'value': value} if isinstance(value, (str, int, float, bool, list, dict, type(None))) else {'returned_type': type(value).__name__}\n    except Exception as exc:\n        return {'exception': type(exc).__name__}\nfrom mosslight.__main__ import main\nfrom mosslight.model import save\nimport tempfile, contextlib\nfrom pathlib import Path\nresult = []\nwith tempfile.TemporaryDirectory() as tmp:\n    path = Path(tmp) / 'garden.json'\n    (Path(tmp) / 'sub').mkdir()\n    for alias in [str(Path(tmp) / 'sub' / '..' / 'garden.json'), str(path)]:\n        save(world(), path)\n        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):\n            status = main(['forecast', str(path), '--days', '1', '--output', alias])\n        result.append(json.loads(path.read_text())['day'])\n",
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "id": "P23",
+    "program": "import copy, io, json, threading\nfrom unittest.mock import patch\nfrom mosslight.model import World, Cell\n\ndef world():\n    return World(7, 4, 4, cells=[Cell(50, 50, 50) for _ in range(16)])\n\ndef outcome(fn):\n    try:\n        value = fn()\n        return {'value': value} if isinstance(value, (str, int, float, bool, list, dict, type(None))) else {'returned_type': type(value).__name__}\n    except Exception as exc:\n        return {'exception': type(exc).__name__}\nfrom mosslight.render import render_svg\nresult = [render_svg(world(), interactive=interactive).count('tabindex') for interactive in [False, True]]\n",
+    "expected": [
+      0,
+      16
+    ]
+  },
+  {
+    "id": "P24",
+    "program": "from mosslight import courier as c\nleft,right=c.new_packet('desk'),c.new_packet('field')\nc.put(left,'pond',{'text':'desk view'})\nc.put(right,'pond',{'text':'field view'})\nresult=[c.observations(c.merge(a,b)) for a,b in ((left,right),(right,left))]\n",
+    "expected": [
+      [
+        {
+          "record": "pond",
+          "fields": {
+            "text": [
+              "desk view",
+              "field view"
+            ]
+          },
+          "conflicted": true
+        }
+      ],
+      [
+        {
+          "record": "pond",
+          "fields": {
+            "text": [
+              "desk view",
+              "field view"
+            ]
+          },
+          "conflicted": true
+        }
+      ]
+    ]
+  },
+  {
+    "id": "P25",
+    "program": "import copy\nfrom unittest.mock import patch\nfrom mosslight import courier as c\ndef event(peer,counter,record,field,value,context=None):\n    return {\"peer\":peer,\"counter\":counter,\"record\":record,\"field\":field,\"value\":copy.deepcopy(value),\"context\":dict(context or {})}\ndef packet(peer,events=(),clock=None,contexts=None,counter=0):\n    p=c.new_packet(peer); p.update(counter=counter,clock=dict(clock or {}),contexts=copy.deepcopy(contexts or {}))\n    p[\"events\"]={c._dot_key(e[\"peer\"],e[\"counter\"]):copy.deepcopy(e) for e in events}\n    return p\ndef outcome(fn):\n    try:\n        return {\"value\":fn()}\n    except Exception as exc:\n        return {\"exception\":type(exc).__name__}\nresult=[]\nfor counter,seen in [(2,8),(8,2),(0,12)]:\n    p=packet(\"desk\",clock={\"desk\":seen},counter=counter); c.put(p,\"pond\",{\"text\":\"resumed\"})\n    result.append([p[\"counter\"], sorted(e[\"counter\"] for e in p[\"events\"].values())])\n",
+    "expected": [
+      [
+        10,
+        [
+          9,
+          10
+        ]
+      ],
+      [
+        10,
+        [
+          9,
+          10
+        ]
+      ],
+      [
+        14,
+        [
+          13,
+          14
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "P26",
+    "program": "import copy\nfrom unittest.mock import patch\nfrom mosslight import courier as c\ndef event(peer,counter,record,field,value,context=None):\n    return {\"peer\":peer,\"counter\":counter,\"record\":record,\"field\":field,\"value\":copy.deepcopy(value),\"context\":dict(context or {})}\ndef packet(peer,events=(),clock=None,contexts=None,counter=0):\n    p=c.new_packet(peer); p.update(counter=counter,clock=dict(clock or {}),contexts=copy.deepcopy(contexts or {}))\n    p[\"events\"]={c._dot_key(e[\"peer\"],e[\"counter\"]):copy.deepcopy(e) for e in events}\n    return p\ndef outcome(fn):\n    try:\n        return {\"value\":fn()}\n    except Exception as exc:\n        return {\"exception\":type(exc).__name__}\np=c.new_packet(\"desk\"); tags=[\"fern\"]; tile=[1,2]\nc.put(p,\"pond\",{\"tags\":tags,\"tile\":tile}); tags.append(\"changed\"); tile[0]=3\nresult={e[\"field\"]:e[\"value\"] for e in p[\"events\"].values() if e[\"field\"]!=\"$alive\"}\n",
+    "expected": {
+      "tags": [
+        "fern"
+      ],
+      "tile": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "id": "P27",
+    "program": "import copy\nfrom unittest.mock import patch\nfrom mosslight import courier as c\ndef event(peer,counter,record,field,value,context=None):\n    return {\"peer\":peer,\"counter\":counter,\"record\":record,\"field\":field,\"value\":copy.deepcopy(value),\"context\":dict(context or {})}\ndef packet(peer,events=(),clock=None,contexts=None,counter=0):\n    p=c.new_packet(peer); p.update(counter=counter,clock=dict(clock or {}),contexts=copy.deepcopy(contexts or {}))\n    p[\"events\"]={c._dot_key(e[\"peer\"],e[\"counter\"]):copy.deepcopy(e) for e in events}\n    return p\ndef outcome(fn):\n    try:\n        return {\"value\":fn()}\n    except Exception as exc:\n        return {\"exception\":type(exc).__name__}\nresult=[]\nfor value in [\"two\",\"one\"]:\n    a=packet(\"desk\",[event(\"desk\",1,\"pond\",\"text\",\"one\")]); b=packet(\"field\",[event(\"desk\",1,\"pond\",\"text\",value)])\n    result.append(outcome(lambda:len(c.merge(a,b)[\"events\"])))\n",
+    "expected": [
+      {
+        "exception": "ValueError"
+      },
+      {
+        "value": 1
+      }
+    ]
+  },
+  {
+    "id": "P28",
+    "program": "import copy\nfrom unittest.mock import patch\nfrom mosslight import courier as c\ndef event(peer,counter,record,field,value,context=None):\n    return {\"peer\":peer,\"counter\":counter,\"record\":record,\"field\":field,\"value\":copy.deepcopy(value),\"context\":dict(context or {})}\ndef packet(peer,events=(),clock=None,contexts=None,counter=0):\n    p=c.new_packet(peer); p.update(counter=counter,clock=dict(clock or {}),contexts=copy.deepcopy(contexts or {}))\n    p[\"events\"]={c._dot_key(e[\"peer\"],e[\"counter\"]):copy.deepcopy(e) for e in events}\n    return p\ndef outcome(fn):\n    try:\n        return {\"value\":fn()}\n    except Exception as exc:\n        return {\"exception\":type(exc).__name__}\nresult=[]\nfor values in [[False,True],[True,False],[False,False],[True,True]]:\n    events=[event(peer,1,'pond','$alive',value,{'desk':0,'field':0}) for peer,value in zip(['desk','field'],values)]\n    result.append(c.observations(packet('desk',events,{'desk':1,'field':1},counter=1)))\n",
+    "expected": [
+      [
+        {
+          "record": "pond",
+          "fields": {},
+          "conflicted": false
+        }
+      ],
+      [
+        {
+          "record": "pond",
+          "fields": {},
+          "conflicted": false
+        }
+      ],
+      [],
+      [
+        {
+          "record": "pond",
+          "fields": {},
+          "conflicted": false
+        }
+      ]
+    ]
+  },
+  {
+    "id": "P29",
+    "program": "import copy\nfrom unittest.mock import patch\nfrom mosslight import courier as c\ndef event(peer,counter,record,field,value,context=None):\n    return {\"peer\":peer,\"counter\":counter,\"record\":record,\"field\":field,\"value\":copy.deepcopy(value),\"context\":dict(context or {})}\ndef packet(peer,events=(),clock=None,contexts=None,counter=0):\n    p=c.new_packet(peer); p.update(counter=counter,clock=dict(clock or {}),contexts=copy.deepcopy(contexts or {}))\n    p[\"events\"]={c._dot_key(e[\"peer\"],e[\"counter\"]):copy.deepcopy(e) for e in events}\n    return p\ndef outcome(fn):\n    try:\n        return {\"value\":fn()}\n    except Exception as exc:\n        return {\"exception\":type(exc).__name__}\nresult=[]\nfor values in [[\"Fern\",\"fern\"],[\"FERN\",\"Fern\",\"fern\"],[\"fern\",\"fern\"]]:\n    heads={(\"pond\",\"$alive\"):[event(\"desk\",1,\"pond\",\"$alive\",True)],(\"pond\",\"text\"):[event(str(i),2,\"pond\",\"text\",value) for i,value in enumerate(values)]}\n    with patch.object(c,\"_heads\",return_value=heads):\n        result.append(c.observations(c.new_packet(\"desk\")))\n",
+    "expected": [
+      [
+        {
+          "record": "pond",
+          "fields": {
+            "text": [
+              "Fern",
+              "fern"
+            ]
+          },
+          "conflicted": true
+        }
+      ],
+      [
+        {
+          "record": "pond",
+          "fields": {
+            "text": [
+              "FERN",
+              "Fern",
+              "fern"
+            ]
+          },
+          "conflicted": true
+        }
+      ],
+      [
+        {
+          "record": "pond",
+          "fields": {
+            "text": [
+              "fern"
+            ]
+          },
+          "conflicted": false
+        }
+      ]
+    ]
+  },
+  {
+    "id": "P30",
+    "program": "import copy\nfrom unittest.mock import patch\nfrom mosslight import courier as c\ndef event(peer,counter,record,field,value,context=None):\n    return {\"peer\":peer,\"counter\":counter,\"record\":record,\"field\":field,\"value\":copy.deepcopy(value),\"context\":dict(context or {})}\ndef packet(peer,events=(),clock=None,contexts=None,counter=0):\n    p=c.new_packet(peer); p.update(counter=counter,clock=dict(clock or {}),contexts=copy.deepcopy(contexts or {}))\n    p[\"events\"]={c._dot_key(e[\"peer\"],e[\"counter\"]):copy.deepcopy(e) for e in events}\n    return p\ndef outcome(fn):\n    try:\n        return {\"value\":fn()}\n    except Exception as exc:\n        return {\"exception\":type(exc).__name__}\nresult=[]\nfor record in [\"other\",\"pond\"]:\n    a=packet(\"desk\",[event(\"desk\",1,record,\"text\",\"retained\")],clock={\"desk\":1}); b=packet(\"field\",contexts={\"pond\":{\"desk\":4}})\n    joined=c.merge(a,b)\n    result.append(sorted([[e[\"record\"],e[\"value\"]] for e in joined[\"events\"].values()]))\n",
+    "expected": [
+      [
+        [
+          "other",
+          "retained"
+        ]
+      ],
+      []
+    ]
+  },
+  {
+    "id": "P31",
+    "program": "import copy\nfrom unittest.mock import patch\nfrom mosslight import courier as c\ndef event(peer,counter,record,field,value,context=None):\n    return {\"peer\":peer,\"counter\":counter,\"record\":record,\"field\":field,\"value\":copy.deepcopy(value),\"context\":dict(context or {})}\ndef packet(peer,events=(),clock=None,contexts=None,counter=0):\n    p=c.new_packet(peer); p.update(counter=counter,clock=dict(clock or {}),contexts=copy.deepcopy(contexts or {}))\n    p[\"events\"]={c._dot_key(e[\"peer\"],e[\"counter\"]):copy.deepcopy(e) for e in events}\n    return p\ndef outcome(fn):\n    try:\n        return {\"value\":fn()}\n    except Exception as exc:\n        return {\"exception\":type(exc).__name__}\np=packet(\"desk\",[event(\"desk\",1,\"pond\",\"tags\",[\"fern\"]),event(\"desk\",3,\"private\",\"text\",\"hidden\")],contexts={\"pond\":{\"desk\":2},\"private\":{\"desk\":4}})\nresult=[]\nfor selection in [[\"pond\"],[],[\"private\"]]:\n    q=c.project(p,selection)\n    result.append({\"contexts\":q[\"contexts\"],\"records\":sorted(e[\"record\"] for e in q[\"events\"].values())})\n",
+    "expected": [
+      {
+        "contexts": {
+          "pond": {
+            "desk": 2
+          }
+        },
+        "records": [
+          "pond"
+        ]
+      },
+      {
+        "contexts": {},
+        "records": []
+      },
+      {
+        "contexts": {
+          "private": {
+            "desk": 4
+          }
+        },
+        "records": [
+          "private"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "P32",
+    "program": "import copy\nfrom unittest.mock import patch\nfrom mosslight import courier as c\ndef event(peer,counter,record,field,value,context=None):\n    return {\"peer\":peer,\"counter\":counter,\"record\":record,\"field\":field,\"value\":copy.deepcopy(value),\"context\":dict(context or {})}\ndef packet(peer,events=(),clock=None,contexts=None,counter=0):\n    p=c.new_packet(peer); p.update(counter=counter,clock=dict(clock or {}),contexts=copy.deepcopy(contexts or {}))\n    p[\"events\"]={c._dot_key(e[\"peer\"],e[\"counter\"]):copy.deepcopy(e) for e in events}\n    return p\ndef outcome(fn):\n    try:\n        return {\"value\":fn()}\n    except Exception as exc:\n        return {\"exception\":type(exc).__name__}\nacks={\"desk\":{\"desk\":5,\"field\":3},\"field\":{\"desk\":2}}\nresult=[c.acknowledged(acks,peers) for peers in [[\"desk\",\"field\",\"shed\"],[\"desk\",\"field\"],[\"desk\"],[]]]\n",
+    "expected": [
+      {
+        "desk": 0,
+        "field": 0
+      },
+      {
+        "desk": 2,
+        "field": 0
+      },
+      {
+        "desk": 5,
+        "field": 3
+      },
+      {
+        "desk": 0,
+        "field": 0
+      }
+    ]
+  },
+  {
+    "id": "P34",
+    "program": "import copy\nfrom unittest.mock import patch\nfrom mosslight import courier as c\ndef event(peer,counter,record,field,value,context=None):\n    return {\"peer\":peer,\"counter\":counter,\"record\":record,\"field\":field,\"value\":copy.deepcopy(value),\"context\":dict(context or {})}\ndef packet(peer,events=(),clock=None,contexts=None,counter=0):\n    p=c.new_packet(peer); p.update(counter=counter,clock=dict(clock or {}),contexts=copy.deepcopy(contexts or {}))\n    p[\"events\"]={c._dot_key(e[\"peer\"],e[\"counter\"]):copy.deepcopy(e) for e in events}\n    return p\ndef outcome(fn):\n    try:\n        return {\"value\":fn()}\n    except Exception as exc:\n        return {\"exception\":type(exc).__name__}\nsource=c.new_packet(\"desk\"); c.put(source,\"R\",{\"text\":\"old\"})\nreceiver=copy.deepcopy(source); receiver[\"peer\"]=\"field\"; receiver[\"counter\"]=0\nc.put(source,\"R\",{\"text\":\"new\"}); c.put(source,\"Q\",{\"text\":\"weather\"})\nq=copy.deepcopy(source); q[\"events\"]={k:v for k,v in q[\"events\"].items() if v[\"record\"]==\"Q\"}; q[\"contexts\"]={}\nreceiver=c.merge(receiver,q)\ncorrect=lambda a,b:all(a.get(k,0)<=b.get(k,0) for k in a.keys()|b.keys())\nwith patch.object(c,\"precedes\",side_effect=correct):\n    compact=c.checkpoint(receiver)\n    edited=copy.deepcopy(receiver); c.put(edited,\"R\",{\"text\":\"field edit\"})\n    text_event=max((e for e in edited[\"events\"].values() if e[\"peer\"]==\"field\" and e[\"field\"]==\"text\"),key=lambda e:e[\"counter\"])\nresult=[compact[\"contexts\"],text_event[\"context\"],receiver[\"clock\"]]\n",
+    "expected": [
+      {
+        "R": {
+          "desk": 2
+        },
+        "Q": {
+          "desk": 6
+        }
+      },
+      {
+        "desk": 2
+      },
+      {
+        "desk": 6
+      }
+    ]
+  }
+]

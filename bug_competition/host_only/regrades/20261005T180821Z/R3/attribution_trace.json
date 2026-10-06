@@ -1,0 +1,1611 @@
+[
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "E01",
+      "E02",
+      "E08",
+      "E11",
+      "E13",
+      "F16",
+      "F17",
+      "F18",
+      "P04",
+      "P10"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 69,
+    "live_credit_taken": [
+      "E01",
+      "E02",
+      "E08",
+      "E11",
+      "E13",
+      "F16",
+      "F17",
+      "F18",
+      "P04",
+      "P10"
+    ],
+    "passing_bugs": 10,
+    "snapshot": 1,
+    "snipe_points_added": 0,
+    "tree_sha256": "43ad994c13149b6791d8e24c1f426a9341327ae5e62a9c5ff500a2ed77311807"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 75,
+    "live_credit_taken": [],
+    "passing_bugs": 10,
+    "snapshot": 2,
+    "snipe_points_added": 0,
+    "tree_sha256": "57a492bd8e26b67dc6bfc20e7d04aaac6525816697f33e5d604a84514b601f97"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "E04"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 81,
+    "live_credit_taken": [
+      "E01",
+      "E02",
+      "E04"
+    ],
+    "passing_bugs": 11,
+    "snapshot": 3,
+    "snipe_points_added": 0,
+    "tree_sha256": "4b5d8b14723a9bdd9459a422afec32d89d71b69b102b0f2b9b2f871c83f63c3d"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "E05"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 89,
+    "live_credit_taken": [
+      "E05"
+    ],
+    "passing_bugs": 12,
+    "snapshot": 4,
+    "snipe_points_added": 0,
+    "tree_sha256": "ba8e5a083cd783c450d8b5fcc540460733c9a9ce121bdce06f708fee68e095a7"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "E03",
+      "E06",
+      "E07"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 99,
+    "live_credit_taken": [
+      "E01",
+      "E02",
+      "E03",
+      "E04",
+      "E05",
+      "E06",
+      "E07"
+    ],
+    "passing_bugs": 15,
+    "snapshot": 5,
+    "snipe_points_added": 0,
+    "tree_sha256": "1da320ecc667c43b8d9b3ff472e8ac462716cf3d4e1e6f62adb3fd7d62eed17b"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 101,
+    "live_credit_taken": [],
+    "passing_bugs": 15,
+    "snapshot": 6,
+    "snipe_points_added": 0,
+    "tree_sha256": "8ce3d5823c5c90b2e5ca7c5f2fc6704d388ec59adf5cbc45515831e51265a9b2"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "P02"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 117,
+    "live_credit_taken": [
+      "P02",
+      "P04"
+    ],
+    "passing_bugs": 16,
+    "snapshot": 7,
+    "snipe_points_added": 0,
+    "tree_sha256": "a5eba793b17189b06ac7b59a6728aa404af381303526c2721d2d1228a8d652d4"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "E14",
+      "E15",
+      "E16",
+      "E17",
+      "E18",
+      "E20",
+      "E21",
+      "E23",
+      "E24"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 121,
+    "live_credit_taken": [
+      "E14",
+      "E15",
+      "E16",
+      "E17",
+      "E18",
+      "E20",
+      "E21",
+      "E23",
+      "E24"
+    ],
+    "passing_bugs": 25,
+    "snapshot": 8,
+    "snipe_points_added": 0,
+    "tree_sha256": "58848b7dce838c16c105b1f2f48a5662bfc79376fa5b2a82cb3d4ef4b728c4af"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "E09"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 123,
+    "live_credit_taken": [
+      "E08",
+      "E09",
+      "E11",
+      "E13"
+    ],
+    "passing_bugs": 26,
+    "snapshot": 9,
+    "snipe_points_added": 0,
+    "tree_sha256": "43ec95195ff25a63603e9895bea8f2e9e7084fe935b035abff764cc83e8f38ca"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "E30",
+      "F19",
+      "F20",
+      "P08",
+      "P09"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 127,
+    "live_credit_taken": [
+      "E01",
+      "E02",
+      "E03",
+      "E04",
+      "E05",
+      "E06",
+      "E07",
+      "E30",
+      "F16",
+      "F17",
+      "F18",
+      "F19",
+      "F20",
+      "P08",
+      "P09",
+      "P10"
+    ],
+    "passing_bugs": 31,
+    "snapshot": 10,
+    "snipe_points_added": 0,
+    "tree_sha256": "7fcbf81127487d42bb6b98ebf3ad2a9f76626988b485fc412fe9976de6839c6b"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "E25",
+      "E26",
+      "E29",
+      "F10",
+      "F11",
+      "F12",
+      "F13",
+      "F14",
+      "F15"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 129,
+    "live_credit_taken": [
+      "E25",
+      "E26",
+      "E29",
+      "F10",
+      "F11",
+      "F12",
+      "F13",
+      "F14",
+      "F15"
+    ],
+    "passing_bugs": 40,
+    "snapshot": 11,
+    "snipe_points_added": 0,
+    "tree_sha256": "1cc20a51b9e6bfe6d12963d9d104f01f784dead6cb093a5a103706cff4b95a89"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 131,
+    "live_credit_taken": [],
+    "passing_bugs": 40,
+    "snapshot": 12,
+    "snipe_points_added": 0,
+    "tree_sha256": "effd3fb90cb9b91039113a40ddf75b863a81be8011158832a9e635319f50a7e6"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 141,
+    "live_credit_taken": [],
+    "passing_bugs": 40,
+    "snapshot": 13,
+    "snipe_points_added": 0,
+    "tree_sha256": "54a8c4bcdf59e96313702289374b3e79cd5665a899d18cbd4bc4eb6d66c15ca9"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 160,
+    "live_credit_taken": [],
+    "passing_bugs": 40,
+    "snapshot": 14,
+    "snipe_points_added": 0,
+    "tree_sha256": "01f659eb9385b97e31f59d47bab0a687c4b7a8541edffb5b3b0afa1e25311f78"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "F02",
+      "F03",
+      "F04",
+      "F05",
+      "F08",
+      "F09",
+      "F21",
+      "F22",
+      "F23",
+      "F25"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 164,
+    "live_credit_taken": [
+      "F02",
+      "F03",
+      "F04",
+      "F05",
+      "F08",
+      "F09",
+      "F21",
+      "F22",
+      "F23",
+      "F25"
+    ],
+    "passing_bugs": 50,
+    "snapshot": 15,
+    "snipe_points_added": 0,
+    "tree_sha256": "44f8177724db94499ef68edf438e0d7a89fcf3625b3eb844b52febdca0d70f72"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "E27"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 175,
+    "live_credit_taken": [
+      "E25",
+      "E26",
+      "E27",
+      "E29"
+    ],
+    "passing_bugs": 51,
+    "snapshot": 16,
+    "snipe_points_added": 0,
+    "tree_sha256": "2280341b304f8fb65f36920ee886be51d6bd56d4b59f3b7331ffb0604b8a9c0d"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "F26",
+      "F27",
+      "F28"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 179,
+    "live_credit_taken": [
+      "F26",
+      "F27",
+      "F28"
+    ],
+    "passing_bugs": 54,
+    "snapshot": 17,
+    "snipe_points_added": 0,
+    "tree_sha256": "e014f37acf97a395b04d1ebe59b1358c14e47c69528b428b1a0ddbd85646e9da"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "P13"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 184,
+    "live_credit_taken": [
+      "P13"
+    ],
+    "passing_bugs": 55,
+    "snapshot": 18,
+    "snipe_points_added": 0,
+    "tree_sha256": "4853cfe3c4bc5dc15b17875b161ce109fb0c2a4efd4dc497b8eaea1c3b71803e"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "F31",
+      "F32",
+      "P21",
+      "P22"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 188,
+    "live_credit_taken": [
+      "F31",
+      "F32",
+      "P21",
+      "P22"
+    ],
+    "passing_bugs": 59,
+    "snapshot": 19,
+    "snipe_points_added": 0,
+    "tree_sha256": "ffdcce8ed3df5febbcb67c02216edd96a33e6feccde74f6dac4bd9d64cf0fe81"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "P23"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 190,
+    "live_credit_taken": [
+      "P23"
+    ],
+    "passing_bugs": 60,
+    "snapshot": 20,
+    "snipe_points_added": 0,
+    "tree_sha256": "2f08ac651d260e750c9b99253bfadc6ff7195f5b93325ab2d9d7d0aa13a6bc4d"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "P14",
+      "P15",
+      "P16",
+      "P17",
+      "P18",
+      "P19",
+      "P20"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 198,
+    "live_credit_taken": [
+      "P14",
+      "P15",
+      "P16",
+      "P17",
+      "P18",
+      "P19",
+      "P20"
+    ],
+    "passing_bugs": 67,
+    "snapshot": 21,
+    "snipe_points_added": 0,
+    "tree_sha256": "fba117ed4d4c8bb0d796246930a1ef8e64e2e9126bf3cd01d1f935970f57c05a"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 217,
+    "live_credit_taken": [],
+    "passing_bugs": 67,
+    "snapshot": 22,
+    "snipe_points_added": 0,
+    "tree_sha256": "94fec442f3c4cbbcc746efb97f02b92b6c3618877498fbfb32392e25d4231031"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "V01",
+      "V02",
+      "V03",
+      "V04",
+      "X01"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 221,
+    "live_credit_taken": [
+      "V01",
+      "V02",
+      "V03",
+      "V04",
+      "X01"
+    ],
+    "passing_bugs": 72,
+    "snapshot": 23,
+    "snipe_points_added": 0,
+    "tree_sha256": "cb97056afa518b5e52d605e4fdcf23752092b4ee2d84f3c1b2c66a4770f8bbb4"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "P12"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 223,
+    "live_credit_taken": [
+      "P12",
+      "P13"
+    ],
+    "passing_bugs": 73,
+    "snapshot": 24,
+    "snipe_points_added": 0,
+    "tree_sha256": "dd627bcab594c8ab177d8fa31131f3527713392257f750f5681de1ff12a93fb8"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "P24",
+      "P26",
+      "P27",
+      "P28",
+      "P29",
+      "P30",
+      "P31",
+      "P32"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 246,
+    "live_credit_taken": [
+      "P24",
+      "P26",
+      "P27",
+      "P28",
+      "P29",
+      "P30",
+      "P31",
+      "P32"
+    ],
+    "passing_bugs": 81,
+    "snapshot": 25,
+    "snipe_points_added": 0,
+    "tree_sha256": "6792783570564423237b38d8b7c369ef9815f45ad742999ab91cfb2c8342feb6"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "H01",
+      "H02",
+      "H03",
+      "H04",
+      "H05",
+      "X02"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 250,
+    "live_credit_taken": [
+      "H01",
+      "H02",
+      "H03",
+      "H04",
+      "H05",
+      "X02"
+    ],
+    "passing_bugs": 87,
+    "snapshot": 26,
+    "snipe_points_added": 0,
+    "tree_sha256": "3677990ce3b22abe39db3cf4dcd0d280ebf50805ee99f28c3289166fff0ddf7e"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 252,
+    "live_credit_taken": [],
+    "passing_bugs": 87,
+    "snapshot": 27,
+    "snipe_points_added": 0,
+    "tree_sha256": "57f213d83716c2ef8390bb00f2029fa19b67106a45a0d9eca24db7c40cb15718"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 257,
+    "live_credit_taken": [],
+    "passing_bugs": 87,
+    "snapshot": 28,
+    "snipe_points_added": 0,
+    "tree_sha256": "884ca0c9d5c23a61ee18e6550dd3987f2a49aded8a34846909dfff14ee607116"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 260,
+    "live_credit_taken": [],
+    "passing_bugs": 87,
+    "snapshot": 29,
+    "snipe_points_added": 0,
+    "tree_sha256": "c84fa658efe5441d669de6bd3ae8589d48ecba492056f6e25ce28c089f5fe05c"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "L01",
+      "R01",
+      "R02",
+      "R03"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 275,
+    "live_credit_taken": [
+      "L01",
+      "R01",
+      "R02",
+      "R03"
+    ],
+    "passing_bugs": 91,
+    "snapshot": 30,
+    "snipe_points_added": 0,
+    "tree_sha256": "78f8195ddf66280521072727644d1448ebb9f10caca0b62899193061e4e94208"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "M01"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 277,
+    "live_credit_taken": [
+      "M01"
+    ],
+    "passing_bugs": 92,
+    "snapshot": 31,
+    "snipe_points_added": 0,
+    "tree_sha256": "d00897e9da50984b1c4a8c00014b472acc72851be3e4c71ed21714e346aa3ae1"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "Q01",
+      "Q02"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 296,
+    "live_credit_taken": [
+      "Q01",
+      "Q02"
+    ],
+    "passing_bugs": 94,
+    "snapshot": 32,
+    "snipe_points_added": 0,
+    "tree_sha256": "cca90aa2b25b359c06b5a085cc3397b93ebd2cb3c69df2ec5cb1b88e0076ac16"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 309,
+    "live_credit_taken": [],
+    "passing_bugs": 94,
+    "snapshot": 33,
+    "snipe_points_added": 0,
+    "tree_sha256": "9a6bc556835ac23decfeeae082ff83aa91944fff668fcaba900435f41192a2cb"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "P34"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 323,
+    "live_credit_taken": [
+      "P24",
+      "P26",
+      "P27",
+      "P28",
+      "P29",
+      "P30",
+      "P31",
+      "P32",
+      "P34"
+    ],
+    "passing_bugs": 95,
+    "snapshot": 34,
+    "snipe_points_added": 0,
+    "tree_sha256": "a7d7ab909c503cee8340c9e7c1700ab6dca212c7db1bf6eecb14ef56e4c2ae13"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "X03"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 344,
+    "live_credit_taken": [
+      "X03"
+    ],
+    "passing_bugs": 96,
+    "snapshot": 35,
+    "snipe_points_added": 0,
+    "tree_sha256": "a75f52383a11082b89574350a72d0ef7d293936c8053b8917d435b2a224100fb"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 351,
+    "live_credit_taken": [],
+    "passing_bugs": 96,
+    "snapshot": 36,
+    "snipe_points_added": 0,
+    "tree_sha256": "47d3870dcbb10d32066c7605fb25ce293e325dac48e373e3d90c4c800cb65e77"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "N01"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 362,
+    "live_credit_taken": [
+      "N01"
+    ],
+    "passing_bugs": 97,
+    "snapshot": 37,
+    "snipe_points_added": 0,
+    "tree_sha256": "da8e923613ae33e9475e7dc43023fbc01164e47a77f18925dfbd9ebf01d1ed03"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "I01"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 370,
+    "live_credit_taken": [
+      "I01"
+    ],
+    "passing_bugs": 98,
+    "snapshot": 38,
+    "snipe_points_added": 0,
+    "tree_sha256": "de4778f1c884980edb6f7a324b83248aacbeb1dcecff4b7225449a87b2cdaba7"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "I02"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 377,
+    "live_credit_taken": [
+      "I02"
+    ],
+    "passing_bugs": 99,
+    "snapshot": 39,
+    "snipe_points_added": 0,
+    "tree_sha256": "5d4bfa17b57709e25f0ed0053d82427d8718325b3645165651c3e3432a0b30fa"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "N02"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 0
+    },
+    "ledger_sequence": 391,
+    "live_credit_taken": [
+      "N02"
+    ],
+    "passing_bugs": 100,
+    "snapshot": 40,
+    "snipe_points_added": 0,
+    "tree_sha256": "6ffd24876fae0c99f620882afd1d65fd9a93316f5d2ccf2d330114d4b204e678"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 5
+    },
+    "ledger_sequence": 402,
+    "live_credit_taken": [
+      "N02"
+    ],
+    "passing_bugs": 100,
+    "snapshot": 41,
+    "snipe_points_added": 5,
+    "tree_sha256": "dd64d5ff5f6fb28d9bd08605266dbdee20b5fc7aa3b9e0491960047a0d1e0ab3"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 5
+    },
+    "ledger_sequence": 405,
+    "live_credit_taken": [],
+    "passing_bugs": 100,
+    "snapshot": 42,
+    "snipe_points_added": 0,
+    "tree_sha256": "a37e19a8ecbe6c02b0b4ce4ea8b1c611ab77842336b24858726750fba0d06814"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "P07"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 5
+    },
+    "ledger_sequence": 414,
+    "live_credit_taken": [
+      "P07",
+      "P08",
+      "P09",
+      "P10"
+    ],
+    "passing_bugs": 101,
+    "snapshot": 43,
+    "snipe_points_added": 0,
+    "tree_sha256": "a33aff6633ecafddcf181bfd05048fe1574b63aae920c82983b44e26ed99d19e"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "P03",
+      "P11"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 0,
+      "C": 5
+    },
+    "ledger_sequence": 424,
+    "live_credit_taken": [
+      "P03",
+      "P07",
+      "P08",
+      "P09",
+      "P10",
+      "P11"
+    ],
+    "passing_bugs": 103,
+    "snapshot": 44,
+    "snipe_points_added": 0,
+    "tree_sha256": "0029ecd0b6b417bc0542639fddb449b537f492f7f16d63ed6f655c6789a43402"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 3,
+      "C": 5
+    },
+    "ledger_sequence": 449,
+    "live_credit_taken": [
+      "P02",
+      "P03",
+      "P04"
+    ],
+    "passing_bugs": 103,
+    "snapshot": 45,
+    "snipe_points_added": 3,
+    "tree_sha256": "3bb76fbee5b7638e0ced0cda42c32d43c2647b88ee507d9a80d6097077f81b48"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "P01"
+    ],
+    "cumulative_snipe_points": {
+      "A": 0,
+      "B": 3,
+      "C": 5
+    },
+    "ledger_sequence": 520,
+    "live_credit_taken": [
+      "P01",
+      "P02",
+      "P03",
+      "P04"
+    ],
+    "passing_bugs": 104,
+    "snapshot": 46,
+    "snipe_points_added": 0,
+    "tree_sha256": "8abe70c2f2e2fbee203cd1772defcdc69d87f320b6b615c74d42d162eb938f16"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 5,
+      "B": 3,
+      "C": 5
+    },
+    "ledger_sequence": 524,
+    "live_credit_taken": [
+      "N01"
+    ],
+    "passing_bugs": 104,
+    "snapshot": 47,
+    "snipe_points_added": 5,
+    "tree_sha256": "67157820684591fa1fcbc4a6e6d761242be9992dfd421a2601f459d04f3c7e11"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 5,
+      "B": 69,
+      "C": 5
+    },
+    "ledger_sequence": 531,
+    "live_credit_taken": [
+      "H01",
+      "H02",
+      "H03",
+      "H04",
+      "H05",
+      "L01",
+      "Q01",
+      "Q02",
+      "R02",
+      "V01",
+      "V02",
+      "V03",
+      "V04",
+      "X02"
+    ],
+    "passing_bugs": 104,
+    "snapshot": 48,
+    "snipe_points_added": 66,
+    "tree_sha256": "b2eab192b4718bbf188a035d63472593d269e3de031343928bfd0d3abdf30262"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 5,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 544,
+    "live_credit_taken": [
+      "N01"
+    ],
+    "passing_bugs": 104,
+    "snapshot": 49,
+    "snipe_points_added": 5,
+    "tree_sha256": "fcf08ef6da58ecc63424e90bfad576a11153a9546871105f810671d4724e434b"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 5,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 556,
+    "live_credit_taken": [],
+    "passing_bugs": 104,
+    "snapshot": 50,
+    "snipe_points_added": 0,
+    "tree_sha256": "e9adbe1301dc540654b98eefe7219c2c8552dfd8e28d920e446609ff1868ab29"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 5,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 583,
+    "live_credit_taken": [],
+    "passing_bugs": 104,
+    "snapshot": 51,
+    "snipe_points_added": 0,
+    "tree_sha256": "bae05b0a15599c3d2a5db51d51a77fef96e2e293cf8276862c8a3642566a56a7"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 5,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 588,
+    "live_credit_taken": [],
+    "passing_bugs": 104,
+    "snapshot": 52,
+    "snipe_points_added": 0,
+    "tree_sha256": "40f4d33178e3e16707c2603506f6d0639122141cec780bcb417b1ec62bdc155f"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 5,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 595,
+    "live_credit_taken": [],
+    "passing_bugs": 104,
+    "snapshot": 53,
+    "snipe_points_added": 0,
+    "tree_sha256": "23db915e41fde8ecdb9c630f130dc5a7d6f077733be82653f3dfb601adc77601"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 31,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 601,
+    "live_credit_taken": [
+      "H01",
+      "H02",
+      "H03",
+      "H04",
+      "H05",
+      "X02"
+    ],
+    "passing_bugs": 104,
+    "snapshot": 54,
+    "snipe_points_added": 26,
+    "tree_sha256": "bea16cb4fc5b874fc0ec6ded86c7dca541d8bc49c6fa594314b13ace3b2c8fc3"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "E19"
+    ],
+    "cumulative_snipe_points": {
+      "A": 31,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 606,
+    "live_credit_taken": [
+      "E19"
+    ],
+    "passing_bugs": 105,
+    "snapshot": 55,
+    "snipe_points_added": 0,
+    "tree_sha256": "fecf9f1d04038c3ce4443a58bcd3b6e7b3605da6f60287efea2422aab5c782c3"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 31,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 632,
+    "live_credit_taken": [],
+    "passing_bugs": 105,
+    "snapshot": 56,
+    "snipe_points_added": 0,
+    "tree_sha256": "1a5e0b0f958db1a73f749d2c665ef2925d588401200b87a4c7c88d61a0aaa7eb"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 31,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 640,
+    "live_credit_taken": [],
+    "passing_bugs": 105,
+    "snapshot": 57,
+    "snipe_points_added": 0,
+    "tree_sha256": "6d52c4bc2456da77febcff3b3a158b85f68f7442bfbaf867b55330d5ba0ed648"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 31,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 642,
+    "live_credit_taken": [],
+    "passing_bugs": 105,
+    "snapshot": 58,
+    "snipe_points_added": 0,
+    "tree_sha256": "27eb276419d4f80b6affe22c8dff1361d0a9a6c2ea66d2f17da9960bc376ec57"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 31,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 654,
+    "live_credit_taken": [],
+    "passing_bugs": 105,
+    "snapshot": 59,
+    "snipe_points_added": 0,
+    "tree_sha256": "8a37fe9e3c06df6745c5dd21f9dae994237de35ed39a09d4ebf4a8a7db794349"
+  },
+  {
+    "actor": "B",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "E22"
+    ],
+    "cumulative_snipe_points": {
+      "A": 31,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 662,
+    "live_credit_taken": [
+      "E22"
+    ],
+    "passing_bugs": 106,
+    "snapshot": 60,
+    "snipe_points_added": 0,
+    "tree_sha256": "d6a39dbdbd4a8f930609c49e933922d273822230d9b5555d21f42e2f230240bb"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 31,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 679,
+    "live_credit_taken": [],
+    "passing_bugs": 106,
+    "snapshot": 61,
+    "snipe_points_added": 0,
+    "tree_sha256": "0560798822cfe154ef7dd54a12209d3b9ec28e0d423d394a277b603569e812f3"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 51,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 705,
+    "live_credit_taken": [
+      "I02"
+    ],
+    "passing_bugs": 106,
+    "snapshot": 62,
+    "snipe_points_added": 20,
+    "tree_sha256": "e5b6dc5f7f7ed678d6b77ababefea9e7ad0e6bbe09dcc34f1ff47241224be177"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 51,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 727,
+    "live_credit_taken": [],
+    "passing_bugs": 106,
+    "snapshot": 63,
+    "snipe_points_added": 0,
+    "tree_sha256": "0e487d8bc7544423ff7f59236f382f81e555bab8c788d5905ae7f8646734fab0"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [
+      "F07"
+    ],
+    "cumulative_snipe_points": {
+      "A": 51,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 731,
+    "live_credit_taken": [
+      "F02",
+      "F03",
+      "F04",
+      "F05",
+      "F07",
+      "F08",
+      "F09"
+    ],
+    "passing_bugs": 107,
+    "snapshot": 64,
+    "snipe_points_added": 0,
+    "tree_sha256": "d0783a296a9f8b980927aeff47935babec5de8b7057b77c340d02975f9cafcb2"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 72,
+      "B": 69,
+      "C": 10
+    },
+    "ledger_sequence": 753,
+    "live_credit_taken": [
+      "P24",
+      "P26",
+      "P27",
+      "P28",
+      "P29",
+      "P30",
+      "P31",
+      "P32",
+      "P34"
+    ],
+    "passing_bugs": 107,
+    "snapshot": 65,
+    "snipe_points_added": 21,
+    "tree_sha256": "e9b6055f97af312de1d9c08eb6be531646d763c160d40b46cc829384b2831248"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 72,
+      "B": 69,
+      "C": 76
+    },
+    "ledger_sequence": 755,
+    "live_credit_taken": [
+      "H01",
+      "H02",
+      "H03",
+      "H04",
+      "H05",
+      "L01",
+      "Q01",
+      "Q02",
+      "R02",
+      "V01",
+      "V02",
+      "V03",
+      "V04",
+      "X02"
+    ],
+    "passing_bugs": 107,
+    "snapshot": 66,
+    "snipe_points_added": 66,
+    "tree_sha256": "f00f8f92aecb17bb7f514963b620a4dd981f58cb4ff86abca6d56ae1cd2af119"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 94,
+      "B": 69,
+      "C": 76
+    },
+    "ledger_sequence": 757,
+    "live_credit_taken": [
+      "E21",
+      "E22",
+      "E23",
+      "E24",
+      "E25",
+      "E26",
+      "E27",
+      "E29",
+      "F10",
+      "F11",
+      "F12",
+      "F13",
+      "F14",
+      "F15"
+    ],
+    "passing_bugs": 107,
+    "snapshot": 67,
+    "snipe_points_added": 22,
+    "tree_sha256": "c6033cb2ae0ef1bc79966eb9ae2af0c939e89a321e95e4745f55d05f440fac25"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 94,
+      "B": 69,
+      "C": 76
+    },
+    "ledger_sequence": 774,
+    "live_credit_taken": [],
+    "passing_bugs": 107,
+    "snapshot": 68,
+    "snipe_points_added": 0,
+    "tree_sha256": "a307e850822bed9e865be5a17e6f5089a6b8eb7865091f3cddfa496942c166cd"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 94,
+      "B": 69,
+      "C": 76
+    },
+    "ledger_sequence": 781,
+    "live_credit_taken": [],
+    "passing_bugs": 107,
+    "snapshot": 69,
+    "snipe_points_added": 0,
+    "tree_sha256": "ed3c6783676c275e1140a5549ab0f8e36299f31fc072da49e5003d6a68201516"
+  },
+  {
+    "actor": "A",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 94,
+      "B": 69,
+      "C": 76
+    },
+    "ledger_sequence": 786,
+    "live_credit_taken": [],
+    "passing_bugs": 107,
+    "snapshot": 70,
+    "snipe_points_added": 0,
+    "tree_sha256": "465704ce943b37f800ffb5ea45b6164e45504b67e9ef54f89ca9cb2390163a3b"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 94,
+      "B": 69,
+      "C": 126
+    },
+    "ledger_sequence": 822,
+    "live_credit_taken": [
+      "F26",
+      "F27",
+      "F28",
+      "I02",
+      "M01",
+      "P24",
+      "P26",
+      "P27",
+      "P28",
+      "P29",
+      "P30",
+      "P31",
+      "P32",
+      "P34",
+      "X03"
+    ],
+    "passing_bugs": 107,
+    "snapshot": 71,
+    "snipe_points_added": 50,
+    "tree_sha256": "aa53d33da03be547d2dfcb535d2104584e61b0cab90ad120afb8c68be0eb6fe3"
+  },
+  {
+    "actor": "C",
+    "bugs_changed_to_failing": [],
+    "bugs_changed_to_passing": [],
+    "cumulative_snipe_points": {
+      "A": 94,
+      "B": 69,
+      "C": 176
+    },
+    "ledger_sequence": 836,
+    "live_credit_taken": [
+      "E08",
+      "E09",
+      "E11",
+      "E13",
+      "E14",
+      "E15",
+      "E16",
+      "E17",
+      "E18",
+      "E19",
+      "E20",
+      "E21",
+      "E22",
+      "E23",
+      "E24",
+      "E25",
+      "E26",
+      "E27",
+      "E29",
+      "F10",
+      "F11",
+      "F12",
+      "F13",
+      "F14",
+      "F15",
+      "F21",
+      "F22",
+      "F23",
+      "F25",
+      "I01",
+      "P12",
+      "P13",
+      "P23"
+    ],
+    "passing_bugs": 107,
+    "snapshot": 72,
+    "snipe_points_added": 50,
+    "tree_sha256": "7b241fc3c354bffec6044f0acff2c1440813ee80589b6ab2b1d74ef8b4427877"
+  }
+]

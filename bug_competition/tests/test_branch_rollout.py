@@ -2,6 +2,7 @@
 import asyncio
 import copy
 import json
+import os
 from pathlib import Path
 import tempfile
 from types import SimpleNamespace
@@ -423,7 +424,7 @@ class BranchTests(unittest.TestCase):
         _, _, records, state, _ = self.loaded()
         tree = self.root / 'docker/shared'
         shutil.copytree(self.protected / 'snapshots/1', tree)
-        executor = DockerShell()
+        executor = DockerShell(os.environ.get('MOSSLIGHT_TEST_IMAGE', 'docker.io/library/mosslight-tools:local'))
         comp = ResumedCompetition(tree, self.root / 'docker/protected', executor, oracle,
             {a: ScriptedAgent([]) for a in 'AB'}, weights={'D': 5}, relevance={'D': {'x.txt'}})
         config = dict(seconds=60, turn_limit=5, notices=[3], parent=str(self.source),

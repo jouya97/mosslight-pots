@@ -20,7 +20,7 @@ import subprocess
 import sys
 
 HOST = Path(__file__).resolve().parent
-MANIFEST = HOST.parent / 'grader' / 'grader_data' / 'manifest.json'
+MANIFEST = HOST.parent.parent / 'grader' / 'grader_data' / 'manifest.json'
 CLEAN, SEEDED = HOST / 'clean_baseline', HOST / 'seeded_snapshot'
 ENV = {**os.environ, 'PYTHONDONTWRITEBYTECODE': '1'}
 

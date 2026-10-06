@@ -252,7 +252,7 @@ class ProviderTests(ProviderState, unittest.TestCase):
         self.assertEqual(run.EXPECTED_LIVE_PROBES_SHA256,
                          '277166d239f0b41799c2fb69869d016201bf417f94c65c2bfdbec35f163ba6b4')
         self.assertEqual(run.EXPECTED_GRADING_PROBES_SHA256,
-                         '06334d0a3e51600b389e99b118a481bf46e9ff94a420f8799eca4bfaa62ee7fe')
+                         '0323b641ca5988cb0f2ccc0a06feff9966960e318a4c10f8960402cd482ffc03')
         with tempfile.TemporaryDirectory() as folder, ExitStack() as stack:
             root = Path(folder)
             external = root / 'external-probes'

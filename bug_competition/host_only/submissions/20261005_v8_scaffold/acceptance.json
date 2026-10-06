@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "checked_utc": "2026-10-06T04:27:18.591959+00:00",
+  "python_version": "3.12.10",
+  "review_dependencies": "requirements-review.lock.txt; clean virtual environment; pip check passed before source checks",
+  "source_snapshot_sha256": "8f6dae43d716bcc7b11827c50c901b90e9a84fe1fb934a065e0db41d417e4c35",
+  "manifest_sha256": "38613ec590371ed2ed5d57aa68983b815d3c11f125aa71d5d9e77039048e830e",
+  "archive": {
+    "archive": "mosslight_v8_scaffold_20261005.tar.gz",
+    "archive_bytes": 47078850,
+    "archive_sha256": "da7e5b10d1d62ee0bc9e421bba6738c1e8e5e40061cc7b52558ed1e6592dd1ab",
+    "file_count": 13292,
+    "uncompressed_file_bytes": 217942393
+  },
+  "clean_extraction": "/tmp/mosslight-scaffold-acceptance-20261005",
+  "archive_verification": true,
+  "image_exports": [
+    {
+      "role": "historical",
+      "archive": "mosslight_historical_cbc65b15_image.tar.gz",
+      "image_id": "sha256:cbc65b1527ad0a79be2643adddf1b2cc3ff7b694ba4cb9d489cc352714e17f36",
+      "sha256": "27fa8bf02312ebb8e5e204cf3b52906080518784d77a2e9cd6f43fccc5f2df23",
+      "bytes": 112863047,
+      "verified": true
+    },
+    {
+      "role": "prospective_v8",
+      "archive": "mosslight_v8_28e3d6ca_image.tar.gz",
+      "image_id": "sha256:28e3d6cafef1262c380140e04b368814d38a2740cb05002795ad660333b74e75",
+      "sha256": "9fc3cf096a229769b320f51c68beff334e1839bf09fd307d08a476b583ac4d29",
+      "bytes": 348816201,
+      "verified": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "offline suite from clean extraction",
+      "command": "python -B -m pytest -q -rs -p no:cacheprovider -m 'not docker' grader bug_competition",
+      "exit_code": 0,
+      "passed": 244,
+      "skipped": 3,
+      "subtests_passed": 764,
+      "output": "..........................................................................................................................ss....................................................................... [ 79%]\n................................................ [ 98%]\n...                                                                      [100%]\n=========================== short test summary info ============================\nSUBSKIPPED(case='undecodable_name') [1] bug_competition/harness/tests/test_parallel.py:138: cannot create undecodable_name: [Errno 92] Illegal byte sequence: b'/private/var/folders/k4/xzl_yfb55qbdccw_09rkhwt80000gn/T/tmp53p7lvs0/protected/work/25923af626a74f7d9c5feefa309edf10/workspace/bad-\\xff'\nSUBSKIPPED(case='undecodable_name') [1] bug_competition/harness/tests/test_workspace.py:228: set MOSSLIGHT_DOCKER_TESTS=1 for real Docker export checks\nSUBSKIPPED(case='undecodable_name') [1] bug_competition/harness/tests/test_workspace.py:246: set MOSSLIGHT_DOCKER_TESTS=1 for real Docker export checks\n244 passed, 3 skipped, 15 deselected, 764 subtests passed in 100.61s (0:01:40)\n"
+    },
+    {
+      "name": "Docker suite from frozen source",
+      "command": "MOSSLIGHT_TEST_IMAGE=docker.io/library/mosslight-tools:submission-v8 python -B -m pytest -q -p no:cacheprovider -m docker grader bug_competition",
+      "exit_code": 0,
+      "passed": 15,
+      "output": "...............                                                          [100%]\n15 passed, 246 deselected in 96.05s (0:01:36)\n"
+    },
+    {
+      "name": "Docker workspace boundary and cleanup from frozen source",
+      "command": "MOSSLIGHT_DOCKER_TESTS=1 MOSSLIGHT_TEST_IMAGE=docker.io/library/mosslight-tools:submission-v8 python -B -m unittest bug_competition.harness.tests.test_workspace.DockerWorkspaceExportTests",
+      "exit_code": 0,
+      "passed": 2,
+      "output": "..\n----------------------------------------------------------------------\nRan 2 tests in 5.754s\n\nOK\n"
+    },
+    {
+      "name": "both replay integrity records from clean extraction",
+      "command": "python -B -m bug_competition.host_only.tools.submission_bundle check-historical-inputs",
+      "exit_code": 0,
+      "verified_snapshot_references": 167,
+      "records": {
+        "original_replay": {
+          "verified_input_and_runtime_files": 29,
+          "verified_snapshot_trees": 167,
+          "provenance_sha256": "0b537034e9809a4096d644fe53354f4095647213e9b91e56665b4024d38222de"
+        },
+        "version8_rescore": {
+          "verified_input_and_runtime_files": 37,
+          "verified_snapshot_trees": 167,
+          "provenance_sha256": "f0ad2796b9412c44d67c3c04cfe75a2a3b8e72c5ec4b7dacc63cf375ffa5e5ea"
+        }
+      }
+    },
+    {
+      "name": "fresh launcher preflight from clean extraction",
+      "command": "python -B -m bug_competition.host_only.tools.fresh_rollout --provider anthropic --offline-check",
+      "exit_code": 0,
+      "status": "offline_ready_not_launched",
+      "prompt_sha256": "34a9fa34d3067bff5b1d71dabb1b419c0d4820a4646232b72e9c86fddb1b05dc"
+    },
+    {
+      "name": "source freeze and extracted file inventory",
+      "manifest_files_verified_in_clean_extraction": 13292,
+      "original_source_files_verified": 13289,
+      "derived_exports": 3,
+      "source_unchanged_after_packaging": true
+    }
+  ],
+  "skip_note": "One platform-dependent undecodable-filename case cannot run on this macOS filesystem. Both opt-in Docker workspace tests skipped by the offline suite passed separately on frozen source.",
+  "outstanding_rubric_limits": {
+    "combined_grader_lines": 2794,
+    "rubric_line_limit": 1000,
+    "meets_line_target": false,
+    "model_calibration": "No new model runs or model-ranking calibration. Version 8 was applied retrospectively to original actions; agents never saw the version 8 prompt.",
+    "probe_limits": "Finite behavioral and preservation checks do not prove universal robustness."
+  },
+  "historical_evidence": "Original grades, inputs, protected records, earlier frozen regrade and previous delivery preserved; version 8 rescore stored separately.",
+  "source_unchanged_after_packaging": true
+}

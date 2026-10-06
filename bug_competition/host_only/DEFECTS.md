@@ -1,6 +1,6 @@
 # Defect universe
 
-The ground truth is [`grader/grader_data/manifest.json`](../grader/grader_data/manifest.json). It lists **119 seeded behavioral defects worth 251 points** across 31 source files.
+The ground truth is [`grader/grader_data/manifest.json`](../../grader/grader_data/manifest.json). It lists **119 seeded behavioral defects worth 251 points** across 31 source files.
 
 | Tier | Weight | Defects | Points |
 | --- | ---: | ---: | ---: |
@@ -22,7 +22,7 @@ The tiers are intended difficulty, not measured human repair times. N01/N02 are 
 | `patches/<ID>.patch` | The clean-to-seeded diff for each defect |
 | `verification.json` | The last `verify.py` audit: 119/119 checks pass on clean, 119/119 fail on seeded, 191 clean public tests pass, plus tree and manifest hashes |
 
-These checks import the tree under test, so they are for trusted host trees only. They are not the final grader. The grader uses its own probes in `grader/grader_data/probes_*.json`, runs them in isolated containers and compares the results on the host ([grader/README.md](../grader/README.md)). Nothing in this directory enters an agent mount. The agent-visible tree is built from `mosslight/` by `visibility/build.py`, which replaces the pinpoint public tests with two smoke tests.
+These checks import the tree under test, so they are for trusted host trees only. They are not the final grader. The grader uses its own probes in `grader/grader_data/probes_*.json`, runs them in isolated containers and compares the results on the host ([grader/README.md](../../grader/README.md)). Nothing in this directory enters an agent mount. The agent-visible tree is built from `mosslight/` by `visibility/build.py`, which replaces the pinpoint public tests with two smoke tests.
 
 ## Verify
 

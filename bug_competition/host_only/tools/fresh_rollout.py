@@ -40,9 +40,9 @@ ACTION_SECONDS = 5400
 GRADING_SECONDS = 3600
 OUTER_MARGIN_SECONDS = 300
 OUTER_CAP_SECONDS = ACTION_SECONDS + GRADING_SECONDS + OUTER_MARGIN_SECONDS
-EXPECTED_PROMPT_SHA256 = '18ab1a992bfbbe7f76c1dd4418112244b9d03301d07ded514064ce09968fc03a'
+EXPECTED_PROMPT_SHA256 = '34a9fa34d3067bff5b1d71dabb1b419c0d4820a4646232b72e9c86fddb1b05dc'
 EXPECTED_LIVE_PROBES_SHA256 = '277166d239f0b41799c2fb69869d016201bf417f94c65c2bfdbec35f163ba6b4'
-EXPECTED_GRADING_PROBES_SHA256 = '06334d0a3e51600b389e99b118a481bf46e9ff94a420f8799eca4bfaa62ee7fe'
+EXPECTED_GRADING_PROBES_SHA256 = '0323b641ca5988cb0f2ccc0a06feff9966960e318a4c10f8960402cd482ffc03'
 PROBE_SOURCE = REPO / 'bug_competition/host_only/fixtures/fresh_rollout_probes'
 ENV_FILE = Path(os.environ.get('MOSSLIGHT_ENV_FILE', str(REPO / '.env')))
 STATUS_PROTOCOL = 'competitor_scores_v2'
@@ -59,20 +59,25 @@ EVIDENCE_MARKERS = (
     'worker_stdout.log', 'episode_evidence', 'inspect',
 )
 PINNED_RUNTIME_FILES = (
+    'bug_competition/__init__.py',
     'bug_competition/host_only/tools/fresh_rollout.py',
     'bug_competition/host_only/tools/fresh_openrouter.py',
     'bug_competition/harness/credentials.py',
-    'bug_competition/task.py',
+    'task.py',
     'bug_competition/harness/core.py',
+    'bug_competition/harness/workspace.py',
     'bug_competition/harness/parallel.py',
     'bug_competition/host_only/tools/branch_runtime.py',
     'bug_competition/host_only/tools/branch_rollout.py',
     'bug_competition/harness/oracle.py',
-    'bug_competition/grader/grader.py',
-    'bug_competition/grader/weights.py',
-    'bug_competition/grader/submission_contract.py',
+    'grader/grader.py',
+    'grader/preservation.py',
+    'grader/attribution.py',
+    'grader/primitives.py',
+    'grader/weights.py',
+    'grader/submission_contract.py',
     'bug_competition/visibility/build.py',
-    'bug_competition/adapters/inspect/inspect_task.py',
+    'adapters/inspect/inspect_task.py',
 )
 
 
@@ -104,7 +109,7 @@ def exact_prompt() -> tuple[str, str]:
     digest = sha_bytes(prompt.encode('utf-8'))
     if digest != EXPECTED_PROMPT_SHA256:
         raise RuntimeError(f'PROMPT SHA256 mismatch: {digest}')
-    if len(prompt.encode('utf-8')) != 1756:
+    if len(prompt.encode('utf-8')) != 2103:
         raise RuntimeError('PROMPT UTF-8 byte count changed')
     return prompt, digest
 
@@ -669,7 +674,7 @@ def controller() -> int:
         'generation_config': GENERATE_CONFIG, 'status_protocol': STATUS_PROTOCOL,
         'actions_remaining_notices': NOTICE_COUNTS, 'prompt_source': 'bug_competition.task:PROMPT',
         'prompt_sha256': prompt_hash, 'prompt_utf8_bytes': len(prompt.encode('utf-8')),
-        'prompt_text': prompt, 'task_py_sha256': sha_file(REPO / 'bug_competition/task.py'),
+        'prompt_text': prompt, 'task_py_sha256': sha_file(REPO / 'task.py'),
         'runtime_file_sha256': runtime_hashes(), 'seed_tree_sha256': load_json(OUT / 'seed_inventory.json')['tree_sha256'],
         'baseline_audit_sha256': sha_file(OUT / 'baseline_audit.json'),
         'live_probe_sha256': sha_file(OUT / 'live_probes.json'),

@@ -30,7 +30,7 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path, PurePosixPath
 
-DEFAULT_MANIFEST = Path(__file__).resolve().parents[2] / "grader" / "grader_data" / "manifest.json"
+DEFAULT_MANIFEST = Path(__file__).resolve().parents[3] / "grader" / "grader_data" / "manifest.json"
 NOTICE = re.compile(r"\[Notice: (\d+) actions? remaining\.\]")
 
 

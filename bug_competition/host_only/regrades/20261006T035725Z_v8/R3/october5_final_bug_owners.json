@@ -1,0 +1,597 @@
+{
+  "E01": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E02": {
+    "owner": "B",
+    "passes": true,
+    "points": 5
+  },
+  "E03": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E04": {
+    "owner": "A",
+    "passes": true,
+    "points": 1
+  },
+  "E05": {
+    "owner": "A",
+    "passes": true,
+    "points": 1
+  },
+  "E06": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E07": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E08": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E09": {
+    "owner": "A",
+    "passes": true,
+    "points": 1
+  },
+  "E10": {
+    "owner": null,
+    "passes": false,
+    "points": 1
+  },
+  "E11": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E12": {
+    "owner": null,
+    "passes": false,
+    "points": 1
+  },
+  "E13": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E14": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E15": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E16": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E17": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E18": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E19": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E20": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E21": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E22": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E23": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E24": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E25": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E26": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "E27": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "E28": {
+    "owner": null,
+    "passes": false,
+    "points": 1
+  },
+  "E29": {
+    "owner": "B",
+    "passes": true,
+    "points": 5
+  },
+  "E30": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "F01": {
+    "owner": null,
+    "passes": false,
+    "points": 1
+  },
+  "F02": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F03": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F04": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F05": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F06": {
+    "owner": null,
+    "passes": false,
+    "points": 1
+  },
+  "F07": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "F08": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F09": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F10": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F11": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F12": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F13": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F14": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F15": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F16": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F17": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F18": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F19": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "F20": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "F21": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F22": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F23": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F24": {
+    "owner": null,
+    "passes": false,
+    "points": 1
+  },
+  "F25": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F26": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F27": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F28": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "F29": {
+    "owner": null,
+    "passes": false,
+    "points": 1
+  },
+  "F30": {
+    "owner": null,
+    "passes": false,
+    "points": 1
+  },
+  "F31": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "F32": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "H01": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "H02": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "H03": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "H04": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "H05": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "H06": {
+    "owner": null,
+    "passes": false,
+    "points": 5
+  },
+  "I01": {
+    "owner": "B",
+    "passes": true,
+    "points": 10
+  },
+  "I02": {
+    "owner": "B",
+    "passes": true,
+    "points": 20
+  },
+  "L01": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "M01": {
+    "owner": "A",
+    "passes": true,
+    "points": 1
+  },
+  "N01": {
+    "owner": "B",
+    "passes": true,
+    "points": 5
+  },
+  "N02": {
+    "owner": "B",
+    "passes": true,
+    "points": 5
+  },
+  "P01": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "P02": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "P03": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "P04": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "P05": {
+    "owner": null,
+    "passes": false,
+    "points": 1
+  },
+  "P06": {
+    "owner": null,
+    "passes": false,
+    "points": 1
+  },
+  "P07": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "P08": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "P09": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "P10": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "P11": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "P12": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "P13": {
+    "owner": "A",
+    "passes": true,
+    "points": 1
+  },
+  "P14": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "P15": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "P16": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "P17": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "P18": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "P19": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "P20": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "P21": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "P22": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "P23": {
+    "owner": "B",
+    "passes": true,
+    "points": 1
+  },
+  "P24": {
+    "owner": "A",
+    "passes": true,
+    "points": 1
+  },
+  "P25": {
+    "owner": null,
+    "passes": false,
+    "points": 5
+  },
+  "P26": {
+    "owner": "A",
+    "passes": true,
+    "points": 1
+  },
+  "P27": {
+    "owner": "A",
+    "passes": true,
+    "points": 1
+  },
+  "P28": {
+    "owner": "A",
+    "passes": true,
+    "points": 1
+  },
+  "P29": {
+    "owner": "A",
+    "passes": true,
+    "points": 1
+  },
+  "P30": {
+    "owner": "A",
+    "passes": true,
+    "points": 5
+  },
+  "P31": {
+    "owner": "A",
+    "passes": true,
+    "points": 5
+  },
+  "P32": {
+    "owner": "A",
+    "passes": true,
+    "points": 1
+  },
+  "P34": {
+    "owner": "B",
+    "passes": true,
+    "points": 5
+  },
+  "Q01": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "Q02": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "R01": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "R02": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "R03": {
+    "owner": "C",
+    "passes": true,
+    "points": 1
+  },
+  "V01": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "V02": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "V03": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "V04": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "X01": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "X02": {
+    "owner": "C",
+    "passes": true,
+    "points": 5
+  },
+  "X03": {
+    "owner": "A",
+    "passes": true,
+    "points": 5
+  }
+}

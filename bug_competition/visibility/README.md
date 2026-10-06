@@ -9,7 +9,7 @@ What is staged:
 
 - An explicit allowlist of application modules, static web assets, examples,
   `pyproject.toml`, `LICENSE` and the product guides.
-- [`agent_data/SUBMISSION.md`](../agent_data/SUBMISSION.md), which states the
+- [`agent_data/SUBMISSION.md`](../../agent_data/SUBMISSION.md), which states the
   submission rules.
 - `tests/test_smoke.py`, two broad smoke tests (a save and artwork workflow, and
   a CLI workflow). It replaces the application's public regression tests, whose

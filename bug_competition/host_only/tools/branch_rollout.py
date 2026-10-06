@@ -212,10 +212,11 @@ def provider_configuration(source_contract, histories, records, provider=None):
 def runtime_files():
     """Pin host behavior, probes, and adapter, not the participant's mutable source."""
     files = []
-    for folder in ('harness', 'grader', 'adapters/inspect'):
-        files.extend((REPO / 'bug_competition' / folder).glob('*.py'))
+    for folder in ('bug_competition/harness', 'grader', 'adapters/inspect'):
+        files.extend((REPO / folder).glob('*.py'))
+    files.append(REPO / 'bug_competition/__init__.py')
     files.extend((REPO / 'bug_competition/host_only/tools').glob('branch_*.py'))
-    files.extend((REPO / 'bug_competition/grader').rglob('*.json'))
+    files.extend((REPO / 'grader').rglob('*.json'))
     files.append(DEFAULT_MANIFEST)
     return {str(p.relative_to(REPO)): sha(p) for p in sorted(set(files))}
 

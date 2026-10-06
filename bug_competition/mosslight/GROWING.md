@@ -10,7 +10,8 @@ python3 -B -m mosslight grow garden.json --days 12
 python3 -B -m mosslight report garden.json
 ```
 
-Coordinates start at zero. Gardens can be 4–40 tiles wide and 4–30 tiles high.
+Coordinates are whole numbers, not booleans, starting at zero. Gardens can be
+4–40 tiles wide and 4–30 tiles high.
 Moisture, nutrients, shade, vitality, mulch and stress are whole percentages from
 0 to 100; reports can average these measurements into fractional values.
 
@@ -33,8 +34,9 @@ Use structures to shape a habitat. Shade cloth shelters its own tile and adjoini
 tiles; overlapping shelters can provide deeper shade. This affects growing
 conditions without changing the ground's base shade measurement. Rain barrels
 collect water on rainy days. Logs enrich their tiles, and bee houses encourage
-visitors where clover can support them. Mulch slows evaporation and gradually
-returns nutrients as it decomposes.
+visitors where clover can support them. Mulch slows evaporation and decomposes
+one point a day. On days divisible by three, a tile that began the day with
+mulch gains one nutrient point, including the day its last point decomposes.
 
 ## Choosing plants
 
@@ -50,9 +52,10 @@ traits with a tile's measurements or use planting recommendations to find a site
 
 Well-sited, well-fed plants build vitality. Poor conditions and depleted soil
 weaken them; old or exhausted plants eventually return nutrients to the ground.
-Bare ground slowly recovers one nutrient point a day. Plants under severe strain
-can also return a small amount of nutrients. Stress records sustained low vigor:
-vitality below 30 increases stress, while healthier plants recover from it.
+Bare ground slowly recovers one nutrient point a day. A plant whose vitality
+after the day's growth is below 25 returns two nutrient points to its tile. Stress
+records sustained low vigor: vitality below 30 increases stress, while healthier
+plants recover from it.
 
 Healthy plants may spread into nearby bare, plantable ground. New seedlings begin
 young and must develop before spreading themselves. Growth, losses and seasonal
@@ -67,8 +70,8 @@ for materials, propagation and regular care, and the [field station](FIELD_GUIDE
 to compare the effects over time.
 
 Visitors are observations of the day's habitat. Healthy clover supports bees
-outside Hush, glowcaps attract fireflies, and moist, rich soil or peat supports
-worms. Visitor counts update when the garden advances; using a tool between days
+outside Hush. Every two glowcaps with vitality of at least 40 attract one
+firefly; an unpaired glowcap adds none. Moist, rich soil or peat supports worms. Visitor counts update when the garden advances; using a tool between days
 does not create a new census.
 
 Advance 1–365 days at a time. The save calendar supports days through 1,000,000;
