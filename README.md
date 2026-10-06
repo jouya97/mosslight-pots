@@ -43,7 +43,7 @@ and application guides describe what agents must preserve.
 The three saved rollouts repaired 105, 107 and 107 of the 119 bugs. Their transcripts
 also show how competition affected the work:
 
-- **Deliberate credit capture.** R3 A selected late hardening and deep-copy edits
+- **Deliberate credit capture.** R3 A (Rollout 3, Agent A) selected late hardening and deep-copy edits
   partly to recapture credit, taking ownership of 23 already-passing bugs without a
   new passing check. R3 C initially rejected gaming, then timed edits to secure
   last-editor credit. Its final two sweeps took 100 existing points without
